@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), animationId=0, author='J.Tankersley', version='0.3.00';
+var degChr=String.fromCharCode(176), frwTck=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.00';
 var canvas, context, canHead, canFoot, terminal1, terminal2, statusBar, header1, header2, footer1, footer2, experiment;
 // functions
 function animationStart() {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}
@@ -50,7 +50,7 @@ class Point {
 class Control {
     constructor(params={}) {for (var prop in params) {this[prop]=params[prop]}}
     draw_text(ctx,x,y,text,stroke='black',fill='lightgray') {
-        ctx.font="18px Arial";
+        ctx.font=this.font?this.font:"18px Arial";
         let width=ctx.measureText(text).width,height=parseInt(ctx.font.match(/\d+/),10);
         let textX=x+width/-2, textY=y+height/3;
         ctx.strokeStyle=stroke; ctx.strokeText(text,textX,textY);
@@ -61,7 +61,6 @@ class Control {
 class Label extends Control {
     constructor (params={x:0,y:0,color:'black'}) {super(params)}
     draw(ctx) {if (this.text) {this.draw_text(ctx,this.x,this.y,this.text)}}
-    buildText() {return `${this.name}`;}
 }
 class Particle extends Control {
     constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo',dir:1}) {super(params)}
@@ -73,7 +72,7 @@ class Particle extends Control {
             ctx.beginPath(); ctx.arc(x,y,r,rad1,rad2); ctx.fill();
         }
         let x=this.x, y=this.y, r=this.radius, axis=this.axis, col1=this.color1, col2=this.color2;
-        draw_arc(x,y,r,axis,axis+180,col1); draw_arc(x,y,r,axis+180,axis,col2); 
+        draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2); 
         if (this.text) {this.draw_text(ctx,x,y,this.text,'black','white');}
     }
     shift (angle,distance) {this.x+=Point.shiftX(angle,distance); this.y+=Point.shiftY(angle,distance);}
@@ -128,6 +127,7 @@ class Polarizer extends Control {
         draw_rect(x,y,w,h,axis,color); 
         if (this.text) {this.draw_text(ctx,x,y,this.text);}
     }
+    buildText() {return `${this.name}=${this.axis}${degChr}`;}
 }
 class Detector extends Control {
     constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
@@ -203,16 +203,16 @@ class Experiment {
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
          // Detectors
-        this.det1 = new Detector({x:100,y:50,width:40,height:40,axis:0,color:'black',name:"D+"});
-        this.det2 = new Detector({x:200,y:150,width:40,height:40,axis:270,color:'black',name:"D-"});
-        this.det3 = new Detector({x:500,y:50,width:40,height:40,axis:180,color:'black',name:"D+"});
-        this.det4 = new Detector({x:400,y:150,width:40,height:40,axis:270,color:'black',name:"D-"});
+        this.det1 = new Detector({x:100,y:50,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
+        this.det2 = new Detector({x:200,y:150,width:40,height:40,axis:270,color:'black',name:"D-",pol:pol1});
+        this.det3 = new Detector({x:500,y:50,width:40,height:40,axis:180,color:'black',name:"D-",pol:pol2});
+        this.det4 = new Detector({x:400,y:150,width:40,height:40,axis:270,color:'black',name:"D+",pol:pol2});
         const det1=this.det1, det2=this.det2, det3=this.det3, det4=this.det4;
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
         // Labels
-        this.lab1 = new Label({x:50,y:100,color:'black',name:"A"});
-        this.lab2 = new Label({x:550,y:100,color:'black',name:"B"});
+        this.lab1 = new Label({x:50,y:100,color:'black',name:"A",font:"36px Arial"});
+        this.lab2 = new Label({x:550,y:100,color:'black',name:"B",font:"36px Arial"});
         const lab1=this.lab1, lab2=this.lab2;
         lab1.text=lab1.buildText(); lab2.text=lab2.buildText();     
         this.drawLabels();       
@@ -266,7 +266,7 @@ class Experiment {
                 this.axis=Math.random()*361;
                 let axis=this.axis;
                 prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.dir=1; prt1.text=prt1.buildText(); 
-                prt2.axis=axis; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.dir=1; prt2.text=prt2.buildText(); 
+                prt2.axis=-axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.dir=1; prt2.text=prt2.buildText(); 
                 this.updateReport1();
                 // this.updateReport2();
             } else { 
@@ -279,8 +279,10 @@ class Experiment {
             if (this.phase==1 && this.distance>=(midX-startX)) {
                 this.phase=2;
                 this.total+=1;
-                prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=getAxis(prt1.axis,pol1.axis); prt1.text=prt1.buildText(); prt1.dir=prt1.result;
-                prt2.result=getResult(prt2.axis,pol2.axis); prt2.axis=getAxis(prt2.axis,pol2.axis); prt2.text=prt2.buildText(); prt2.dir=prt2.result; 
+                // prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=getAxis(prt1.axis,pol1.axis); prt1.text=prt1.buildText(); prt1.dir=prt1.result;
+                // prt2.result=getResult(prt2.axis,pol2.axis); prt2.axis=getAxis(prt2.axis,pol2.axis); prt2.text=prt2.buildText(); prt2.dir=prt2.result; 
+                prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=pol1.axis; prt1.text=prt1.buildText(); prt1.dir=prt1.result;
+                prt2.result=getResult(prt2.axis,pol2.axis); prt2.axis=pol2.axis; prt2.text=prt2.buildText(); prt2.dir=prt2.result; 
                 if (prt1.result===0) {prt1.dir=-1}
                 if (prt2.result===0) {prt2.dir=-1}
                 let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
