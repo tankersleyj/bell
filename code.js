@@ -26,8 +26,8 @@ function handleOnload() {
   experiment.init();
   animationStart();
 }
-function handleRate(rate) {animationStop(); experiment.rate=rate; experiment.updateStatus(); animationStart()}
-function handleReset() {experiment.reset(); animationStart()}
+function handleRate(rate) {animationStop(); experiment.rate=rate; experiment.phase=0; experiment.updateStatus(); animationStart()}
+function handleReset() {animationStop(); if (!experiment.reset()) {animationStart()}}
 function handleStartStop() {if (animationId) {animationStop()} else {animationStart()}}
 function roundTo(val,dec=0) {return Number.parseFloat(Number.parseFloat(val).toFixed(dec))}
 function roundToStr(val,dec=0) {return Number.parseFloat(val).toFixed(dec)}
@@ -63,7 +63,7 @@ class Label extends Control {
     draw(ctx) {if (this.text) {this.draw_text(ctx,this.x,this.y,this.text)}}
 }
 class Particle extends Control {
-    constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo',dir:1}) {super(params)}
+    constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo'}) {super(params)}
     draw(ctx) {
         function draw_arc(x,y,r,start,end,color) {
             let rad1=(start+0)*Math.PI/180, rad2=(end+0)*Math.PI/180;
@@ -78,7 +78,7 @@ class Particle extends Control {
     shift (angle,distance) {this.x+=Point.shiftX(angle,distance); this.y+=Point.shiftY(angle,distance);}
     buildText() {
         let resultText=['-','+'], axisText=roundTo(this.axis,1);
-        return this.result in [0,1]?`${this.name}'=${resultText[this.result]}`:`${this.name}=${axisText}${degChr}`;
+        return this.result in [0,1]?`${resultText[this.result]}`:`${axisText}${degChr}`;
     }
 }
 class CircleControl extends Control {
@@ -130,22 +130,37 @@ class Polarizer extends Control {
     buildText() {return `${this.name}=${this.axis}${degChr}`;}
 }
 class Detector extends Control {
-    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
+    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue', pol:null}) {super(params)}
     draw(ctx) {
         function draw_rect(x,y,w,h,axis,color) {
             let hW=Math.round(w/2), hH=Math.round(h/2);
             let lP1=new Point({x:x,y:y-hH}), lP2=new Point({x:x,y:y+hH});
             let rP1=new Point({x:x+hW,y:y-hH}), rP2=new Point({x:x+hW,y:y+hH});
             lP1.rotate(axis,x,y); lP2.rotate(axis,x,y); rP1.rotate(axis,x,y); rP2.rotate(axis,x,y);
+            if (pol) {lP1.rotate(detAxis,pol.x,pol.y); lP2.rotate(detAxis,pol.x,pol.y); rP1.rotate(detAxis,pol.x,pol.y); rP2.rotate(detAxis,pol.x,pol.y)}
             ctx.beginPath(); ctx.moveTo(lP1.x,lP1.y);
             ctx.lineTo(rP1.x,rP1.y); ctx.lineTo(rP2.x,rP2.y); ctx.lineTo(lP2.x,lP2.y);
-            let rad1=(axis+90)*Math.PI/180, rad2=(axis+270)*Math.PI/180, r=hW;
-            ctx.arc(x,y,r,rad1,rad2);
+            if (pol) {
+                let rad1=(axis+detAxis+90)*Math.PI/180, rad2=(axis+detAxis+270)*Math.PI/180, r=hW;
+                let dP=new Point({x:x,y:y});
+                dP.rotate(detAxis,pol.x,pol.y);
+                ctx.arc(dP.x,dP.y,r,rad1,rad2);
+            } else {
+                let rad1=(axis+90)*Math.PI/180, rad2=(axis+270)*Math.PI/180, r=hW;
+                ctx.arc(x,y,r,rad1,rad2);
+            }
             ctx.strokeStyle=color; ctx.stroke();
         }
         let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, pol=this.pol, detAxis=0;
+        if (pol) {detAxis=pol.axis-45}
         draw_rect(x,y,w,h,axis,color); 
-        if (this.text) {this.draw_text(ctx,x,y,this.text)}
+        if (this.text) {
+            if (pol) {
+                let tp=new Point({x:x,y:y});
+                tp.rotate(detAxis,pol.x,pol.y);
+                this.draw_text(ctx,tp.x,tp.y,this.text);
+            } else {this.draw_text(ctx,x,y,this.text)}
+        }
     }
 }
 class Emitter extends CircleControl {constructor (params) {super(params)}}
@@ -154,7 +169,7 @@ class Experiment {
         for (var prop in params) {this[prop]=params[prop];}
     }
     init () {
-        this.rate=60;
+        this.rate=15;
         this.phase=0;
         this.total=0;
         this.distance=0;
@@ -186,27 +201,27 @@ class Experiment {
 
         this.clear();
         // emitters
-        this.emitter = new Emitter({x:300,y:50,radius:20,color:'red',name:"S"});
+        this.emitter = new Emitter({x:300,y:150,radius:20,color:'red',name:"S"});
         const emitter=this.emitter;
         emitter.text=emitter.buildText();
 
         // particles
-        this.prt1 = new Particle({x:300,y:50,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,dir:1});
-        this.prt2 = new Particle({x:300,y:50,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,dir:1});
+        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1});
+        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1});
         const prt1=this.prt1, prt2=this.prt2;
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:200,y:50,width:40,height:40,axis:0,color:'green',name:"a"});
-        this.pol2 = new Polarizer({x:400,y:50,width:40,height:40,axis:-67.5,color:'green',name:"b"});
+        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:0,color:'green',name:"a"});
+        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:0,color:'green',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
          // Detectors
-        this.det1 = new Detector({x:100,y:50,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
-        this.det2 = new Detector({x:200,y:150,width:40,height:40,axis:270,color:'black',name:"D-",pol:pol1});
-        this.det3 = new Detector({x:500,y:50,width:40,height:40,axis:180,color:'black',name:"D-",pol:pol2});
-        this.det4 = new Detector({x:400,y:150,width:40,height:40,axis:270,color:'black',name:"D+",pol:pol2});
+        this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
+        this.det2 = new Detector({x:150,y:250,width:40,height:40,axis:270,color:'black',name:"D-",pol:pol1});
+        this.det3 = new Detector({x:350,y:150,width:40,height:40,axis:0,color:'black',name:"D-",pol:pol2});
+        this.det4 = new Detector({x:450,y:250,width:40,height:40,axis:270,color:'black',name:"D+",pol:pol2});
         const det1=this.det1, det2=this.det2, det3=this.det3, det4=this.det4;
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
@@ -215,17 +230,27 @@ class Experiment {
         this.lab2 = new Label({x:550,y:100,color:'black',name:"B",font:"36px Arial"});
         const lab1=this.lab1, lab2=this.lab2;
         lab1.text=lab1.buildText(); lab2.text=lab2.buildText();     
-        this.drawLabels();       
-
-        // this.updateStatus();
-        // this.updateReport1();
-        // this.updateReport2();
+        
+        // text
         this.canHead.innerHTML=`<p>${textJson.canHead}</p>`;
         this.canFoot.innerHTML=`<p>${textJson.canFoot}</p>`;
         this.header1.innerHTML=`<b>${textJson.header1}</b><br>`;
         this.footer1.innerHTML=`<p>${textJson.footer1}</p>`;
         this.header2.innerHTML=`<b>${textJson.header2}</b><br>`;
         this.footer2.innerHTML=`<p>${textJson.footer2}</p>`;
+
+        // draw
+        this.clear();
+        this.drawEmitters();
+        this.drawPolarizers();
+        this.drawDetectors();
+        this.drawLabels();
+        this.drawParticles();
+
+        // report
+        this.updateStatus();
+        this.updateReport1();
+        // this.updateReport2();
     }
     drawEmitters () {
         const ctx=this.context;
@@ -249,63 +274,100 @@ class Experiment {
     }
     step (time) {
         function getResult(pAxis,dAxis) {return (Math.abs(dAxis-pAxis)<=90||Math.abs(dAxis-pAxis)>270) ? 1 : 0;}
-        function getAxis(pAxis,dAxis) {return (Math.abs(dAxis-pAxis)<=90||Math.abs(dAxis-pAxis)>270) ? dAxis : dAxis+180;}
         function getIndex1(res1,res2,res3,report1Indexes) {return report1Indexes[`${res1}${res2}${res3}`]}
         function getKey1(res1,res2,res3,report1Keys) { return report1Keys[`${res1}${res2}${res3}`]}
         // function getIndex2(res1,res3,report2Indexes) {return report2Indexes[`${res1} ${res3}`]}
         this.timeLast=this.timeLast ? this.timeLast : time; 
         this.timeDiff=time-this.timeLast;
-        let startX=300, midX=400, endX=550, startY=50, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
-        if (movePix>=0.75) {
-            this.timeLast=time;
-            const prt1=this.prt1, prt2=this.prt2;
-            const pol1=this.pol1, pol2=this.pol2;
-            if (this.phase===0) {
-                this.phase=1;
-                this.distance=0;
-                this.axis=Math.random()*361;
-                let axis=this.axis;
-                prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.dir=1; prt1.text=prt1.buildText(); 
-                prt2.axis=-axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.dir=1; prt2.text=prt2.buildText(); 
-                this.updateReport1();
-                // this.updateReport2();
-            } else { 
-                this.distance+=movePix; 
-                if (prt1.dir>0) {prt1.x-=movePix}
-                if (prt1.dir<0) {prt1.y+=movePix}
-                if (prt2.dir>0) {prt2.x+=movePix}
-                if (prt2.dir<0) {prt2.y+=movePix}
-            }
-            if (this.phase==1 && this.distance>=(midX-startX)) {
-                this.phase=2;
-                this.total+=1;
-                // prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=getAxis(prt1.axis,pol1.axis); prt1.text=prt1.buildText(); prt1.dir=prt1.result;
-                // prt2.result=getResult(prt2.axis,pol2.axis); prt2.axis=getAxis(prt2.axis,pol2.axis); prt2.text=prt2.buildText(); prt2.dir=prt2.result; 
-                prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=pol1.axis; prt1.text=prt1.buildText(); prt1.dir=prt1.result;
-                prt2.result=getResult(prt2.axis,pol2.axis); prt2.axis=pol2.axis; prt2.text=prt2.buildText(); prt2.dir=prt2.result; 
-                if (prt1.result===0) {prt1.dir=-1}
-                if (prt2.result===0) {prt2.dir=-1}
-                let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
-                this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
-                this.updateStatus();
-                this.report1[index1].tot+=1;
-                this.updateReport1();
-                // let index2=getIndex2(prt1.result,0,this.report2Indexes);
-                // this.report2[index2].tot+=1;
-                // this.updateReport2();
-            }
-            if (this.distance>=(endX-startX-50)) {prt1.dir=0; prt2.dir=0} // freeze
-            if (this.distance>=(endX-startX)) {this.phase=0;} // restart
-            this.clear();
-            this.drawEmitters();
-            this.drawPolarizers();
-            this.drawDetectors();
-            this.drawLabels();
-            this.drawParticles();
+        const prt1=this.prt1, prt2=this.prt2;
+        const pol1=this.pol1, pol2=this.pol2;
+        let startX=300, midX=450, endX=600, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
+        // debug
+        this.debug={
+            debugStep:this.debugStep,
+            timeLast:this.timeLast,
+            timeDiff:this.timeDiff,
+            phase:this.phase,
+            distance:this.distance,
+            startX:startX,
+            midX:midX,
+            endX:endX,
+            startY:startY,
+            sec:sec,
+            perSec:perSec,
+            movePix:movePix,
+            prt1:prt1,
+            prt2:prt2
         }
+        this.timeLast=time;
+        if (this.phase===0) {
+            this.phase=1;
+            this.debugStep=0;
+            this.distance=0;
+            this.axis=Math.random()*361;
+            let axis=this.axis;
+            prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
+            prt2.axis=-axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            this.updateReport1();
+            // this.updateReport2();
+        }
+        if (this.phase==1 && this.distance>=(midX-startX)) {
+            // alert(`midpoint, debug=${JSON.stringify(this.debug)}`);
+            this.phase=2;
+            this.total+=1;
+            prt1.result=getResult(prt1.axis,pol1.axis); prt1.text=prt1.buildText();
+            prt2.result=1-getResult(prt2.axis,pol2.axis); prt2.text=prt2.buildText();
+            let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
+            this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
+            this.updateStatus();
+            this.report1[index1].tot+=1;
+            this.updateReport1();
+            // let index2=getIndex2(prt1.result,0,this.report2Indexes);
+            // this.report2[index2].tot+=1;
+            // this.updateReport2();
+        }
+        // move 
+        this.debugStep+=1;
+        this.distance+=movePix; 
+        if (this.distance>=(endX-startX)) {this.phase=0} // restart
+        else if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
+        else if (this.phase==2) {
+            if (prt1.result===0) {
+                let detAgl=pol1.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
+                prt1.axis=pol1.axis-180;
+                prt1.moveX=movePix*cos;
+                prt1.moveY=movePix*sin;
+            } else {
+                let detAgl=pol1.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180)); 
+                prt1.axis=pol1.axis;
+                prt1.moveX=-movePix*cos;
+                prt1.moveY=-movePix*sin;               
+            }
+            if (prt2.result===0) {
+                let detAgl=pol2.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
+                prt2.axis=pol2.axis;
+                prt2.moveX=-movePix*cos;
+                prt2.moveY=-movePix*sin;                 
+            } else {
+                let detAgl=pol2.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
+                prt2.axis=pol2.axis-180;
+                prt2.moveX=movePix*cos;
+                prt2.moveY=movePix*sin;            
+            }            
+        } else {prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0}
+        prt1.x+=prt1.moveX;
+        prt1.y+=prt1.moveY;
+        prt2.x+=prt2.moveX;
+        prt2.y+=prt2.moveY;
+        this.clear();
+        this.drawEmitters();
+        this.drawPolarizers();
+        this.drawDetectors();
+        this.drawLabels();
+        this.drawParticles();
     }
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
-    reset () {if (window.confirm("Reset?")) {this.init()}}
+    reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to re-start")) {this.init(); return true}}
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
@@ -340,7 +402,7 @@ class Experiment {
         report1Rows+=this.getRowHtml("Y",na,na,na,na,roundTo(this.YPct,4),"case [2]+[4]+[5]+[7] %");
         report1Rows+=this.getRowHtml("Z",na,na,na,na,roundTo(this.ZPct,4),"case [1]+[4]+[5]+[8] %");
         this.terminal1.innerHTML=this.getHeaderHtml(degChr, report1Rows, this.total, roundTo(this.axis,2));
-        setIdHtml('debug', `${JSON.stringify(this)}`);
+        setIdHtml('debug', `debug=${JSON.stringify(this.debug)}`);
     }
     // updateReport2 () {
     //     let report2Rows = '', na="<i>n/a</i>";
