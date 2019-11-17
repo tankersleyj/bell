@@ -112,40 +112,56 @@ class RectControl extends Control {
     }
 }
 class Polarizer extends Control {
-    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
+    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue', slope:1}) {super(params)}
     draw(ctx) {
-        function draw_rect(x,y,w,h,axis,color) {
+        function draw_rect(x,y,w,h,axis,color,slope) {
             let hW=Math.round(w/2), hH=Math.round(h/2);
             let lP1=new Point({x:x-hW,y:y-hH}), lP2=new Point({x:x-hW,y:y+hH});
             let rP1=new Point({x:x+hW,y:y-hH}), rP2=new Point({x:x+hW,y:y+hH});
-            lP1.rotate(axis-45,x,y); lP2.rotate(axis-45,x,y); rP1.rotate(axis-45,x,y); rP2.rotate(axis-45,x,y);
+            lP1.rotate(detAxis,x,y); lP2.rotate(detAxis,x,y); rP1.rotate(detAxis,x,y); rP2.rotate(detAxis,x,y);
             ctx.beginPath(); ctx.moveTo(lP1.x,lP1.y);
             ctx.lineTo(rP1.x,rP1.y); ctx.lineTo(rP2.x,rP2.y); ctx.lineTo(lP2.x,lP2.y); ctx.lineTo(lP1.x,lP1.y);
-            ctx.moveTo(rP1.x,rP1.y); ctx.lineTo(lP2.x,lP2.y);
+            if (slope<0) {ctx.moveTo(lP1.x,lP1.y); ctx.lineTo(rP2.x,rP2.y)} else {ctx.moveTo(rP1.x,rP1.y); ctx.lineTo(lP2.x,lP2.y)}
             ctx.strokeStyle=color; ctx.stroke();
         }
-        let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color;
-        draw_rect(x,y,w,h,axis,color); 
+        let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, slope=this.slope;
+        let detAxis=slope<0?axis+45:axis-45;
+        draw_rect(x,y,w,h,axis,color,slope); 
         if (this.text) {this.draw_text(ctx,x,y,this.text);}
     }
 }
 class Detector extends Control {
-    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
+    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue', pol:null}) {super(params)}
     draw(ctx) {
         function draw_rect(x,y,w,h,axis,color) {
             let hW=Math.round(w/2), hH=Math.round(h/2);
             let lP1=new Point({x:x,y:y-hH}), lP2=new Point({x:x,y:y+hH});
             let rP1=new Point({x:x+hW,y:y-hH}), rP2=new Point({x:x+hW,y:y+hH});
             lP1.rotate(axis,x,y); lP2.rotate(axis,x,y); rP1.rotate(axis,x,y); rP2.rotate(axis,x,y);
+            if (pol) {lP1.rotate(detAxis,pol.x,pol.y); lP2.rotate(detAxis,pol.x,pol.y); rP1.rotate(detAxis,pol.x,pol.y); rP2.rotate(detAxis,pol.x,pol.y)}
             ctx.beginPath(); ctx.moveTo(lP1.x,lP1.y);
             ctx.lineTo(rP1.x,rP1.y); ctx.lineTo(rP2.x,rP2.y); ctx.lineTo(lP2.x,lP2.y);
-            let rad1=(axis+90)*Math.PI/180, rad2=(axis+270)*Math.PI/180, r=hW;
-            ctx.arc(x,y,r,rad1,rad2);
+            if (pol) {
+                let rad1=(axis+detAxis+90)*Math.PI/180, rad2=(axis+detAxis+270)*Math.PI/180, r=hW;
+                let dP=new Point({x:x,y:y});
+                dP.rotate(detAxis,pol.x,pol.y);
+                ctx.arc(dP.x,dP.y,r,rad1,rad2);
+            } else {
+                let rad1=(axis+90)*Math.PI/180, rad2=(axis+270)*Math.PI/180, r=hW;
+                ctx.arc(x,y,r,rad1,rad2);
+            }
             ctx.strokeStyle=color; ctx.stroke();
         }
         let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, pol=this.pol, detAxis=0;
+        if (pol) {detAxis=pol.slope<0?pol.axis+45:pol.axis-45}
         draw_rect(x,y,w,h,axis,color); 
-        if (this.text) {this.draw_text(ctx,x,y,this.text)}
+        if (this.text) {
+            if (pol) {
+                let tp=new Point({x:x,y:y});
+                tp.rotate(detAxis,pol.x,pol.y);
+                this.draw_text(ctx,tp.x,tp.y,this.text);
+            } else {this.draw_text(ctx,x,y,this.text)}
+        }
     }
 }
 class Emitter extends CircleControl {constructor (params) {super(params)}}
@@ -175,40 +191,44 @@ class Experiment {
         this.report1Keys={'111':'+++','101':'+-+','110':'++-','100':'+--','011':'-++','001':'--+','010':'-+-','000':'---'};
 
         // report 2
-        // this.report2=[
-        //     {row:1,key:'+ +',a:"+",b:" ",c:"+",tot:0,pct:0,spc:0},
-        //     {row:2,key:'+ -',a:"+",b:" ",c:"-",tot:0,pct:0,spc:0},
-        //     {row:3,key:'- +',a:"-",b:" ",c:"+",tot:0,pct:0,spc:0},
-        //     {row:4,key:'- -',a:"-",b:" ",c:"-",tot:0,pct:0,spc:0}
-        // ];
-        // this.report2Indexes={'1 1':0,'1 0':1,'0 1':2,'0 0':3};
-        // this.report2Keys={'1 1':'+ +','1 0':'+ -','0 1':'- +','0 0':'- -'};
+        this.report2=[
+            {row:1,key:'+ +',a:"+",b:" ",c:"+",tot:0,pct:0,spc:0},
+            {row:2,key:'+ -',a:"+",b:" ",c:"-",tot:0,pct:0,spc:0},
+            {row:3,key:'- +',a:"-",b:" ",c:"+",tot:0,pct:0,spc:0},
+            {row:4,key:'- -',a:"-",b:" ",c:"-",tot:0,pct:0,spc:0}
+        ];
+        this.report2Indexes={'1 1':0,'1 0':1,'0 1':2,'0 0':3};
+        this.report2Keys={'1 1':'+ +','1 0':'+ -','0 1':'- +','0 0':'- -'};
 
         this.clear();
         // emitters
-        this.emitter = new Emitter({x:300,y:50,radius:20,color:'red',name:"S"});
-        const emitter=this.emitter;
-        emitter.text=emitter.buildText();
+        this.emitter = new Emitter({x:300,y:100,radius:20,color:'red',name:"S"});
+        const emitter=this.emitter; //, emt2=this.emt2, emt3=this.emt3;
+        emitter.text=emitter.buildText(); // emt2.text=emt2.buildText(); emt3.text=emt3.buildText();
+        this.drawEmitters();
 
         // particles
-        this.prt1 = new Particle({x:300,y:50,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,dir:1});
-        this.prt2 = new Particle({x:300,y:50,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,dir:1});
+        this.prt1 = new Particle({x:275,y:100,radius:20,axis:45,color1:'orange',color2:'indigo',name:"a",result:-1,dir:1});
+        this.prt2 = new Particle({x:325,y:100,radius:20,axis:45,color1:'orange',color2:'indigo',name:"b",result:-1,dir:1});
         const prt1=this.prt1, prt2=this.prt2;
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:200,y:50,width:40,height:40,axis:0,color:'green',name:"a"});
-        this.pol2 = new Polarizer({x:400,y:50,width:40,height:40,axis:-67.5,color:'green',name:"b"});
+        this.pol1 = new Polarizer({x:200,y:100,width:40,height:40,axis:0,color:'green',name:"a",slope:1});
+        this.pol2 = new Polarizer({x:400,y:100,width:40,height:40,axis:-67.5,color:'green',name:"b",slope:-1});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
+        this.drawPolarizers();
 
          // Detectors
-        this.det1 = new Detector({x:100,y:50,width:40,height:40,axis:0,color:'black',name:"D+"});
-        this.det2 = new Detector({x:200,y:150,width:40,height:40,axis:270,color:'black',name:"D-"});
-        this.det3 = new Detector({x:500,y:50,width:40,height:40,axis:180,color:'black',name:"D+"});
-        this.det4 = new Detector({x:400,y:150,width:40,height:40,axis:270,color:'black',name:"D-"});
+        let detPol1=null, detPol2=null;
+        this.det1 = new Detector({x:100,y:100,width:40,height:40,axis:0,color:'black',name:"D+",pol:detPol1});
+        this.det2 = new Detector({x:200,y:200,width:40,height:40,axis:270,color:'black',name:"D-",pol:detPol1});
+        this.det3 = new Detector({x:500,y:100,width:40,height:40,axis:180,color:'black',name:"D+",pol:detPol2});
+        this.det4 = new Detector({x:400,y:200,width:40,height:40,axis:270,color:'black',name:"D-",pol:detPol2});
         const det1=this.det1, det2=this.det2, det3=this.det3, det4=this.det4;
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
+        this.drawDetectors();
         
         // Labels
         this.lab1 = new Label({x:50,y:100,color:'black',name:"A"});
@@ -217,19 +237,28 @@ class Experiment {
         lab1.text=lab1.buildText(); lab2.text=lab2.buildText();     
         this.drawLabels();       
 
-        // this.updateStatus();
-        // this.updateReport1();
-        // this.updateReport2();
+        this.updateStatus();
+        this.updateReport1();
+        this.updateReport2();
         this.canHead.innerHTML=`<p>${textJson.canHead}</p>`;
         this.canFoot.innerHTML=`<p>${textJson.canFoot}</p>`;
         this.header1.innerHTML=`<b>${textJson.header1}</b><br>`;
         this.footer1.innerHTML=`<p>${textJson.footer1}</p>`;
         this.header2.innerHTML=`<b>${textJson.header2}</b><br>`;
-        this.footer2.innerHTML=`<p>${textJson.footer2}</p>`;
+        this.footer2.innerHTML= `
+        <p>${textJson.footer2}</p>
+        <p>${textJson.simLinks}</p>
+        <p>
+            [I] Bell Tests <a target='tab' href="${textJson.chshLink1}">${textJson.chshLink1}</a><br>
+            [II] Bell Original Paper <a target='tab' href="${textJson.bellLink1}">${textJson.bellLink1}</a><br>
+            [III] Paper <a target='tab' href="${textJson.paperUrl}">${textJson.paperUrl}</a><br>
+            [IV] App <a target='tab' href="${textJson.appUrl}">${textJson.appUrl}</a><br>
+            [V] Code <a target='tab' href="${textJson.codeUrl}">${textJson.codeUrl}</a><br>
+        </p>`;
     }
     drawEmitters () {
         const ctx=this.context;
-        this.emitter.draw(ctx);
+        this.emitter.draw(ctx); // this.emt2.draw(ctx); this.emt3.draw(ctx);
     }
     drawPolarizers () {
         const ctx=this.context;
@@ -252,10 +281,11 @@ class Experiment {
         function getAxis(pAxis,dAxis) {return (Math.abs(dAxis-pAxis)<=90||Math.abs(dAxis-pAxis)>270) ? dAxis : dAxis+180;}
         function getIndex1(res1,res2,res3,report1Indexes) {return report1Indexes[`${res1}${res2}${res3}`]}
         function getKey1(res1,res2,res3,report1Keys) { return report1Keys[`${res1}${res2}${res3}`]}
-        // function getIndex2(res1,res3,report2Indexes) {return report2Indexes[`${res1} ${res3}`]}
+        function getIndex2(res1,res3,report2Indexes) {return report2Indexes[`${res1} ${res3}`]}
+        // function getKey2(res1,res3,report2Keys) { return report2Keys[`${res1} ${res3}`]}
         this.timeLast=this.timeLast ? this.timeLast : time; 
         this.timeDiff=time-this.timeLast;
-        let startX=300, midX=400, endX=550, startY=50, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
+        let startY=25, endY=225, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endY-startY);
         if (movePix>=0.75) {
             this.timeLast=time;
             const prt1=this.prt1, prt2=this.prt2;
@@ -265,18 +295,12 @@ class Experiment {
                 this.distance=0;
                 this.axis=Math.random()*361;
                 let axis=this.axis;
-                prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.dir=1; prt1.text=prt1.buildText(); 
-                prt2.axis=axis; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.dir=1; prt2.text=prt2.buildText(); 
+                prt1.axis=axis; prt1.result=-1; prt1.y=startY; prt1.dir=1; prt1.text=prt1.buildText(); 
+                prt2.axis=axis; prt2.result=-1; prt2.y=startY; prt2.dir=1; prt2.text=prt2.buildText(); 
                 this.updateReport1();
-                // this.updateReport2();
-            } else { 
-                this.distance+=movePix; 
-                if (prt1.dir>0) {prt1.x-=movePix}
-                if (prt1.dir<0) {prt1.y+=movePix}
-                if (prt2.dir>0) {prt2.x+=movePix}
-                if (prt2.dir<0) {prt2.y+=movePix}
-            }
-            if (this.phase==1 && this.distance>=(midX-startX)) {
+                this.updateReport2();
+            } else { this.distance+=movePix; prt1.y+=(movePix*prt1.dir); prt2.y+=(movePix*prt2.dir)}
+            if (this.phase==1 && prt1.y>=this.pol1.y) {
                 this.phase=2;
                 this.total+=1;
                 prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=getAxis(prt1.axis,pol1.axis); prt1.text=prt1.buildText(); prt1.dir=prt1.result;
@@ -288,12 +312,12 @@ class Experiment {
                 this.updateStatus();
                 this.report1[index1].tot+=1;
                 this.updateReport1();
-                // let index2=getIndex2(prt1.result,0,this.report2Indexes);
-                // this.report2[index2].tot+=1;
-                // this.updateReport2();
+                let index2=getIndex2(prt1.result,0,this.report2Indexes);
+                this.report2[index2].tot+=1;
+                this.updateReport2();
             }
-            if (this.distance>=(endX-startX-50)) {prt1.dir=0; prt2.dir=0} // freeze
-            if (this.distance>=(endX-startX)) {this.phase=0;} // restart
+            if (this.distance>=(endY-startY-25)) {prt1.dir=0; prt2.dir=0} // freeze
+            if (this.distance>=(endY-startY)) {this.phase=0;} // restart
             this.clear();
             this.drawEmitters();
             this.drawPolarizers();
@@ -338,17 +362,17 @@ class Experiment {
         report1Rows+=this.getRowHtml("Y",na,na,na,na,roundTo(this.YPct,4),"case [2]+[4]+[5]+[7] %");
         report1Rows+=this.getRowHtml("Z",na,na,na,na,roundTo(this.ZPct,4),"case [1]+[4]+[5]+[8] %");
         this.terminal1.innerHTML=this.getHeaderHtml(degChr, report1Rows, this.total, roundTo(this.axis,2));
-        setIdHtml('debug', `${JSON.stringify(this)}`);
+        setIdHtml('debug', `X=${this.XPct}, Y=${this.YPct}, Z=${this.ZPct}`);
     }
-    // updateReport2 () {
-    //     let report2Rows = '', na="<i>n/a</i>";
-    //     for (let r=1; r<=4; r++) {
-    //         this.report2[r-1].pct=roundTo(this.report2[r-1].tot/this.total*100,4);
-    //         this.report2[r-1].b=na;
-    //         report2Rows+=this.getRowHtmlFromRow(`${r}'`, this.report2[r-1]);
-    //     }
-    //     this.XYZDiv2 = (this.XPct + this.YPct - this.ZPct) / 2;
-    //     report2Rows+=this.getRowHtml("(X+Y-Z)/2",na,na,na,this.total,roundTo(this.XYZDiv2,4),"<= 0% (<i>predicted -.1036</i>)");
-    //     this.terminal2.innerHTML=this.getHeaderHtml(degChr, report2Rows, this.total, roundTo(this.axis,2));
-    // }
+    updateReport2 () {
+        let report2Rows = '', na="<i>n/a</i>";
+        for (let r=1; r<=4; r++) {
+            this.report2[r-1].pct=roundTo(this.report2[r-1].tot/this.total*100,4);
+            this.report2[r-1].b=na;
+            report2Rows+=this.getRowHtmlFromRow(`${r}'`, this.report2[r-1]);
+        }
+        this.XYZDiv2 = (this.XPct + this.YPct - this.ZPct) / 2;
+        report2Rows+=this.getRowHtml("(X+Y-Z)/2",na,na,na,this.total,roundTo(this.XYZDiv2,4),"<= 0% (<i>predicted -.1036</i>)");
+        this.terminal2.innerHTML=this.getHeaderHtml(degChr, report2Rows, this.total, roundTo(this.axis,2));
+    }
 }
