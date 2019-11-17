@@ -222,7 +222,7 @@ class Experiment {
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
         // Labels
-        this.lab0 = new Label({x:300,y:50,color:'blue',name:`Bell with Pilot Waves (${version})`,font:"18px Arial"});
+        this.lab0 = new Label({x:300,y:50,color:'blue',name:`Bell with (soon) Pilot Waves (${version})`,font:"18px Arial"});
         this.lab1 = new Label({x:50,y:50,color:'black',name:"A",font:"36px Arial"});
         this.lab2 = new Label({x:550,y:50,color:'black',name:"B",font:"36px Arial"});
         this.lab0.text=this.lab0.buildText(); this.lab1.text=this.lab1.buildText(); this.lab2.text=this.lab2.buildText();     
@@ -279,36 +279,37 @@ class Experiment {
         const pol1=this.pol1, pol2=this.pol2;
         let startX=300, midX=450, endX=600, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
         // debug
-        this.debug={
-            debugStep:this.debugStep,
-            timeLast:this.timeLast,
-            timeDiff:this.timeDiff,
-            phase:this.phase,
-            distance:this.distance,
-            startX:startX,
-            midX:midX,
-            endX:endX,
-            startY:startY,
-            sec:sec,
-            perSec:perSec,
-            movePix:movePix,
-            prt1:prt1,
-            prt2:prt2
-        }
+        // this.debug={
+        //     timeLast:this.timeLast,
+        //     timeDiff:this.timeDiff,
+        //     phase:this.phase,
+        //     distance:this.distance,
+        //     startX:startX,
+        //     midX:midX,
+        //     endX:endX,
+        //     startY:startY,
+        //     sec:sec,
+        //     perSec:perSec,
+        //     movePix:movePix,
+        //     prt1:prt1,
+        //     prt2:prt2
+        // }
         this.timeLast=time;
         if (this.phase===0) {
             this.phase=1;
-            this.debugStep=0;
             this.distance=0;
             this.axis=Math.random()*361;
-            let axis=this.axis;
-            prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
-            prt2.axis=-axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
+            prt2.axis=-this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            this.aPrime=Math.round(Math.random());
+            this.bPrime=Math.round(Math.random());
+            if (this.aPrime==1) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
+            if (this.bPrime==1) {pol2.axis=-67.5; pol2.name=`b${primeChr}`} else {pol2.axis=-22.5; pol2.name='b'}
+            pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
             this.updateReport1();
             // this.updateReport2();
         }
         if (this.phase==1 && this.distance>=(midX-startX)) {
-            // alert(`midpoint, debug=${JSON.stringify(this.debug)}`);
             this.phase=2;
             this.total+=1;
             prt1.result=getResult(prt1.axis,pol1.axis); prt1.text=prt1.buildText();
@@ -327,7 +328,6 @@ class Experiment {
             // this.updateReport2();
         }
         // move 
-        this.debugStep+=1;
         this.distance+=movePix; 
         if (this.distance>=(endX-startX)) {this.phase=0} // restart
         else if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
