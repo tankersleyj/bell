@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), frwTck=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.00';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.00';
 var canvas, context, canHead, canFoot, terminal1, terminal2, statusBar, header1, header2, footer1, footer2, experiment;
 // functions
 function animationStart() {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}
@@ -177,17 +177,13 @@ class Experiment {
 
         // report 1
         this.report1=[
-            {row:1,key:'+++',a:"+",b:"+",c:"+",tot:0,pct:0,spc:0},
-            {row:2,key:'+-+',a:"+",b:"-",c:"+",tot:0,pct:0,spc:1},
-            {row:3,key:'++-',a:"+",b:"+",c:"-",tot:0,pct:0,spc:0},
-            {row:4,key:'+--',a:"+",b:"-",c:"-",tot:0,pct:0,spc:0},
-            {row:5,key:'-++',a:"-",b:"+",c:"+",tot:0,pct:0,spc:0},
-            {row:6,key:'--+',a:"-",b:"-",c:"+",tot:0,pct:0,spc:0},
-            {row:7,key:'-+-',a:"-",b:"+",c:"-",tot:0,pct:0,spc:1},
-            {row:8,key:'---',a:"-",b:"-",c:"-",tot:0,pct:0,spc:0}
+            {row:1,key:'++',a:"+",b:"+",tot:0,pct:0},
+            {row:2,key:'+-',a:"+",b:"-",tot:0,pct:0},
+            {row:3,key:'-+',a:"+",b:"+",tot:0,pct:0},
+            {row:4,key:'--',a:"+",b:"-",tot:0,pct:0}
         ];
-        this.report1Indexes={'111':0,'101':1,'110':2,'100':3,'011':4,'001':5,'010':6,'000':7};
-        this.report1Keys={'111':'+++','101':'+-+','110':'++-','100':'+--','011':'-++','001':'--+','010':'-+-','000':'---'};
+        this.report1Indexes={'11':0,'10':1,'01':2,'00':3};
+        this.report1Keys={'11':'++','10':'+-','01':'-1','00':'--'};
 
         // report 2
         // this.report2=[
@@ -274,8 +270,8 @@ class Experiment {
     }
     step (time) {
         function getResult(pAxis,dAxis) {return (Math.abs(dAxis-pAxis)<=90||Math.abs(dAxis-pAxis)>270) ? 1 : 0;}
-        function getIndex1(res1,res2,res3,report1Indexes) {return report1Indexes[`${res1}${res2}${res3}`]}
-        function getKey1(res1,res2,res3,report1Keys) { return report1Keys[`${res1}${res2}${res3}`]}
+        function getIndex1(res1,res2,report1Indexes) {return report1Indexes[`${res1}${res2}`]}
+        function getKey1(res1,res2,report1Keys) { return report1Keys[`${res1}${res2}`]}
         // function getIndex2(res1,res3,report2Indexes) {return report2Indexes[`${res1} ${res3}`]}
         this.timeLast=this.timeLast ? this.timeLast : time; 
         this.timeDiff=time-this.timeLast;
@@ -321,8 +317,8 @@ class Experiment {
             else {let detAgl=pol1.axis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=pol1.axis}
             if (prt2.result===0) {let detAgl=pol2.axis-45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=pol2.axis}
             else {let detAgl=pol2.axis+45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=pol2.axis-180}    
-            let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
-            this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
+            let index1=getIndex1(prt1.result,prt2.result,this.report1Indexes);
+            this.statText=`(${getKey1(prt1.result,prt2.result,this.report1Keys)})`;
             this.updateStatus();
             this.report1[index1].tot+=1;
             this.updateReport1();
@@ -361,32 +357,32 @@ class Experiment {
         return `
 <table cellpadding="0" cellspacing="0" border="1">
     <tr valign="top">
-        <td>Case</td><td>A=0${degChr}</td><td>B=45${degChr}</td><td>C=67.5${degChr}</td><td>Total</td><td>Percent</td><td>Expected</td>
+        <td>Case</td><td>a or a${primeChr}</td><td>b or b${primeChr}</td><td>Total</td><td>Percent</td><td>Notes</td>
     </tr>${reportRows}
 </table><div><i>total=${total}, axis=${axis}${degChr}</i><div>`;
     }
-    getRowHtml (num,a,b,c,tot,pct,exp) {
+    getRowHtml (num,a,b,tot,pct,exp) {
         let cent=`style='text-align:center'`;
         return `<tr><td style='color:blue; text-align:center'>${num}</td>
-        <td ${cent}>${a}</td><td ${cent}>${b}</td><td ${cent}>${c}</td><td ${cent}>${tot}</td><td ${cent}>${pct}</td>
+        <td ${cent}>${a}</td><td ${cent}>${b}</td><td ${cent}>${tot}</td><td ${cent}>${pct}</td>
         <td>${exp}</td></tr>`;
     }
     getRowHtmlFromRow (r, row) {
-        let special=(row.spc==1) ? ' <i>*special case</i>' : '', exp=`>=0${special}`;
-        return this.getRowHtml(r,row.a,row.b,row.c,row.tot,row.pct,exp);
+        let exp=``;
+        return this.getRowHtml(r,row.a,row.b,row.tot,row.pct,exp);
     }    
     updateReport1 () {
         let report1Rows = '', na="<i>n/a</i>";
-        for (let r=1; r<=8; r++) {
+        for (let r=1; r<=4; r++) {
             this.report1[r-1].pct=roundTo(this.report1[r-1].tot/this.total*100,4);
             report1Rows+=this.getRowHtmlFromRow(`[${r}]`, this.report1[r-1]);
         }
-        this.XPct = this.report1[0].pct + this.report1[1].pct + this.report1[6].pct + this.report1[7].pct;
-        this.YPct = this.report1[1].pct + this.report1[3].pct + this.report1[4].pct + this.report1[6].pct;
-        this.ZPct = this.report1[0].pct + this.report1[3].pct + this.report1[4].pct + this.report1[7].pct;
-        report1Rows+=this.getRowHtml("X",na,na,na,na,roundTo(this.XPct,4),"case [1]+[2]+[7]+[8] %");
-        report1Rows+=this.getRowHtml("Y",na,na,na,na,roundTo(this.YPct,4),"case [2]+[4]+[5]+[7] %");
-        report1Rows+=this.getRowHtml("Z",na,na,na,na,roundTo(this.ZPct,4),"case [1]+[4]+[5]+[8] %");
+        this.eMult = this.report1[0].pct - this.report1[1].pct - this.report1[2].pct + this.report1[3].pct;
+        this.eDiv = this.report1[0].pct + this.report1[1].pct + this.report1[2].pct + this.report1[3].pct;
+        this.eCalc = this.eMult / this.eDiv;
+        report1Rows+=this.getRowHtml("E1",na,na,na,roundTo(this.eMult,4),"case [1]-[2]-[3]+[4] %");
+        report1Rows+=this.getRowHtml("E2",na,na,na,roundTo(this.eDiv,4),"case [1]+[2]+[3]+[4] %");
+        report1Rows+=this.getRowHtml("E",na,na,na,roundTo(this.eCalc,4),"E1/E2 (QM expects >2)");
         this.terminal1.innerHTML=this.getHeaderHtml(degChr, report1Rows, this.total, roundTo(this.axis,2));
         // setIdHtml('debug', `debug=${JSON.stringify(this.debug)}`);
     }
