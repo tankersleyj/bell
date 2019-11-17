@@ -78,7 +78,7 @@ class Particle extends Control {
     shift (angle,distance) {this.x+=Point.shiftX(angle,distance); this.y+=Point.shiftY(angle,distance);}
     buildText() {
         let resultText=['-','+'], axisText=roundTo(this.axis,1);
-        return this.result in [0,1]?`${this.name}'=${resultText[this.result]}`:`${this.name}=${axisText}${degChr}`;
+        return this.result in [0,1]?`${resultText[this.result]}`:`${axisText}${degChr}`;
     }
 }
 class CircleControl extends Control {
@@ -169,7 +169,7 @@ class Experiment {
         for (var prop in params) {this[prop]=params[prop];}
     }
     init () {
-        this.rate=60;
+        this.rate=15;
         this.phase=0;
         this.total=0;
         this.distance=0;
@@ -212,22 +212,22 @@ class Experiment {
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:200,y:150,width:40,height:40,axis:15,color:'green',name:"a"});
-        this.pol2 = new Polarizer({x:400,y:150,width:40,height:40,axis:15,color:'green',name:"b"});
+        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:0,color:'green',name:"a"});
+        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:0,color:'green',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
          // Detectors
-        this.det1 = new Detector({x:100,y:150,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
-        this.det2 = new Detector({x:200,y:250,width:40,height:40,axis:270,color:'black',name:"D-",pol:pol1});
-        this.det3 = new Detector({x:500,y:150,width:40,height:40,axis:180,color:'black',name:"D+",pol:pol2});
-        this.det4 = new Detector({x:400,y:250,width:40,height:40,axis:270,color:'black',name:"D-",pol:pol2});
+        this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
+        this.det2 = new Detector({x:150,y:250,width:40,height:40,axis:270,color:'black',name:"D-",pol:pol1});
+        this.det3 = new Detector({x:350,y:150,width:40,height:40,axis:0,color:'black',name:"D-",pol:pol2});
+        this.det4 = new Detector({x:450,y:250,width:40,height:40,axis:270,color:'black',name:"D+",pol:pol2});
         const det1=this.det1, det2=this.det2, det3=this.det3, det4=this.det4;
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
         // Labels
-        this.lab1 = new Label({x:50,y:150,color:'black',name:"A",font:"36px Arial"});
-        this.lab2 = new Label({x:550,y:150,color:'black',name:"B",font:"36px Arial"});
+        this.lab1 = new Label({x:50,y:100,color:'black',name:"A",font:"36px Arial"});
+        this.lab2 = new Label({x:550,y:100,color:'black',name:"B",font:"36px Arial"});
         const lab1=this.lab1, lab2=this.lab2;
         lab1.text=lab1.buildText(); lab2.text=lab2.buildText();     
         
@@ -281,71 +281,90 @@ class Experiment {
         this.timeDiff=time-this.timeLast;
         const prt1=this.prt1, prt2=this.prt2;
         const pol1=this.pol1, pol2=this.pol2;
-        let startX=300, midX=400, endX=550, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
-        if (movePix>=0.75) {
-            this.timeLast=time;
-            if (this.phase===0) {
-                this.phase=1;
-                this.distance=0;
-                this.axis=Math.random()*361;
-                let axis=this.axis;
-                prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
-                prt2.axis=-axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
-                prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0;
-                this.updateReport1();
-                // this.updateReport2();
-            } else { 
-                this.distance+=movePix; 
-                prt1.x+=prt1.moveX;
-                prt1.y+=prt1.moveY;
-                prt2.x+=prt2.moveX;
-                prt2.y+=prt2.moveY;
-            }
-            if (this.phase==1 && this.distance>=(midX-startX)) {
-                this.phase=2;
-                this.total+=1;
-                prt1.result=getResult(prt1.axis,pol1.axis); prt1.text=prt1.buildText();
-                if (prt1.result===0) {
-                    let detAgl=pol1.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
-                    prt1.axis=pol1.axis-180;
-                    prt1.moveX=movePix*cos;
-                    prt1.moveY=movePix*sin;
-                } else {
-                    let detAgl=pol1.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180)); 
-                    prt1.axis=pol1.axis;
-                    prt1.moveX=-movePix*cos;
-                    prt1.moveY=-movePix*sin;               
-                }
-                prt2.result=getResult(prt2.axis,pol2.axis); prt2.text=prt2.buildText();
-                if (prt2.result===0) {
-                    let detAgl=pol2.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
-                    prt2.axis=pol2.axis-180;
-                    prt2.moveX=movePix*cos;
-                    prt2.moveY=movePix*sin;            
-                } else {
-                    let detAgl=pol2.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
-                    prt2.axis=pol2.axis;
-                    prt2.moveX=movePix*cos;
-                    prt2.moveY=movePix*sin;                 
-                }
-                let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
-                this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
-                this.updateStatus();
-                this.report1[index1].tot+=1;
-                this.updateReport1();
-                // let index2=getIndex2(prt1.result,0,this.report2Indexes);
-                // this.report2[index2].tot+=1;
-                // this.updateReport2();
-            }
-            if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
-            if (this.distance>=(endX-startX)) {this.phase=0;} // restart
-            this.clear();
-            this.drawEmitters();
-            this.drawPolarizers();
-            this.drawDetectors();
-            this.drawLabels();
-            this.drawParticles();
+        let startX=300, midX=450, endX=600, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
+        // debug
+        this.debug={
+            debugStep:this.debugStep,
+            timeLast:this.timeLast,
+            timeDiff:this.timeDiff,
+            phase:this.phase,
+            distance:this.distance,
+            startX:startX,
+            midX:midX,
+            endX:endX,
+            startY:startY,
+            sec:sec,
+            perSec:perSec,
+            movePix:movePix,
+            prt1:prt1,
+            prt2:prt2
         }
+        this.timeLast=time;
+        if (this.phase===0) {
+            this.phase=1;
+            this.debugStep=0;
+            this.distance=0;
+            this.axis=Math.random()*361;
+            let axis=this.axis;
+            prt1.axis=axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
+            prt2.axis=-axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            this.updateReport1();
+            // this.updateReport2();
+        }
+        if (this.phase==1 && this.distance>=(midX-startX)) {
+            // alert(`midpoint, debug=${JSON.stringify(this.debug)}`);
+            this.phase=2;
+            this.total+=1;
+            prt1.result=getResult(prt1.axis,pol1.axis); prt1.text=prt1.buildText();
+            prt2.result=1-getResult(prt2.axis,pol2.axis); prt2.text=prt2.buildText();
+            let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
+            this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
+            this.updateStatus();
+            this.report1[index1].tot+=1;
+            this.updateReport1();
+            // let index2=getIndex2(prt1.result,0,this.report2Indexes);
+            // this.report2[index2].tot+=1;
+            // this.updateReport2();
+        }
+        // move 
+        this.debugStep+=1;
+        this.distance+=movePix; 
+        if (this.distance>=(endX-startX)) {this.phase=0} // restart
+        else if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
+        else if (this.phase==2) {
+            if (prt1.result===0) {
+                let detAgl=pol1.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
+                prt1.axis=pol1.axis-180;
+                prt1.moveX=movePix*cos;
+                prt1.moveY=movePix*sin;
+            } else {
+                let detAgl=pol1.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180)); 
+                prt1.axis=pol1.axis;
+                prt1.moveX=-movePix*cos;
+                prt1.moveY=-movePix*sin;               
+            }
+            if (prt2.result===0) {
+                let detAgl=pol2.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
+                prt2.axis=pol2.axis;
+                prt2.moveX=-movePix*cos;
+                prt2.moveY=-movePix*sin;                 
+            } else {
+                let detAgl=pol2.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
+                prt2.axis=pol2.axis-180;
+                prt2.moveX=movePix*cos;
+                prt2.moveY=movePix*sin;            
+            }            
+        } else {prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0}
+        prt1.x+=prt1.moveX;
+        prt1.y+=prt1.moveY;
+        prt2.x+=prt2.moveX;
+        prt2.y+=prt2.moveY;
+        this.clear();
+        this.drawEmitters();
+        this.drawPolarizers();
+        this.drawDetectors();
+        this.drawLabels();
+        this.drawParticles();
     }
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
     reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to re-start")) {this.init(); return true}}
@@ -383,7 +402,7 @@ class Experiment {
         report1Rows+=this.getRowHtml("Y",na,na,na,na,roundTo(this.YPct,4),"case [2]+[4]+[5]+[7] %");
         report1Rows+=this.getRowHtml("Z",na,na,na,na,roundTo(this.ZPct,4),"case [1]+[4]+[5]+[8] %");
         this.terminal1.innerHTML=this.getHeaderHtml(degChr, report1Rows, this.total, roundTo(this.axis,2));
-        setIdHtml('debug', `${JSON.stringify(this)}`);
+        setIdHtml('debug', `debug=${JSON.stringify(this.debug)}`);
     }
     // updateReport2 () {
     //     let report2Rows = '', na="<i>n/a</i>";
