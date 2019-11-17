@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), frwTck=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.00';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.00';
 var canvas, context, canHead, canFoot, terminal1, terminal2, statusBar, header1, header2, footer1, footer2, experiment;
 // functions
 function animationStart() {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}
@@ -169,7 +169,7 @@ class Experiment {
         for (var prop in params) {this[prop]=params[prop];}
     }
     init () {
-        this.rate=15;
+        this.rate=60;
         this.phase=0;
         this.total=0;
         this.distance=0;
@@ -177,17 +177,13 @@ class Experiment {
 
         // report 1
         this.report1=[
-            {row:1,key:'+++',a:"+",b:"+",c:"+",tot:0,pct:0,spc:0},
-            {row:2,key:'+-+',a:"+",b:"-",c:"+",tot:0,pct:0,spc:1},
-            {row:3,key:'++-',a:"+",b:"+",c:"-",tot:0,pct:0,spc:0},
-            {row:4,key:'+--',a:"+",b:"-",c:"-",tot:0,pct:0,spc:0},
-            {row:5,key:'-++',a:"-",b:"+",c:"+",tot:0,pct:0,spc:0},
-            {row:6,key:'--+',a:"-",b:"-",c:"+",tot:0,pct:0,spc:0},
-            {row:7,key:'-+-',a:"-",b:"+",c:"-",tot:0,pct:0,spc:1},
-            {row:8,key:'---',a:"-",b:"-",c:"-",tot:0,pct:0,spc:0}
+            {row:1,key:'++',a:"+",b:"+",tot:0,pct:0},
+            {row:2,key:'+-',a:"+",b:"-",tot:0,pct:0},
+            {row:3,key:'-+',a:"+",b:"+",tot:0,pct:0},
+            {row:4,key:'--',a:"+",b:"-",tot:0,pct:0}
         ];
-        this.report1Indexes={'111':0,'101':1,'110':2,'100':3,'011':4,'001':5,'010':6,'000':7};
-        this.report1Keys={'111':'+++','101':'+-+','110':'++-','100':'+--','011':'-++','001':'--+','010':'-+-','000':'---'};
+        this.report1Indexes={'11':0,'10':1,'01':2,'00':3};
+        this.report1Keys={'11':'++','10':'+-','01':'-1','00':'--'};
 
         // report 2
         // this.report2=[
@@ -212,8 +208,8 @@ class Experiment {
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:0,color:'green',name:"a"});
-        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:0,color:'green',name:"b"});
+        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:45,color:'green',name:"a"});
+        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:-67.5,color:'green',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
@@ -226,10 +222,10 @@ class Experiment {
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
         // Labels
-        this.lab1 = new Label({x:50,y:100,color:'black',name:"A",font:"36px Arial"});
-        this.lab2 = new Label({x:550,y:100,color:'black',name:"B",font:"36px Arial"});
-        const lab1=this.lab1, lab2=this.lab2;
-        lab1.text=lab1.buildText(); lab2.text=lab2.buildText();     
+        this.lab0 = new Label({x:300,y:50,color:'blue',name:`Bell with Pilot Waves (${version})`,font:"18px Arial"});
+        this.lab1 = new Label({x:50,y:50,color:'black',name:"A",font:"36px Arial"});
+        this.lab2 = new Label({x:550,y:50,color:'black',name:"B",font:"36px Arial"});
+        this.lab0.text=this.lab0.buildText(); this.lab1.text=this.lab1.buildText(); this.lab2.text=this.lab2.buildText();     
         
         // text
         this.canHead.innerHTML=`<p>${textJson.canHead}</p>`;
@@ -266,7 +262,7 @@ class Experiment {
     }
     drawLabels () {
         const ctx=this.context;
-        this.lab1.draw(ctx); this.lab2.draw(ctx);
+        this.lab0.draw(ctx); this.lab1.draw(ctx); this.lab2.draw(ctx);
     }
     drawParticles () {
         const ctx=this.context;
@@ -274,8 +270,8 @@ class Experiment {
     }
     step (time) {
         function getResult(pAxis,dAxis) {return (Math.abs(dAxis-pAxis)<=90||Math.abs(dAxis-pAxis)>270) ? 1 : 0;}
-        function getIndex1(res1,res2,res3,report1Indexes) {return report1Indexes[`${res1}${res2}${res3}`]}
-        function getKey1(res1,res2,res3,report1Keys) { return report1Keys[`${res1}${res2}${res3}`]}
+        function getIndex1(res1,res2,report1Indexes) {return report1Indexes[`${res1}${res2}`]}
+        function getKey1(res1,res2,report1Keys) { return report1Keys[`${res1}${res2}`]}
         // function getIndex2(res1,res3,report2Indexes) {return report2Indexes[`${res1} ${res3}`]}
         this.timeLast=this.timeLast ? this.timeLast : time; 
         this.timeDiff=time-this.timeLast;
@@ -317,8 +313,12 @@ class Experiment {
             this.total+=1;
             prt1.result=getResult(prt1.axis,pol1.axis); prt1.text=prt1.buildText();
             prt2.result=1-getResult(prt2.axis,pol2.axis); prt2.text=prt2.buildText();
-            let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
-            this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
+            if (prt1.result===0) {let detAgl=pol1.axis+45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=pol1.axis-180}
+            else {let detAgl=pol1.axis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=pol1.axis}
+            if (prt2.result===0) {let detAgl=pol2.axis-45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=pol2.axis}
+            else {let detAgl=pol2.axis+45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=pol2.axis-180}    
+            let index1=getIndex1(prt1.result,prt2.result,this.report1Indexes);
+            this.statText=`(${getKey1(prt1.result,prt2.result,this.report1Keys)})`;
             this.updateStatus();
             this.report1[index1].tot+=1;
             this.updateReport1();
@@ -332,28 +332,10 @@ class Experiment {
         if (this.distance>=(endX-startX)) {this.phase=0} // restart
         else if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
         else if (this.phase==2) {
-            if (prt1.result===0) {
-                let detAgl=pol1.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
-                prt1.axis=pol1.axis-180;
-                prt1.moveX=movePix*cos;
-                prt1.moveY=movePix*sin;
-            } else {
-                let detAgl=pol1.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180)); 
-                prt1.axis=pol1.axis;
-                prt1.moveX=-movePix*cos;
-                prt1.moveY=-movePix*sin;               
-            }
-            if (prt2.result===0) {
-                let detAgl=pol2.axis-45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
-                prt2.axis=pol2.axis;
-                prt2.moveX=-movePix*cos;
-                prt2.moveY=-movePix*sin;                 
-            } else {
-                let detAgl=pol2.axis+45, cos=Math.cos(detAgl*(Math.PI/180)), sin=Math.sin(detAgl*(Math.PI/180));
-                prt2.axis=pol2.axis-180;
-                prt2.moveX=movePix*cos;
-                prt2.moveY=movePix*sin;            
-            }            
+            if (prt1.result===0) {prt1.moveX=movePix*prt1.cos; prt1.moveY=movePix*prt1.sin}
+            else {prt1.moveX=-movePix*prt1.cos; prt1.moveY=-movePix*prt1.sin}
+            if (prt2.result===0) {prt2.moveX=-movePix*prt2.cos; prt2.moveY=-movePix*prt2.sin}
+            else {prt2.moveX=movePix*prt2.cos; prt2.moveY=movePix*prt2.sin}            
         } else {prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0}
         prt1.x+=prt1.moveX;
         prt1.y+=prt1.moveY;
@@ -375,34 +357,34 @@ class Experiment {
         return `
 <table cellpadding="0" cellspacing="0" border="1">
     <tr valign="top">
-        <td>Case</td><td>A=0${degChr}</td><td>B=45${degChr}</td><td>C=67.5${degChr}</td><td>Total</td><td>Percent</td><td>Expected</td>
+        <td>Case</td><td>a or a${primeChr}</td><td>b or b${primeChr}</td><td>Total</td><td>Percent</td><td>Notes</td>
     </tr>${reportRows}
 </table><div><i>total=${total}, axis=${axis}${degChr}</i><div>`;
     }
-    getRowHtml (num,a,b,c,tot,pct,exp) {
+    getRowHtml (num,a,b,tot,pct,exp) {
         let cent=`style='text-align:center'`;
         return `<tr><td style='color:blue; text-align:center'>${num}</td>
-        <td ${cent}>${a}</td><td ${cent}>${b}</td><td ${cent}>${c}</td><td ${cent}>${tot}</td><td ${cent}>${pct}</td>
+        <td ${cent}>${a}</td><td ${cent}>${b}</td><td ${cent}>${tot}</td><td ${cent}>${pct}</td>
         <td>${exp}</td></tr>`;
     }
     getRowHtmlFromRow (r, row) {
-        let special=(row.spc==1) ? ' <i>*special case</i>' : '', exp=`>=0${special}`;
-        return this.getRowHtml(r,row.a,row.b,row.c,row.tot,row.pct,exp);
+        let exp=``;
+        return this.getRowHtml(r,row.a,row.b,row.tot,row.pct,exp);
     }    
     updateReport1 () {
         let report1Rows = '', na="<i>n/a</i>";
-        for (let r=1; r<=8; r++) {
+        for (let r=1; r<=4; r++) {
             this.report1[r-1].pct=roundTo(this.report1[r-1].tot/this.total*100,4);
             report1Rows+=this.getRowHtmlFromRow(`[${r}]`, this.report1[r-1]);
         }
-        this.XPct = this.report1[0].pct + this.report1[1].pct + this.report1[6].pct + this.report1[7].pct;
-        this.YPct = this.report1[1].pct + this.report1[3].pct + this.report1[4].pct + this.report1[6].pct;
-        this.ZPct = this.report1[0].pct + this.report1[3].pct + this.report1[4].pct + this.report1[7].pct;
-        report1Rows+=this.getRowHtml("X",na,na,na,na,roundTo(this.XPct,4),"case [1]+[2]+[7]+[8] %");
-        report1Rows+=this.getRowHtml("Y",na,na,na,na,roundTo(this.YPct,4),"case [2]+[4]+[5]+[7] %");
-        report1Rows+=this.getRowHtml("Z",na,na,na,na,roundTo(this.ZPct,4),"case [1]+[4]+[5]+[8] %");
+        this.eMult = this.report1[0].pct - this.report1[1].pct - this.report1[2].pct + this.report1[3].pct;
+        this.eDiv = this.report1[0].pct + this.report1[1].pct + this.report1[2].pct + this.report1[3].pct;
+        this.eCalc = this.eMult / this.eDiv;
+        report1Rows+=this.getRowHtml("E1",na,na,na,roundTo(this.eMult,4),"case [1]-[2]-[3]+[4] %");
+        report1Rows+=this.getRowHtml("E2",na,na,na,roundTo(this.eDiv,4),"case [1]+[2]+[3]+[4] %");
+        report1Rows+=this.getRowHtml("E",na,na,na,roundTo(this.eCalc,4),"E1/E2 (QM expects >2)");
         this.terminal1.innerHTML=this.getHeaderHtml(degChr, report1Rows, this.total, roundTo(this.axis,2));
-        setIdHtml('debug', `debug=${JSON.stringify(this.debug)}`);
+        // setIdHtml('debug', `debug=${JSON.stringify(this.debug)}`);
     }
     // updateReport2 () {
     //     let report2Rows = '', na="<i>n/a</i>";

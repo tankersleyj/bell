@@ -12,10 +12,10 @@
     <div id="canHead"></div>
     <canvas id="canvas" width="600" height="300px"></canvas>
     <div id="controls">
-      <button class="space-right" onclick="handleStartStop()">Stop</button>
+      <button class="space-right" onclick="handleStartStop()">Freeze</button>
       <button onclick="handleRate(15)">Slow</button>
       <button onclick="handleRate(60)">Medium</button>
-      <button onclick="handleRate(600)">Fast</button>
+      <button onclick="handleRate(300)">Fast</button>
       <button class="space-left" onclick="handleWave()" disabled>Wave</button>
       <button class="space-right" onclick="handleReset()">Reset</button>
       <span id="statusBar"></span>
