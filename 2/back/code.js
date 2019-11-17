@@ -40,7 +40,7 @@ class Point {
     static rotateXY(angle,x,y,pivotX=0,pivotY=0) {
         function rot(angle,x,y) {
             let cos=Math.cos(angle*(Math.PI/180)), sin=Math.sin(angle*(Math.PI/180)); 
-            return {x:(cos*x)-(sin*y),y:(cos*y)+(sin*x)} // jtankersley, 1989-2019
+            return {x:(cos*x)-(sin*y),y:(cos*y)+(sin*x)}; // jtankersley, 1989-2019
         }
         return rot(angle, x-pivotX, y-pivotY);
     }
@@ -111,6 +111,24 @@ class RectControl extends Control {
         if (this.text) {this.draw_text(ctx,x,y,this.text);}
     }
 }
+class Polarizer extends Control {
+    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
+    draw(ctx) {
+        function draw_rect(x,y,w,h,axis,color) {
+            let hW=Math.round(w/2), hH=Math.round(h/2);
+            let lP1=new Point({x:x-hW,y:y-hH}), lP2=new Point({x:x-hW,y:y+hH});
+            let rP1=new Point({x:x+hW,y:y-hH}), rP2=new Point({x:x+hW,y:y+hH});
+            lP1.rotate(axis-45,x,y); lP2.rotate(axis-45,x,y); rP1.rotate(axis-45,x,y); rP2.rotate(axis-45,x,y);
+            ctx.beginPath(); ctx.moveTo(lP1.x,lP1.y);
+            ctx.lineTo(rP1.x,rP1.y); ctx.lineTo(rP2.x,rP2.y); ctx.lineTo(lP2.x,lP2.y); ctx.lineTo(lP1.x,lP1.y);
+            ctx.moveTo(rP1.x,rP1.y); ctx.lineTo(lP2.x,lP2.y);
+            ctx.strokeStyle=color; ctx.stroke();
+        }
+        let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color;
+        draw_rect(x,y,w,h,axis,color); 
+        if (this.text) {this.draw_text(ctx,x,y,this.text);}
+    }
+}
 class Detector extends Control {
     constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
     draw(ctx) {
@@ -125,27 +143,9 @@ class Detector extends Control {
             ctx.arc(x,y,r,rad1,rad2);
             ctx.strokeStyle=color; ctx.stroke();
         }
-        let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color;
+        let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, pol=this.pol, detAxis=0;
         draw_rect(x,y,w,h,axis,color); 
-        if (this.text) {this.draw_text(ctx,x,y,this.text);}
-    }
-}
-class Polarizer extends Control {
-    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue', slope:1}) {super(params)}
-    draw(ctx) {
-        function draw_rect(x,y,w,h,axis,color,slope) {
-            let hW=Math.round(w/2), hH=Math.round(h/2);
-            let lP1=new Point({x:x-hW,y:y-hH}), lP2=new Point({x:x-hW,y:y+hH});
-            let rP1=new Point({x:x+hW,y:y-hH}), rP2=new Point({x:x+hW,y:y+hH});
-            lP1.rotate(axis,x,y); lP2.rotate(axis,x,y); rP1.rotate(axis,x,y); rP2.rotate(axis,x,y);
-            ctx.beginPath(); ctx.moveTo(lP1.x,lP1.y);
-            ctx.lineTo(rP1.x,rP1.y); ctx.lineTo(rP2.x,rP2.y); ctx.lineTo(lP2.x,lP2.y); ctx.lineTo(lP1.x,lP1.y);
-            if (slope<0) {ctx.moveTo(lP1.x,lP1.y); ctx.lineTo(rP2.x,rP2.y)} else {ctx.moveTo(rP1.x,rP1.y); ctx.lineTo(lP2.x,lP2.y)}
-            ctx.strokeStyle=color; ctx.stroke();
-        }
-        let x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, slope=this.slope;
-        draw_rect(x,y,w,h,axis,color,slope); 
-        if (this.text) {this.draw_text(ctx,x,y,this.text);}
+        if (this.text) {this.draw_text(ctx,x,y,this.text)}
     }
 }
 class Emitter extends CircleControl {constructor (params) {super(params)}}
@@ -170,7 +170,7 @@ class Experiment {
             {row:6,key:'--+',a:"-",b:"-",c:"+",tot:0,pct:0,spc:0},
             {row:7,key:'-+-',a:"-",b:"+",c:"-",tot:0,pct:0,spc:1},
             {row:8,key:'---',a:"-",b:"-",c:"-",tot:0,pct:0,spc:0}
-        ]
+        ];
         this.report1Indexes={'111':0,'101':1,'110':2,'100':3,'011':4,'001':5,'010':6,'000':7};
         this.report1Keys={'111':'+++','101':'+-+','110':'++-','100':'+--','011':'-++','001':'--+','010':'-+-','000':'---'};
 
@@ -180,15 +180,15 @@ class Experiment {
             {row:2,key:'+ -',a:"+",b:" ",c:"-",tot:0,pct:0,spc:0},
             {row:3,key:'- +',a:"-",b:" ",c:"+",tot:0,pct:0,spc:0},
             {row:4,key:'- -',a:"-",b:" ",c:"-",tot:0,pct:0,spc:0}
-        ]
+        ];
         this.report2Indexes={'1 1':0,'1 0':1,'0 1':2,'0 0':3};
         this.report2Keys={'1 1':'+ +','1 0':'+ -','0 1':'- +','0 0':'- -'};
 
         this.clear();
         // emitters
         this.emitter = new Emitter({x:300,y:50,radius:20,color:'red',name:"S"});
-        const emitter=this.emitter; //, emt2=this.emt2, emt3=this.emt3;
-        emitter.text=emitter.buildText(); // emt2.text=emt2.buildText(); emt3.text=emt3.buildText();
+        const emitter=this.emitter;
+        emitter.text=emitter.buildText();
         this.drawEmitters();
 
         // particles
@@ -198,8 +198,8 @@ class Experiment {
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:200,y:50,width:40,height:40,axis:0,color:'green',name:"a",slope:1});
-        this.pol2 = new Polarizer({x:400,y:50,width:40,height:40,axis:90,color:'green',name:"b",slope:1});
+        this.pol1 = new Polarizer({x:200,y:50,width:40,height:40,axis:0,color:'green',name:"a"});
+        this.pol2 = new Polarizer({x:400,y:50,width:40,height:40,axis:-67.5,color:'green',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
         this.drawPolarizers();
@@ -241,7 +241,7 @@ class Experiment {
     }
     drawEmitters () {
         const ctx=this.context;
-        this.emitter.draw(ctx); // this.emt2.draw(ctx); this.emt3.draw(ctx);
+        this.emitter.draw(ctx);
     }
     drawPolarizers () {
         const ctx=this.context;
@@ -265,7 +265,6 @@ class Experiment {
         function getIndex1(res1,res2,res3,report1Indexes) {return report1Indexes[`${res1}${res2}${res3}`]}
         function getKey1(res1,res2,res3,report1Keys) { return report1Keys[`${res1}${res2}${res3}`]}
         function getIndex2(res1,res3,report2Indexes) {return report2Indexes[`${res1} ${res3}`]}
-        // function getKey2(res1,res3,report2Keys) { return report2Keys[`${res1} ${res3}`]}
         this.timeLast=this.timeLast ? this.timeLast : time; 
         this.timeDiff=time-this.timeLast;
         let startY=25, endY=225, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endY-startY);
@@ -273,7 +272,7 @@ class Experiment {
             this.timeLast=time;
             const prt1=this.prt1, prt2=this.prt2;
             const pol1=this.pol1, pol2=this.pol2;
-            if (this.phase==0) {
+            if (this.phase===0) {
                 this.phase=1;
                 this.distance=0;
                 this.axis=Math.random()*361;
@@ -288,15 +287,15 @@ class Experiment {
                 this.total+=1;
                 prt1.result=getResult(prt1.axis,pol1.axis); prt1.axis=getAxis(prt1.axis,pol1.axis); prt1.text=prt1.buildText(); prt1.dir=prt1.result;
                 prt2.result=getResult(prt2.axis,pol2.axis); prt2.axis=getAxis(prt2.axis,pol2.axis); prt2.text=prt2.buildText(); prt2.dir=prt2.result; 
-                if (prt1.result==0) {prt1.dir=-1};
-                if (prt2.result==0) {prt2.dir=-1};
+                if (prt1.result===0) {prt1.dir=-1}
+                if (prt2.result===0) {prt2.dir=-1}
                 let index1=getIndex1(prt1.result,prt2.result,0,this.report1Indexes);
                 this.statText=`(${getKey1(prt1.result,prt2.result,0,this.report1Keys)})`;
-                this.updateStatus()
-                this.report1[index1]['tot']+=1;
+                this.updateStatus();
+                this.report1[index1].tot+=1;
                 this.updateReport1();
                 let index2=getIndex2(prt1.result,0,this.report2Indexes);
-                this.report2[index2]['tot']+=1;
+                this.report2[index2].tot+=1;
                 this.updateReport2();
             }
             if (this.distance>=(endY-startY-25)) {prt1.dir=0; prt2.dir=0} // freeze
@@ -320,7 +319,7 @@ class Experiment {
     <tr valign="top">
         <td>Case</td><td>A=0${degChr}</td><td>B=45${degChr}</td><td>C=67.5${degChr}</td><td>Total</td><td>Percent</td><td>Expected</td>
     </tr>${reportRows}
-</table><div><i>total=${total}, axis=${axis}${degChr}</i><div>`    
+</table><div><i>total=${total}, axis=${axis}${degChr}</i><div>`;
     }
     getRowHtml (num,a,b,c,tot,pct,exp) {
         let cent=`style='text-align:center'`;
@@ -335,12 +334,12 @@ class Experiment {
     updateReport1 () {
         let report1Rows = '', na="<i>n/a</i>";
         for (let r=1; r<=8; r++) {
-            this.report1[r-1]['pct']=roundTo(this.report1[r-1]['tot']/this.total*100,4);
+            this.report1[r-1].pct=roundTo(this.report1[r-1].tot/this.total*100,4);
             report1Rows+=this.getRowHtmlFromRow(`[${r}]`, this.report1[r-1]);
         }
-        this.XPct = this.report1[0]['pct'] + this.report1[1]['pct'] + this.report1[6]['pct'] + this.report1[7]['pct'];
-        this.YPct = this.report1[1]['pct'] + this.report1[3]['pct'] + this.report1[4]['pct'] + this.report1[6]['pct'];
-        this.ZPct = this.report1[0]['pct'] + this.report1[3]['pct'] + this.report1[4]['pct'] + this.report1[7]['pct'];
+        this.XPct = this.report1[0].pct + this.report1[1].pct + this.report1[6].pct + this.report1[7].pct;
+        this.YPct = this.report1[1].pct + this.report1[3].pct + this.report1[4].pct + this.report1[6].pct;
+        this.ZPct = this.report1[0].pct + this.report1[3].pct + this.report1[4].pct + this.report1[7].pct;
         report1Rows+=this.getRowHtml("X",na,na,na,na,roundTo(this.XPct,4),"case [1]+[2]+[7]+[8] %");
         report1Rows+=this.getRowHtml("Y",na,na,na,na,roundTo(this.YPct,4),"case [2]+[4]+[5]+[7] %");
         report1Rows+=this.getRowHtml("Z",na,na,na,na,roundTo(this.ZPct,4),"case [1]+[4]+[5]+[8] %");
@@ -350,8 +349,8 @@ class Experiment {
     updateReport2 () {
         let report2Rows = '', na="<i>n/a</i>";
         for (let r=1; r<=4; r++) {
-            this.report2[r-1]['pct']=roundTo(this.report2[r-1]['tot']/this.total*100,4);
-            this.report2[r-1]['b']=na;
+            this.report2[r-1].pct=roundTo(this.report2[r-1].tot/this.total*100,4);
+            this.report2[r-1].b=na;
             report2Rows+=this.getRowHtmlFromRow(`${r}'`, this.report2[r-1]);
         }
         this.XYZDiv2 = (this.XPct + this.YPct - this.ZPct) / 2;
