@@ -10,7 +10,7 @@
     <b><span id='title'></span></b><br>
     <i><span id='author'></span>, <span id='version'></span></i><br>
     <div id="canHead"></div>
-    <canvas id="canvas" width="600" height="200px"></canvas>
+    <canvas id="canvas" width="600" height="300px"></canvas>
     <div id="controls">
       <button class="space-right" onclick="handleStartStop()">Stop</button>
       <button onclick="handleRate(15)">Slow</button>
