@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.2', imageTitle='Bell CHSH (alpha/incomplete math)';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.23', imageTitle='Bell CHSH (alpha/incomplete math)';
 var canvas, context, canHead, canFoot, terminal1, terminal2, terminal3, terminal4, terminal5, header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5, statusBar, experiment;
 // functions
 function animationStart() {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}
@@ -184,44 +184,44 @@ class Experiment {
         this.total=0;
         this.distance=0;
         this.statText='';
-        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0};
+        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0, "C1":0, "C2":0, "C3":0, "C4":0, "C":0};
 
         // report 1
         this.report1=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"ab"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"ab"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"ab"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"ab"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"a,b"},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"a,b"},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"a,b"},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"a,b"}
         ];
         this.report1Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report1Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 2
         this.report2=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"a´b"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"a´b"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"a´b"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"a´b"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"a,b´"},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"a,b´"},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"a,b´"},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"a,b´"}
         ];
         this.report2Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report2Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 3
         this.report3=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"ab´"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"ab´"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"ab´"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"ab´"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"a´,b"},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"a´,b"},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"a´,b"},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"a´,b"}
         ];
         this.report3Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report3Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 4
         this.report4=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"a´b´"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"a´b´"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"a´b´"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"a´b´"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"a´,b´"},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"a´,b´"},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"a´,b´"},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"a´,b´"}
         ];
         this.report4Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report4Keys={'11':'++','10':'+-','01':'-+','00':'--'};
@@ -365,13 +365,13 @@ class Experiment {
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
-    getHeaderHtml(reportRows,aName,bName,total,axis) {
+    getHeaderHtml(reportRows,aName,bName) {
         return `
 <table cellpadding="0" cellspacing="0" border="1">
     <tr valign="top">
         <td>Case</td><td>${aName}</td><td>${bName}</td><td>Total</td><td>Percent</td><td>Notes</td>
     </tr>${reportRows}
-</table><div><i>total=${total}, axis=${axis}°</i><div>`;
+</table>`;
     }
     getRowHtml (num,a,b,tot,pct,note) {
         let cent=`style='text-align:center'`;
@@ -389,37 +389,39 @@ class Experiment {
             return e1/e2;
         }
         let prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2;
-        let terminal, reportIndexes, report, eName, aName, bName;
-        if (pol1.prime && pol2.prime) {
+        let terminal, reportIndexes, report, cName, eName, aName, bName;
+        if (!pol1.prime && !pol2.prime) {
             terminal=this.terminal2;
             report=this.report1;
             reportIndexes=this.report1Indexes;
-            eName='E1'; aName='a'; bName='b';
+            cName='C1'; eName='E1'; aName='a'; bName='b';
         }
-        if (pol1.prime && !pol2.prime) {
+        if (!pol1.prime && pol2.prime) {
             terminal=this.terminal3;
             report=this.report2;
             reportIndexes=this.report2Indexes;
             this.E2=0;
-            eName='E2'; aName='a′'; bName='b';
+            cName='C2'; eName='E2'; aName='a'; bName='b′';
         }
-        if (!pol1.prime && pol2.prime) {
+        if (pol1.prime && !pol2.prime) {
             terminal=this.terminal4;
             report=this.report3;
             reportIndexes=this.report3Indexes;
             this.E3=0;
-            eName='E3'; aName='a'; bName='b′';
+            cName='C3'; eName='E3'; aName='a′'; bName='b';
         }
-        if (!pol1.prime && !pol2.prime) {
+        if (pol1.prime && pol2.prime) {
             terminal=this.terminal5;
             report=this.report4;
             reportIndexes=this.report4Indexes
             this.E4=0;
-            eName='E4'; aName='a′'; bName='b′';
+            cName='C4'; eName='E4'; aName='a′'; bName='b′';
         }
         if (increment) {
             let index=getIndex(prt1.result, prt2.result, reportIndexes);
-            report[index].tot+=increment;
+            report[index].tot+=1;
+            this.totals[cName]+=1;
+            this.totals["C"]+=1;
         }
         // this.updateReport1();
         let reportRows='', summaryRows='', na="<i>n/a</i>";
@@ -428,17 +430,17 @@ class Experiment {
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1]);
         }
         this.totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
-        reportRows+=this.getRowHtml(eName,na,na,na,roundTo(this.totals[eName],4),"([1]-[2]-[3]-[4]) / ([1]+[2]+[3]+[4])");
-        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, this.total, roundTo(this.axis,2));
+        reportRows+=this.getRowHtml(eName,na,na,roundTo(this.totals[cName],4),roundTo(this.totals[eName],4),"([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])");
+        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName);
         
         // Summary
         this.totals["S"]=this.totals['E1']+this.totals['E2']-this.totals['E3']+this.totals['E4'];
-        summaryRows+=this.getRowHtml(`E1`,na,na,na,roundTo(this.totals['E1'],4),"a,b");
-        summaryRows+=this.getRowHtml(`E2`,na,na,na,roundTo(this.totals['E2'],4),"a′,b");
-        summaryRows+=this.getRowHtml(`E3`,na,na,na,roundTo(this.totals['E3'],4),"a,b′");
-        summaryRows+=this.getRowHtml(`E4`,na,na,na,roundTo(this.totals['E4'],4),"a′,b′");
-        summaryRows+=this.getRowHtml(`S`,na,na,na,roundTo(this.totals["S"],4),"E1 + E2 - E3 + E4");
-        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', this.total, roundTo(this.axis,2));
+        summaryRows+=this.getRowHtml(`E1`,na,na,roundTo(this.totals['C1'],4),roundTo(this.totals['E1'],4),"a,b");
+        summaryRows+=this.getRowHtml(`E2`,na,na,roundTo(this.totals['C2'],4),roundTo(this.totals['E2'],4),"a,b′");
+        summaryRows+=this.getRowHtml(`E3`,na,na,roundTo(this.totals['C3'],4),roundTo(this.totals['E3'],4),"a′,b");
+        summaryRows+=this.getRowHtml(`E4`,na,na,roundTo(this.totals['C4'],4),roundTo(this.totals['E4'],4),"a′,b′");
+        summaryRows+=this.getRowHtml(`S`,na,na,roundTo(this.totals['C'],4),roundTo(this.totals["S"],4),"E1 - E2 + E3 + E4");
+        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′');
         // setIdHtml('debug', `debug=${JSON.stringify(this)}`);
     }
 }
