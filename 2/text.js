@@ -8,7 +8,8 @@ const textJson = {
     "footer1": `Results are recorded as N++, N+-, N-+ and N--<br>
         Results are calculated as E = (N++ - N+- - N-+ + N--) / (N++ + N+- + N-+ + N--).<br>
         It should not be possible for E > 2 (<i>violate the CHSH inequality</i>) with this non-quantum simulation.<br>
-        However, it might be possible for E > 2 (<i>violate the CHSH inequality</i>) with the addition of a simulated pilot wave (<i>unknown, see reference [III]</i>).<br>
+        Current math used does not allow values > 1 unless cases [2] and/or [3] are negative.<br>
+        Next, determine what math is used by real-world experiments that is able to generate <b>E>=2</b> or even <b>E>1</b>
         <p>See forum discussion at <a href='http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=416' target='new'>http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=416</a></p>`,
     "header2": "",
     "footer2": `
