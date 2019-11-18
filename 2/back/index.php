@@ -21,12 +21,11 @@
       <span id="statusBar"></span>
     </div>
     <div id="canFoot"></div>
-    <div id="header1"></div>
-    <div id="terminal1"></div>
-    <div id="footer1"></div>
-    <div id="header2"></div>
-    <div id="terminal2"></div>
-    <div id="footer2"></div>
+    <div id="header1"></div><div id="terminal1"></div><div id="footer1"></div>
+    <div id="header2"></div><div id="terminal2"></div><div id="footer2"></div>
+    <div id="header3"></div><div id="terminal3"></div><div id="footer3"></div>
+    <div id="header4"></div><div id="terminal4"></div><div id="footer4"></div>
+    <div id="header5"></div><div id="terminal5"></div><div id="footer5"></div>
     <div id="debug"></div>
   </div>
 </body>
