@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.00';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.3.01', imageTitle='Bell CHSH (alpha math)';
 var canvas, context, canHead, canFoot, terminal1, terminal2, statusBar, header1, header2, footer1, footer2, experiment;
 // functions
 function animationStart() {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}
@@ -222,7 +222,7 @@ class Experiment {
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
         // Labels
-        this.lab0 = new Label({x:300,y:50,color:'blue',name:`Bell with (soon) Pilot Waves (${version})`,font:"18px Arial"});
+        this.lab0 = new Label({x:300,y:50,color:'blue',name:imageTitle,font:"18px Arial"});
         this.lab1 = new Label({x:50,y:50,color:'black',name:"A",font:"36px Arial"});
         this.lab2 = new Label({x:550,y:50,color:'black',name:"B",font:"36px Arial"});
         this.lab0.text=this.lab0.buildText(); this.lab1.text=this.lab1.buildText(); this.lab2.text=this.lab2.buildText();     
