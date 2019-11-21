@@ -1,10 +1,10 @@
 const textJson = {
     "title": "Bell's Inequalities CHSH test",
-    "canHead": "Computer simulation with <i>real local properties</i> before measurement.",
+    "canHead": "Multi-mode computer simulation of Bell's Inequalities (<i>development in progress</i>).",
     "canFoot": `Sets of photons are repeatedly created with opposite polarization angles between 0° and 360°.<br>
         Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
         Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br>
-        Mode may be set to <b>cos²(θ)</b>, <b>quantum</b> or <b>simple</b>`,
+        Mode may be set to <b>cos²(θ)</b> (<i>in progress</i>), <b>quantum</b> (<i>functional</i>) or <b>simple</b> (<i>in progress</i>)`,
     "header1": "Totals",
     "header2": "Test Results: a, b (0°, 22.5°)",
     "header3": "Test Results: a, b′ (0°, 67.5°)",
