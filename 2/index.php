@@ -18,9 +18,9 @@
       <button class="space-right" onclick="handleRate(300)">Fast</button>
       Mode: 
       <select id='mode'>
-          <option value="cos">cos²(θ)</option>
-          <option value="quantum" selected>quantum</option>
-          <option value="simple">simple</option>
+          <option value="classic">classic</option>
+          <option value="quantum">quantum</option>
+          <option value="cos" selected>cos²(θ)</option>
       </select>
       <button class="space-right" onclick="handleReset()">Reset</button>
       <span id="statusBar"></span>
