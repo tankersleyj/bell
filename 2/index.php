@@ -12,17 +12,18 @@
     <div id="canHead"></div>
     <canvas id="canvas" width="600" height="300px"></canvas>
     <div id="controls">
+      Mode: 
+      <select id='mode'>
+          <option value="quantum" selected>quantum</option>
+          <option value="classic">classic</option>
+          <option value="cos2">cos²(θ)</option>
+          <option value="cos3">.3cos²(θ)</option>
+      </select>
+      <button class="space-left space-right" onclick="handleReset()">Reset</button>
       <button class="space-right" onclick="handleStartStop()">Freeze</button>
       <button onclick="handleRate(15)">Slow</button>
       <button onclick="handleRate(60)">Medium</button>
       <button class="space-right" onclick="handleRate(300)">Fast</button>
-      Mode: 
-      <select id='mode'>
-          <option value="cos">cos²(θ)</option>
-          <option value="quantum" selected>quantum</option>
-          <option value="simple">simple</option>
-      </select>
-      <button class="space-right" onclick="handleReset()">Reset</button>
       <span id="statusBar"></span>
     </div>
     <div id="canFoot"></div>

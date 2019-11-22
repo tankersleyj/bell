@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.4.1', imageTitle='Bell CHSH (alpha mode math)';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.5.6', imageTitle='Bell CHSH (alpha review)';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -24,7 +24,7 @@ function handleOnload() {
   animationStart();
 }
 function handleRate(rate) {animationStop(); experiment.rate=rate; experiment.phase=0; experiment.updateStatus(); animationStart()}
-function handleReset() {animationStop(); if (!experiment.reset()) {animationStart()}}
+function handleReset() {animationStop(); if (!experiment.reset()) {animationStart()} else {animationStart()}}
 function handleStartStop() {if (animationId) {animationStop()} else {animationStart()}}
 function roundTo(val,dec=0) {return Number.parseFloat(Number.parseFloat(val).toFixed(dec))}
 function roundToStr(val,dec=0) {return Number.parseFloat(val).toFixed(dec)}
@@ -177,40 +177,40 @@ class Experiment {
 
         // report 1 (0,22.5)
         this.report1=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"cos²(22.5)/2 = 43%"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"(1-cos²(22.5))/2 = 7%"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"(1-cos²(22.5))/2 = 7%"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"cos²(22.5)/2 = 43%"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report1Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report1Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 2 (0,67.5)
         this.report2=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"cos²(67.5)/2 = 7%"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"(1-cos²(67.5))/2 = 43%"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"(1-cos²(67.5))/2 = 43%"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"cos²(67.5)/2 = 7%"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report2Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report2Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 3 (45, 22.5)
         this.report3=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"cos²(22.5)/2 = 43%"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"(1-cos²(22.5))/2 = 7%"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"(1-cos²(22.5))/2 = 7%"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"cos²(22.5)/2 = 43%"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report3Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report3Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 4 (45, 67.5)
         this.report4=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0,note:"cos²(22.5)/2 = 43%"},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0,note:"(1-cos²(22.5))/2 = 7%"},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0,note:"(1-cos²(22.5))/2 = 7%"},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0,note:"cos²(22.5)/2 = 43%"}
+            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
+            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
+            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report4Indexes={'11':0,'10':1,'01':2,'00':3};
         this.report4Keys={'11':'++','10':'+-','01':'-+','00':'--'};
@@ -271,7 +271,6 @@ class Experiment {
 
         // report
         this.updateStatus();
-        
     }
     drawEmitters () {
         const ctx=this.context;
@@ -306,29 +305,28 @@ class Experiment {
                     if (prt1.result) {result=(Math.random()<=posProb)?1:0} else {result=(Math.random()<=posProb)?0:1}
                 } else {result=(Math.random()>=0.5)?1:0}
             }
+            debug.math='getQuantumResult(prt1,prt2,pol1,pol2,side)';  // delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
-        function getResult(pAxis,dAxis,mode,debug) {
-            let result=0;
-            if (mode=='simple') {
-                let deltaCos=Math.cos((dAxis-pAxis)*Math.PI/-180);
-                result=Math.abs(deltaCos*deltaCos)>=0.5?1:0;
-                debug.deltaCos=deltaCos*deltaCos; debug.result=result;
-            } 
-            if (mode=='simple2') {
-                result=(Math.abs(dAxis-pAxis)<=90||Math.abs(dAxis-pAxis)>270)?1:0;
-                debug.dif=Math.abs(dAxis-pAxis); debug.result=result;
-            } 
-            if (mode=='cos') {
-                let deltaCos=Math.cos((dAxis-pAxis)*Math.PI/-180);
-                result=Math.abs(deltaCos*deltaCos)>=0.5?1:0;
-                debug.deltaCos=deltaCos*deltaCos; debug.result=result;
-            }
-            if (mode=='test') {
-                let polCos=Math.cos(dAxis*Math.PI/-180), deltaCos=Math.cos((dAxis-pAxis)*Math.PI/-180);
-                result=Math.abs(polCos*polCos*deltaCos)>=0.5?1:0;
-                debug.polCos=polCos*polCos; debug.deltaCos=deltaCos; debug.result=result;
-            }
+        function getClassicResult(prt,pol,debug) {
+            let result=0, delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis));
+            if (delta>=270) {delta-=270} else {if (delta>=180) {delta-=180} else {if (delta>=90) {delta-=90}}}
+            result=delta>=45?1:0;
+            debug.math='getClassicResult(prt,pol)';  // debug.deltaCos=deltaCos*deltaCos; debug.result=result;
+            return result
+        }
+        function getCos2Result(prt,pol,debug) {
+            let result=0; 
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/-180)), posProb=deltaCos*deltaCos;
+            result=(Math.random()<=posProb)?1:0;
+            debug.math='getCos2Result(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
+            return result;
+        }
+        function getCos3Result(prt,pol,debug) {
+            let result=0; 
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/-180)), posProb=deltaCos*deltaCos*deltaCos;
+            result=(Math.random()<=posProb)?1:0;
+            debug.math='getCos3Result(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
@@ -340,7 +338,7 @@ class Experiment {
             this.phase=1;
             this.distance=0;
             this.axis=Math.random()*361;
-            prt1.mode=mode; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
+            prt1.mode=mode; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
             prt2.mode=mode; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
             pol1.prime=Math.round(Math.random())==1?true:false;
             pol2.prime=Math.round(Math.random())==1?true:false;
@@ -354,10 +352,17 @@ class Experiment {
                  prt2.mode='real'; 
                 if (Math.random()>=0.5) {prt1.result=getQuantumResult(prt1,prt2,pol1,pol2,1,debug); prt1.mode='real'; prt2.result=getQuantumResult(prt1,prt2,pol1,pol2,2,debug); prt2.mode='real'}
                 else {prt2.result=getQuantumResult(prt1,prt2,pol1,pol2,2,debug); prt2.mode='real'; prt1.result=getQuantumResult(prt1,prt2,pol1,pol2,1,debug); prt1.mode='real'}
-            } else {
-                prt1.result=getResult(prt1.axis,pol1.axis,mode,debug); prt2.result=1-getResult(prt2.axis,pol2.axis,mode,debug);
-                prt1.origAxis=prt1.axis; prt2.origAxis=prt2.axis; 
+            } else if (mode=='classic') {
+                prt1.result=getClassicResult(prt1,pol1,debug);
+                prt2.result=getClassicResult(prt2,pol2,debug);
+            } else if (mode=='cos2') {
+                prt1.result=getCos2Result(prt1,pol1,debug);
+                prt2.result=getCos2Result(prt2,pol2,debug);
+            } else if (mode=='cos3') {
+                prt1.result=getCos3Result(prt1,pol1,debug);
+                prt2.result=getCos3Result(prt2,pol2,debug);
             }
+            prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
             if (prt1.result===0) {let detAgl=pol1.axis+45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
             else {let detAgl=pol1.axis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
@@ -386,15 +391,15 @@ class Experiment {
         this.drawParticles();
     }
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
-    reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to re-start")) {this.init(); return true}}
+    reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to set rate")) {this.init(); return true}}
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
-    getHeaderHtml(reportRows,aName,bName,footNote) {
+    getHeaderHtml(reportRows,aName,bName,footNote,mode) {
         return `
 <table cellpadding="0" cellspacing="0" border="1">
     <tr valign="top">
-        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Total</td><td>Result</td><td>Expected</td>
+        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Total</td><td>Result</td><td>QM Expected (${mode})</td>
     </tr>${reportRows}
 </table><div><i>${footNote}</i></div>`;
     }
@@ -414,25 +419,28 @@ class Experiment {
             let e1=pp-pm-mp+mm, e2=pp+pm+mp+mm;
             return e1/e2;
         }
+        function setReportNotes(report) {
+            
+        }
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug;
-        let terminal, reportIndexes, report, cName, eName, aName, bName, key, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='';
+        let terminal, reportIndexes, report, cName, eName, aName, bName, key, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
         if (!pol1.prime && !pol2.prime) {
-            terminal=this.terminal2; report=this.report1; reportIndexes=this.report1Indexes;
+            terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes;
             key=getKey(prt1.result, prt2.result, this.report1Keys);
             cName='C1'; eName='E1'; aName='a'; bName='b';
         }
         if (!pol1.prime && pol2.prime) {
-            terminal=this.terminal3; report=this.report2; reportIndexes=this.report2Indexes;
+            terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes;
             key=getKey(prt1.result, prt2.result, this.report2Keys);
             cName='C2'; eName='E2'; aName='a'; bName='b′';
         }
         if (pol1.prime && !pol2.prime) {
-            terminal=this.terminal4; report=this.report3; reportIndexes=this.report3Indexes;
+            terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes;
             key=getKey(prt1.result, prt2.result, this.report3Keys);
             cName='C3'; eName='E3'; aName='a′'; bName='b';
         }
         if (pol1.prime && pol2.prime) {
-            terminal=this.terminal5; report=this.report4; reportIndexes=this.report4Indexes; 
+            terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; 
             key=getKey(prt1.result, prt2.result, this.report4Keys);
             cName='C4'; eName='E4'; aName='a′'; bName='b′';
         }
@@ -444,22 +452,23 @@ class Experiment {
         }
         for (let r=1; r<=4; r++) {
             report[r-1].pct=roundTo((report[r-1].tot/this.totals[cName])*100,1);
+            report[r-1].note=reportExpected[`${reportIndex}`][`${mode}`][r-1];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1]);
         }
         this.totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
-        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(this.totals[cName],4),`<b>${roundTo(this.totals[eName],4)}</b>`,"([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])");
-        if (mode=='quantum') {reportStatus=`A=${roundTo(prt1.axis,1)}°, B=${roundTo(prt2.axis,1)}°, Mode:${mode} (${key})`}
-        else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}°, Mode:${mode} (${key})`}
-        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus)
+        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(this.totals[cName],4),`<b>${roundTo(this.totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][`${mode}`][4]);
+        if (mode=='quantum') {reportStatus=`A=${roundTo(prt1.axis,1)}°, B=${roundTo(prt2.axis,1)}° (${key})`}
+        else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${key})`}
+        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus, mode)
 
         // Summary
         this.totals.S=this.totals.E1-this.totals.E2+this.totals.E3+this.totals.E4;
-        summaryRows+=this.getRowHtml(`E1`,na,na,roundTo(this.totals.C1,4),`<b>${roundTo(this.totals.E1,4)}</b>`,"a,b");
-        summaryRows+=this.getRowHtml(`E2`,na,na,roundTo(this.totals.C2,4),`<b>${roundTo(this.totals.E2,4)}</b>`,"a,b′");
-        summaryRows+=this.getRowHtml(`E3`,na,na,roundTo(this.totals.C3,4),`<b>${roundTo(this.totals.E3,4)}</b>`,"a′,b");
-        summaryRows+=this.getRowHtml(`E4`,na,na,roundTo(this.totals.C4,4),`<b>${roundTo(this.totals.E4,4)}</b>`,"a′,b′");
-        summaryRows+=this.getRowHtml(`<b>S</b>`, na,na,roundTo(this.totals.C,4), `<b>${roundTo(this.totals.S,4)}</b>`, "E1 - E2 + E3 + E4");
-        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '');
+        summaryRows+=this.getRowHtml(`E1`,na,na,roundTo(this.totals.C1,4),`<b>${roundTo(this.totals.E1,4)}</b>`,reportExpected['5'][`${mode}`][0]);
+        summaryRows+=this.getRowHtml(`E2`,na,na,roundTo(this.totals.C2,4),`<b>${roundTo(this.totals.E2,4)}</b>`,reportExpected['5'][`${mode}`][1]);
+        summaryRows+=this.getRowHtml(`E3`,na,na,roundTo(this.totals.C3,4),`<b>${roundTo(this.totals.E3,4)}</b>`,reportExpected['5'][`${mode}`][2]);
+        summaryRows+=this.getRowHtml(`E4`,na,na,roundTo(this.totals.C4,4),`<b>${roundTo(this.totals.E4,4)}</b>`,reportExpected['5'][`${mode}`][3]);
+        summaryRows+=this.getRowHtml(`<b>S</b>`, na,na,roundTo(this.totals.C,4), `<b>${roundTo(this.totals.S,4)}</b>`, reportExpected['5'][`${mode}`][4]);
+        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '', mode);
         setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
 }
