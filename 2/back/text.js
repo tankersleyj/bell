@@ -1,13 +1,13 @@
 const textJson = {
     "title": "Bell's Inequalities CHSH test",
-    "canHead": "Multi-mode computer simulation of Bell's Inequalities (<i>Karma Peny Violation</i>).",
+    "canHead": "Multi-mode computer simulation of Bell's Inequalities.",
     "canFoot": `Sets of photons are repeatedly created with opposite polarization angles between 0° and 360°.<br>
         Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
         Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br>
         Mode may be set to:<br>
-        <span class='tab-left'><b>classic</b> (<i>local hidden variables with 100% polarizer efficiency</i>)</span><br>
+        <span class='tab-left'><b>classic</b> (<i>local hidden variables with 100% detection efficiency</i>)</span><br>
         <span class='tab-left'><b>quantum</b> (<i>simulated 'spooky action at a distance'</i>)</span><br>
-        <span class='tab-left'><b>cos²(θ)</b> (<i>local hidden variables with cos²(θ) polarizer efficiency, Karma Peny [VIII]</i>)</span><br>`,
+        <span class='tab-left'><b>cos²(θ)</b> (<i>local hidden variables with cos²(θ) detection efficiency</i>)</span><br>`,
     "header1": "Totals",
     "header2": "Test Results: a, b (0°, 22.5°)",
     "header3": "Test Results: a, b′ (0°, 67.5°)",
@@ -30,8 +30,9 @@ const textJson = {
         [V] App <a target='tab' href='https://codeserver.net/bell/2'>https://codeserver.net/bell/2</a><br>
         [VI] Code <a target='tab' href='https://github.com/tankersleyj/bell'>https://github.com/tankersleyj/bell</a><br>
         [VII] Expected CHSH values <a target='tab' href='https://arxiv.org/pdf/1207.5103.pdf'>https://arxiv.org/pdf/1207.5103.pdf</a><br>
-        [VIII] Karma Peny Detection <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>https://www.youtube.com/watch?v=yOtsEgbg1-s</a><br>
-        Other for review: <a target='tab' href='https://arxiv.org/pdf/1604.08105.pdf'>https://arxiv.org/pdf/1604.08105.pdf</a>, <a target='tab' href='https://arxiv.org/pdf/1704.02876.pdf'>https://arxiv.org/pdf/1704.02876.pdf</a>`
+        [VIII] Karma Peny cos²(θ) Detection Efficiency <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>https://www.youtube.com/watch?v=yOtsEgbg1-s</a><br>
+        Other for review: <a target='tab' href='https://arxiv.org/pdf/1604.08105.pdf'>https://arxiv.org/pdf/1604.08105.pdf</a>, <a target='tab' href='https://arxiv.org/pdf/1704.02876.pdf'>https://arxiv.org/pdf/1704.02876.pdf</a>, <a target='tab' href='https://arxiv.org/pdf/quant-ph/0304066.pdf'>https://arxiv.org/pdf/quant-ph/0304066.pdf</a>
+        `
 }
 const reportExpected = {
     "1": {

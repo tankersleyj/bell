@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.5.0', imageTitle='Bell CHSH (ready for review)';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.5.1', imageTitle='Bell CHSH (alpha review)';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -271,7 +271,6 @@ class Experiment {
 
         // report
         this.updateStatus();
-        
     }
     drawEmitters () {
         const ctx=this.context;
@@ -306,21 +305,21 @@ class Experiment {
                     if (prt1.result) {result=(Math.random()<=posProb)?1:0} else {result=(Math.random()<=posProb)?0:1}
                 } else {result=(Math.random()>=0.5)?1:0}
             }
-            debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
+            debug.math='getQuantumResult(prt1,prt2,pol1,pol2,side)';  // delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
         function getClassicResult(prt,pol,debug) {
-            let result=0;
-            const deltaCos=Math.cos((pol.axis-prt.axis)*Math.PI/-180);
-            result=Math.abs(deltaCos*deltaCos)>=0.5?1:0;
-            debug.deltaCos=deltaCos*deltaCos; debug.result=result;
+            let result=0, delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis));
+            if (delta>=270) {delta-=270} else {if (delta>=180) {delta-=180} else {if (delta>=90) {delta-=90}}}
+            result=delta>=45?1:0;
+            debug.math='getClassicResult(prt,pol)';  // debug.deltaCos=deltaCos*deltaCos; debug.result=result;
             return result
         }
         function getCosResult(prt,pol,debug) {
             let result=0; 
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/-180)), posProb=deltaCos*deltaCos;
             result=(Math.random()<=posProb)?1:0;
-            debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
+            debug.math='getCosResult(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
@@ -332,7 +331,7 @@ class Experiment {
             this.phase=1;
             this.distance=0;
             this.axis=Math.random()*361;
-            prt1.mode=mode; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText(); 
+            prt1.mode=mode; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
             prt2.mode=mode; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
             pol1.prime=Math.round(Math.random())==1?true:false;
             pol2.prime=Math.round(Math.random())==1?true:false;
@@ -353,6 +352,7 @@ class Experiment {
                 prt1.result=getCosResult(prt1,pol1,debug);
                 prt2.result=getCosResult(prt2,pol2,debug);
             }
+            prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
             if (prt1.result===0) {let detAgl=pol1.axis+45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
             else {let detAgl=pol1.axis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
@@ -381,7 +381,7 @@ class Experiment {
         this.drawParticles();
     }
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
-    reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to re-start")) {this.init(); return true}}
+    reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to set rate")) {this.init(); return true}}
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
