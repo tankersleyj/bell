@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='0.5.6', imageTitle='Bell CHSH (alpha review)';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.0.0, 2019-11-22', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -7,6 +7,7 @@ function animationStart() {experiment.start(); animationId=window.requestAnimati
 function animationStep(time) {experiment.step(time); animationId=window.requestAnimationFrame(animationStep)}
 function animationStop() {if (animationId) {experiment.stop(); window.cancelAnimationFrame(animationId); animationId=0}}
 function eid(name) {return document.getElementById(name)}
+function handleMode(select) {experiment.init()}
 function handleOnload() {
   canvas=document.getElementById("canvas"); context=canvas.getContext("2d"); mode=eid("mode");
   canHead=eid("canHead"); canFoot=eid("canFoot"); statusBar=eid("statusBar");
@@ -60,7 +61,7 @@ class Label extends Control {
     draw(ctx) {if (this.text) {this.draw_text(ctx,this.x,this.y,this.text)}}
 }
 class Particle extends Control {
-    constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo',mode:'real'}) {super(params)}
+    constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo',mode:'real',lost:false}) {super(params)}
     draw(ctx) {
         function draw_arc(x,y,r,start,end,color) {
             let rad1=(start+0)*Math.PI/180, rad2=(end+0)*Math.PI/180;
@@ -68,8 +69,8 @@ class Particle extends Control {
             grad.addColorStop(0,color); grad.addColorStop(1,'white'); ctx.fillStyle=grad;
             ctx.beginPath(); ctx.arc(x,y,r,rad1,rad2); ctx.fill();
         }
-        const x=this.x, y=this.y, r=this.radius, axis=this.axis, mode=this.mode;
-        const qcolor='gray', col1=(mode=='quantum')?qcolor:this.color1, col2=(mode=='quantum')?qcolor:this.color2, text=(mode=='quantum')?'?':this.text;
+        const x=this.x, y=this.y, r=this.radius, axis=this.axis, mode=this.mode, lost=this.lost;
+        const qcolor='gray', col1=(mode=='Quantum'||lost)?qcolor:this.color1, col2=(mode=='Quantum'||lost)?qcolor:this.color2, text=(mode=='Quantum'||lost)?'?':this.text;
         draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2); 
         if (text) {this.draw_text(ctx,x,y,text,'black','white');}
     }
@@ -77,6 +78,12 @@ class Particle extends Control {
     buildText() {
         let resultText=['-','+'], axisText=roundTo(this.axis,1);
         return this.result in [0,1]?`${resultText[this.result]}`:`${axisText}°`;
+    }
+    getStatus() {
+        let status="";
+        if (this.result===1) {status="+"}
+        else if (this.result===0) {status="-"}
+        return (this.lost)?"<i>lost</i>":status;
     }
 }
 class CircleControl extends Control {
@@ -172,7 +179,7 @@ class Experiment {
         this.total=0;
         this.distance=0;
         this.statText='';
-        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0, "C1":0, "C2":0, "C3":0, "C4":0, "C":0};
+        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0, "C1":0, "C2":0, "C3":0, "C4":0, "C":0, "ND":0};
         this.debug={};
 
         // report 1 (0,22.5)
@@ -183,7 +190,6 @@ class Experiment {
             {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report1Indexes={'11':0,'10':1,'01':2,'00':3};
-        this.report1Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 2 (0,67.5)
         this.report2=[
@@ -193,7 +199,6 @@ class Experiment {
             {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report2Indexes={'11':0,'10':1,'01':2,'00':3};
-        this.report2Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 3 (45, 22.5)
         this.report3=[
@@ -203,7 +208,6 @@ class Experiment {
             {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report3Indexes={'11':0,'10':1,'01':2,'00':3};
-        this.report3Keys={'11':'++','10':'+-','01':'-+','00':'--'};
         
         // report 4 (45, 67.5)
         this.report4=[
@@ -213,7 +217,6 @@ class Experiment {
             {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
         ];
         this.report4Indexes={'11':0,'10':1,'01':2,'00':3};
-        this.report4Keys={'11':'++','10':'+-','01':'-+','00':'--'};
 
         this.clear();
         // emitters
@@ -222,8 +225,8 @@ class Experiment {
         emitter.text=emitter.buildText();
 
         // particles
-        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,mode:'real'});
-        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,mode:'real'});
+        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,mode:'real',lost:false});
+        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,mode:'real',lost:false});
         const prt1=this.prt1, prt2=this.prt2;
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
@@ -270,6 +273,7 @@ class Experiment {
         this.drawParticles();
 
         // report
+        this.updateReports();
         this.updateStatus();
     }
     drawEmitters () {
@@ -295,7 +299,7 @@ class Experiment {
     step (time) {
         function getQuantumResult(prt1,prt2,pol1,pol2,side,debug) {
             let result=0; 
-            const delta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/-180)), posProb=deltaCos*deltaCos;
+            const delta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
             if (side==1) {
                 if (prt2.mode=='real') {
                     if (prt2.result) {result=(Math.random()<=posProb)?1:0} else {result=(Math.random()<=posProb)?0:1}
@@ -308,29 +312,41 @@ class Experiment {
             debug.math='getQuantumResult(prt1,prt2,pol1,pol2,side)';  // delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
+        function detectQuantum() {return (Math.random()<=0.5)?true:false}
         function getClassicResult(prt,pol,debug) {
-            let result=0, delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis));
-            if (delta>=270) {delta-=270} else {if (delta>=180) {delta-=180} else {if (delta>=90) {delta-=90}}}
-            result=delta>=45?1:0;
+            let result=0;
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
+            result=(Math.random()<=posProb)?1:0;
             debug.math='getClassicResult(prt,pol)';  // debug.deltaCos=deltaCos*deltaCos; debug.result=result;
             return result
         }
-        function getCos2Result(prt,pol,debug) {
+        function detectClassic(prt,pol,debug) {
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            return (Math.random()<=delta2Cos)?true:false;
+        }
+        function getKarmaPenyResult(prt,pol,debug) {
             let result=0; 
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/-180)), posProb=deltaCos*deltaCos;
-            result=(Math.random()<=posProb)?1:0;
-            debug.math='getCos2Result(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), deltaCos2=deltaCos*deltaCos;
+            result=deltaCos2>=0.5?1:0;
+            debug.math='getKarmaPenyResult(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
-        function getCos3Result(prt,pol,debug) {
+        function detectKarmaPeny(prt,pol,debug) {
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            return (Math.random()<=delta2Cos)?true:false;
+        }
+        function getTestResult(prt,pol,debug) {
             let result=0; 
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/-180)), posProb=deltaCos*deltaCos*deltaCos;
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
             result=(Math.random()<=posProb)?1:0;
-            debug.math='getCos3Result(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
+            debug.math='getKarmaPenyResult(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
+        }
+        function detectTest(prt,pol,debug) {
+            const theta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis))*2, detProb=Math.abs(Math.cos(theta*Math.PI/180));
+            return true; // (Math.random()<=detProb)?true:false;  
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
-        function getKey(res1,res2,reportKeys) { return reportKeys[`${res1}${res2}`]}
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug;
         const startX=300, midX=450, endX=600, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
@@ -338,8 +354,8 @@ class Experiment {
             this.phase=1;
             this.distance=0;
             this.axis=Math.random()*361;
-            prt1.mode=mode; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
-            prt2.mode=mode; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            prt1.mode=mode; prt1.lost=false; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
+            prt2.mode=mode; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
             pol1.prime=Math.round(Math.random())==1?true:false;
             pol2.prime=Math.round(Math.random())==1?true:false;
             if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
@@ -348,19 +364,25 @@ class Experiment {
         }
         if (this.phase==1 && this.distance>=(midX-startX)) {
             this.phase=2; this.total+=1;
-            if (mode=='quantum') {
+            // detected
+            if (mode=='Quantum') {prt1.lost=!detectQuantum(prt1,pol1,debug); prt2.lost=!detectKarmaPeny(prt2,pol2,debug)}
+            if (mode=='Classic') {prt1.lost=!detectClassic(prt1,pol1,debug); prt2.lost=!detectClassic(prt2,pol2,debug)}
+            if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1,pol1,debug); prt2.lost=!detectKarmaPeny(prt2,pol2,debug)}
+            if (mode=='Test') {prt1.lost=!detectTest(prt1,pol1,debug); prt2.lost=!detectTest(prt2,pol2,debug)}
+            // polarize
+            if (mode=='Quantum') {
                  prt2.mode='real'; 
                 if (Math.random()>=0.5) {prt1.result=getQuantumResult(prt1,prt2,pol1,pol2,1,debug); prt1.mode='real'; prt2.result=getQuantumResult(prt1,prt2,pol1,pol2,2,debug); prt2.mode='real'}
                 else {prt2.result=getQuantumResult(prt1,prt2,pol1,pol2,2,debug); prt2.mode='real'; prt1.result=getQuantumResult(prt1,prt2,pol1,pol2,1,debug); prt1.mode='real'}
-            } else if (mode=='classic') {
+            } else if (mode=='Classic') {
                 prt1.result=getClassicResult(prt1,pol1,debug);
                 prt2.result=getClassicResult(prt2,pol2,debug);
-            } else if (mode=='cos2') {
-                prt1.result=getCos2Result(prt1,pol1,debug);
-                prt2.result=getCos2Result(prt2,pol2,debug);
-            } else if (mode=='cos3') {
-                prt1.result=getCos3Result(prt1,pol1,debug);
-                prt2.result=getCos3Result(prt2,pol2,debug);
+            } else if (mode=='Karma_Peny') {
+                prt1.result=getKarmaPenyResult(prt1,pol1,debug);
+                prt2.result=getKarmaPenyResult(prt2,pol2,debug);
+            } else if (mode=='Test') {
+                prt1.result=getTestResult(prt1,pol1,debug);
+                prt2.result=getTestResult(prt2,pol2,debug);
             }
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
@@ -368,19 +390,32 @@ class Experiment {
             else {let detAgl=pol1.axis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
             if (prt2.result===0) {let detAgl=pol2.axis-45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}  // 225,135
             else {let detAgl=pol2.axis+45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}  // 225,135
-            this.statText=`(${getKey(prt1.result, prt2.result, this.report1Keys)})`;
+            // report
+            if (!prt1.lost && !prt2.lost) {
+                this.updateReports(true);
+            } else {
+              this.totals.ND+=1;
+              this.updateReports(false);
+            //   this.statText='(<i><b>not detected</b></i>)';
+            }
+            this.statText=`(${prt1.getStatus()},${prt2.getStatus()})`;
             this.updateStatus();
-            this.updateReports(true);
         }
         // move 
         this.distance+=movePix; 
         if (this.distance>=(endX-startX)) {this.phase=0} // restart
         else if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
         else if (this.phase==2) {
-            if (prt1.result===0) {prt1.moveX=movePix*prt1.cos; prt1.moveY=movePix*prt1.sin}
-            else {prt1.moveX=-movePix*prt1.cos; prt1.moveY=-movePix*prt1.sin}
-            if (prt2.result===0) {prt2.moveX=-movePix*prt2.cos; prt2.moveY=-movePix*prt2.sin}
-            else {prt2.moveX=movePix*prt2.cos; prt2.moveY=movePix*prt2.sin}            
+            if (prt1.lost) { prt1.moveX=0; prt1.moveY=0;
+            } else {
+                if (prt1.result===0) {prt1.moveX=movePix*prt1.cos; prt1.moveY=movePix*prt1.sin}
+                else {prt1.moveX=-movePix*prt1.cos; prt1.moveY=-movePix*prt1.sin}
+            }
+            if (prt2.lost) { prt2.moveX=0; prt2.moveY=0;
+            } else {
+                if (prt2.result===0) {prt2.moveX=-movePix*prt2.cos; prt2.moveY=-movePix*prt2.sin}
+                else {prt2.moveX=movePix*prt2.cos; prt2.moveY=movePix*prt2.sin}
+            }
         } else {prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0}
         prt1.x+=prt1.moveX; prt1.y+=prt1.moveY; prt2.x+=prt2.moveX; prt2.y+=prt2.moveY;
         this.clear();
@@ -391,7 +426,7 @@ class Experiment {
         this.drawParticles();
     }
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
-    reset () {if (window.confirm("Reset?\n\nClick [Slow], [Medium] or [Fast] to set rate")) {this.init(); return true}}
+    reset () {if (window.confirm("Reset Statistics?")) {this.init(); return true}}
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
@@ -414,7 +449,6 @@ class Experiment {
     }
     updateReports (increment=false) {
         function getIndex(res1,res2,reportIndexes) {return reportIndexes[`${res1}${res2}`]}
-        function getKey(res1,res2,reportKeys) { return reportKeys[`${res1}${res2}`]}
         function getE(pp,pm,mp,mm) {
             let e1=pp-pm-mp+mm, e2=pp+pm+mp+mm;
             return e1/e2;
@@ -423,25 +457,21 @@ class Experiment {
             
         }
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug;
-        let terminal, reportIndexes, report, cName, eName, aName, bName, key, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
+        let terminal, reportIndexes, report, cName, eName, aName, bName, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
         if (!pol1.prime && !pol2.prime) {
             terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes;
-            key=getKey(prt1.result, prt2.result, this.report1Keys);
             cName='C1'; eName='E1'; aName='a'; bName='b';
         }
         if (!pol1.prime && pol2.prime) {
             terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes;
-            key=getKey(prt1.result, prt2.result, this.report2Keys);
             cName='C2'; eName='E2'; aName='a'; bName='b′';
         }
         if (pol1.prime && !pol2.prime) {
             terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes;
-            key=getKey(prt1.result, prt2.result, this.report3Keys);
             cName='C3'; eName='E3'; aName='a′'; bName='b';
         }
         if (pol1.prime && pol2.prime) {
             terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; 
-            key=getKey(prt1.result, prt2.result, this.report4Keys);
             cName='C4'; eName='E4'; aName='a′'; bName='b′';
         }
         if (increment) {
@@ -457,18 +487,19 @@ class Experiment {
         }
         this.totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
         reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(this.totals[cName],4),`<b>${roundTo(this.totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][`${mode}`][4]);
-        if (mode=='quantum') {reportStatus=`A=${roundTo(prt1.axis,1)}°, B=${roundTo(prt2.axis,1)}° (${key})`}
-        else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${key})`}
+        if (mode=='Quantum') {reportStatus=`A=${roundTo(prt1.axis,1)}°, B=${roundTo(prt2.axis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
+        else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus, mode)
 
         // Summary
         this.totals.S=this.totals.E1-this.totals.E2+this.totals.E3+this.totals.E4;
-        summaryRows+=this.getRowHtml(`E1`,na,na,roundTo(this.totals.C1,4),`<b>${roundTo(this.totals.E1,4)}</b>`,reportExpected['5'][`${mode}`][0]);
-        summaryRows+=this.getRowHtml(`E2`,na,na,roundTo(this.totals.C2,4),`<b>${roundTo(this.totals.E2,4)}</b>`,reportExpected['5'][`${mode}`][1]);
-        summaryRows+=this.getRowHtml(`E3`,na,na,roundTo(this.totals.C3,4),`<b>${roundTo(this.totals.E3,4)}</b>`,reportExpected['5'][`${mode}`][2]);
-        summaryRows+=this.getRowHtml(`E4`,na,na,roundTo(this.totals.C4,4),`<b>${roundTo(this.totals.E4,4)}</b>`,reportExpected['5'][`${mode}`][3]);
-        summaryRows+=this.getRowHtml(`<b>S</b>`, na,na,roundTo(this.totals.C,4), `<b>${roundTo(this.totals.S,4)}</b>`, reportExpected['5'][`${mode}`][4]);
+        summaryRows+=this.getRowHtml(`<b>~</b>`,na,na,this.totals.ND,`<i>${roundTo((this.totals.ND/(this.totals.C+this.totals.ND))*100,1)}%</i>`,`<i>${reportExpected['5'][`${mode}`][5]}</i>`);
+        summaryRows+=this.getRowHtml(`E1`,'0°','22.5°',roundTo(this.totals.C1,4),`<b>${roundTo(this.totals.E1,4)}</b>`,reportExpected['5'][`${mode}`][0]);
+        summaryRows+=this.getRowHtml(`E2`,'0°','67.5°',roundTo(this.totals.C2,4),`<b>${roundTo(this.totals.E2,4)}</b>`,reportExpected['5'][`${mode}`][1]);
+        summaryRows+=this.getRowHtml(`E3`,'45°','22.5°',roundTo(this.totals.C3,4),`<b>${roundTo(this.totals.E3,4)}</b>`,reportExpected['5'][`${mode}`][2]);
+        summaryRows+=this.getRowHtml(`E4`,'45°','67.5°',roundTo(this.totals.C4,4),`<b>${roundTo(this.totals.E4,4)}</b>`,reportExpected['5'][`${mode}`][3]);
+        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,roundTo(this.totals.C,4), `<b>${roundTo(this.totals.S,4)}</b>`, reportExpected['5'][`${mode}`][4]);
         this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '', mode);
-        setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
+        // setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
 }
