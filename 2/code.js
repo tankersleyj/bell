@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.0.0, 2019-11-22', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.0.1, 2019-11-23', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -314,37 +314,36 @@ class Experiment {
         }
         function detectQuantum() {return (Math.random()<=0.5)?true:false}
         function getClassicResult(prt,pol,debug) {
-            let result=0;
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
-            result=(Math.random()<=posProb)?1:0;
-            debug.math='getClassicResult(prt,pol)';  // debug.deltaCos=deltaCos*deltaCos; debug.result=result;
-            return result
+            return (Math.random()<=posProb)?1:0;
         }
         function detectClassic(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=delta2Cos)?true:false;
         }
         function getKarmaPenyResult(prt,pol,debug) {
-            let result=0; 
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), deltaCos2=deltaCos*deltaCos;
-            result=deltaCos2>=0.5?1:0;
-            debug.math='getKarmaPenyResult(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
-            return result;
+            return (deltaCos2>=0.5)?1:0;  // linear
         }
         function detectKarmaPeny(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=delta2Cos)?true:false;
         }
-        function getTestResult(prt,pol,debug) {
-            let result=0; 
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
-            result=(Math.random()<=posProb)?1:0;
-            debug.math='getKarmaPenyResult(prt,pol)';  // debug.delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
-            return result;
+        function getAlternate1Result(prt,pol,debug) {
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), deltaCos2=deltaCos*deltaCos;
+            return (deltaCos2>=0.5)?1:0;  // linear
         }
-        function detectTest(prt,pol,debug) {
-            const theta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis))*2, detProb=Math.abs(Math.cos(theta*Math.PI/180));
-            return true; // (Math.random()<=detProb)?true:false;  
+        function detectAlternate1(prt,pol,debug) {
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false; // Chantal Roth (1)
+        }
+        function getAlternate2Result(prt,pol,debug) {
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
+            return (Math.random()<=posProb)?1:0;
+        }
+        function detectAlternate2(prt,pol,debug) {
+            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false; // Chantal Roth (1)
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
@@ -368,7 +367,8 @@ class Experiment {
             if (mode=='Quantum') {prt1.lost=!detectQuantum(prt1,pol1,debug); prt2.lost=!detectKarmaPeny(prt2,pol2,debug)}
             if (mode=='Classic') {prt1.lost=!detectClassic(prt1,pol1,debug); prt2.lost=!detectClassic(prt2,pol2,debug)}
             if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1,pol1,debug); prt2.lost=!detectKarmaPeny(prt2,pol2,debug)}
-            if (mode=='Test') {prt1.lost=!detectTest(prt1,pol1,debug); prt2.lost=!detectTest(prt2,pol2,debug)}
+            if (mode=='Alternate_1') {prt1.lost=!detectAlternate1(prt1,pol1,debug); prt2.lost=!detectAlternate1(prt2,pol2,debug)}
+            if (mode=='Alternate_2') {prt1.lost=!detectAlternate2(prt1,pol1,debug); prt2.lost=!detectAlternate2(prt2,pol2,debug)}
             // polarize
             if (mode=='Quantum') {
                  prt2.mode='real'; 
@@ -380,9 +380,12 @@ class Experiment {
             } else if (mode=='Karma_Peny') {
                 prt1.result=getKarmaPenyResult(prt1,pol1,debug);
                 prt2.result=getKarmaPenyResult(prt2,pol2,debug);
-            } else if (mode=='Test') {
-                prt1.result=getTestResult(prt1,pol1,debug);
-                prt2.result=getTestResult(prt2,pol2,debug);
+            } else if (mode=='Alternate_1') {
+                prt1.result=getAlternate1Result(prt1,pol1,debug);
+                prt2.result=getAlternate1Result(prt2,pol2,debug);
+            } else if (mode=='Alternate_2') {
+                prt1.result=getAlternate2Result(prt1,pol1,debug);
+                prt2.result=getAlternate2Result(prt2,pol2,debug);
             }
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
