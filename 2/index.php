@@ -13,11 +13,11 @@
     <canvas id="canvas" width="600" height="300px"></canvas>
     <div id="controls">
       Mode: 
-      <select id='mode'>
-          <option value="quantum" selected>quantum</option>
-          <option value="classic">classic</option>
-          <option value="cos2">cos²(θ)</option>
-          <option value="cos3">.3cos²(θ)</option>
+      <select id='mode' onchange='handleMode()'>
+          <option value="Quantum">Quantum</option>
+          <option value="Classic" selected>Classic</option>
+          <option value="Karma_Peny">Karma Peny</option>
+          <!--<option value="Test">Test</option>-->
       </select>
       <button class="space-left space-right" onclick="handleReset()">Reset</button>
       <button class="space-right" onclick="handleStartStop()">Freeze</button>
