@@ -21,7 +21,7 @@ const textJson = {
     "footer3": "",
     "footer4": "",
     "footer5": `
-        <p>See forum discussion at <a href='http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=416' target='new'>http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=416</a></p>
+        <p>See forum discussion at <a href='http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=417' target='new'>http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=417</a></p>
         [I] Bell Tests <a target='tab' href='https://en.wikipedia.org/wiki/Bell_test_experiments'>https://en.wikipedia.org/wiki/Bell_test_experiments</a><br>
         [II] Bell Original Paper <a target='tab' href='http://www.drchinese.com/David/Bell.pdf'>http://www.drchinese.com/David/Bell.pdf</a><br>
         [III] Are Hidden-Variable Theories for Pilot-Wave Systems Possible? <a target='tab' href='https://arxiv.org/pdf/1701.08194.pdf'>https://arxiv.org/pdf/1701.08194.pdf</a><br>
@@ -32,7 +32,8 @@ const textJson = {
         [VIII] Karma Peny, cos²(θ) match * |cos(θ)| detection, <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>https://www.youtube.com/watch?v=yOtsEgbg1-s</a><br>
         Other for review: <a target='tab' href='https://arxiv.org/pdf/1604.08105.pdf'>https://arxiv.org/pdf/1604.08105.pdf</a>, 
         <a target='tab' href='https://arxiv.org/pdf/1704.02876.pdf'>https://arxiv.org/pdf/1704.02876.pdf</a>, 
-        <a target='tab' href='https://arxiv.org/pdf/quant-ph/0304066.pdf'>https://arxiv.org/pdf/quant-ph/0304066.pdf</a>`
+        <a target='tab' href='https://arxiv.org/pdf/quant-ph/0304066.pdf'>https://arxiv.org/pdf/quant-ph/0304066.pdf</a><br><br>
+        (<i>please excuse the simple 2D graphics which rotate polarizers in the x-y plane instead of the y-z plane</i>)`
 }
 const reportExpected = {
     "1": {
