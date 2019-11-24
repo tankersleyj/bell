@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.0.1, 2019-11-23', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.1.0, 2019-11-23', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -327,7 +327,7 @@ class Experiment {
         }
         function detectKarmaPeny(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=delta2Cos)?true:false;
+            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false;
         }
         function getAlternate1Result(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), deltaCos2=deltaCos*deltaCos;
@@ -335,7 +335,7 @@ class Experiment {
         }
         function detectAlternate1(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false; // Chantal Roth (1)
+            return (Math.random()<=delta2Cos)?true:false;
         }
         function getAlternate2Result(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
@@ -343,7 +343,7 @@ class Experiment {
         }
         function detectAlternate2(prt,pol,debug) {
             const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false; // Chantal Roth (1)
+            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false;
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
