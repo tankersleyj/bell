@@ -15,7 +15,7 @@ const textJson = {
     "footer2": "<br>",
     "footer3": "<br>",
     "footer4": "<br>",
-    "footer5": `<br>
+    "footer5": `
         Sets of photons are repeatedly created with opposite polarization angles <i>(pre-set to between 0° and 360° for non-quantum modes)</i>.<br>
         Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
         Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br><br>
