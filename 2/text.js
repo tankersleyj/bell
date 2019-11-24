@@ -30,7 +30,7 @@ const textJson = {
         Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
         QM expects <b>S>=2</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
         <br>
-        <div>Polarization and Detection Graph:<br>
+        <div>Polarization and Detection Graph (<i>Realistic</i>):<br>
         <div class='tab-left'>
         <img src="graph.png" alt="Detection and Polarization Graph"><br>
         <b>x</b> = θ as difference between photon polarization angle and polarizer angle<br>
