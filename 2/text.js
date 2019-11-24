@@ -10,8 +10,8 @@ const textJson = {
         <b>Mode</b> may be set to:<br>
         <span class='tab-left'><b>Quantum</b> (<i><u>polarize</u> = 'spooky action at a distance', <u>detection</u> = 50% probability</i>)</span><br>
         <span class='tab-left'><b>Classic</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = |cos(2θ)| probability</i>)</span><br>
-        <span class='tab-left'><b>Karma Peny</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = |cos(2θ)| probability [IV]</i>)</span><br>
-        <span class='tab-left'><b>Alternate 1</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = 0.37+(0.63*|cos(2θ))| probability [Chantal Roth (2)]</i>)</span><br>
+        <span class='tab-left'><b>Karma Peny</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = 0.37+(0.63*|cos(2θ))| probability [IV]</i>)</span><br>
+        <span class='tab-left'><b>Alternate 1</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = |cos(2θ)| probability</i>)</span><br>
         <span class='tab-left'><b>Alternate 2</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = 0.37+(0.63*|cos(2θ))| probability</i>)</span><br>
         <br>`,
     "header1": "Totals",
