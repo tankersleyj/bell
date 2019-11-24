@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.1.01, 2019-11-24', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.1.03, 2019-11-24', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -61,7 +61,7 @@ class Label extends Control {
     draw(ctx) {if (this.text) {this.draw_text(ctx,this.x,this.y,this.text)}}
 }
 class Particle extends Control {
-    constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo',mode:'real',lost:false}) {super(params)}
+    constructor(params={x:0,y:0,radius:0,axis:0,color1:'orange',color2:'indigo',type:'Real',lost:false}) {super(params)}
     draw(ctx) {
         function draw_arc(x,y,r,start,end,color) {
             let rad1=(start+0)*Math.PI/180, rad2=(end+0)*Math.PI/180;
@@ -69,8 +69,8 @@ class Particle extends Control {
             grad.addColorStop(0,color); grad.addColorStop(1,'white'); ctx.fillStyle=grad;
             ctx.beginPath(); ctx.arc(x,y,r,rad1,rad2); ctx.fill();
         }
-        const x=this.x, y=this.y, r=this.radius, axis=this.axis, mode=this.mode, lost=this.lost;
-        const qcolor='gray', col1=(mode=='Quantum'||lost)?qcolor:this.color1, col2=(mode=='Quantum'||lost)?qcolor:this.color2, text=(mode=='Quantum'||lost)?'?':this.text;
+        const x=this.x, y=this.y, r=this.radius, axis=this.axis, type=this.type, lost=this.lost;
+        const qcolor='gray', col1=(type=='QM'||lost)?qcolor:this.color1, col2=(type=='QM'||lost)?qcolor:this.color2, text=(type=='QM'||lost)?'?':this.text;
         draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2); 
         if (text) {this.draw_text(ctx,x,y,text,'black','white');}
     }
@@ -225,8 +225,8 @@ class Experiment {
         emitter.text=emitter.buildText();
 
         // particles
-        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,mode:'real',lost:false});
-        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,mode:'real',lost:false});
+        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,type:'Real',lost:false});
+        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,type:'Real',lost:false});
         const prt1=this.prt1, prt2=this.prt2;
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
@@ -297,53 +297,52 @@ class Experiment {
         this.prt1.draw(ctx); this.prt2.draw(ctx);
     }
     step (time) {
-        function getQuantumResult(prt1,prt2,pol1,pol2,side,debug) {
+        function getQuantumPolarized(prt1,prt2,pol1,pol2,side) {
             let result=0; 
             const delta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
             if (side==1) {
-                if (prt2.mode=='real') {
+                if (prt2.type=='Real') {
                     if (prt2.result) {result=(Math.random()<=posProb)?1:0} else {result=(Math.random()<=posProb)?0:1}
                 } else {result=(Math.random()>=0.5)?1:0}
             } else {
-                if (prt1.mode=='real') {
+                if (prt1.type=='Real') {
                     if (prt1.result) {result=(Math.random()<=posProb)?1:0} else {result=(Math.random()<=posProb)?0:1}
                 } else {result=(Math.random()>=0.5)?1:0}
             }
-            debug.math='getQuantumResult(prt1,prt2,pol1,pol2,side)';  // delta=delta; debug.deltaCos=deltaCos; debug.posProb=posProb; debug.result=result;
             return result;
         }
         function detectQuantum() {return (Math.random()<=0.5)?true:false}
-        function getRealisticResult(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
-            return (Math.random()<=posProb)?1:0;
+        function getRealisticPolarized(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), probability=cosTheta*cosTheta;
+            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectRealistic(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=delta2Cos)?true:false;
+        function detectRealistic(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            return (Math.random()<=probability)?true:false; // no constants
         }
-        function getKarmaPenyResult(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), deltaCos2=deltaCos*deltaCos;
-            return (deltaCos2>=0.5)?1:0;  // non-probabilistic
+        function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), cosSqrTheta=cosTheta*cosTheta;
+            return (cosSqrTheta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectKarmaPeny(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false;
+        function detectKarmaPeny(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
-        function getAlternate1Result(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), deltaCos2=deltaCos*deltaCos;
-            return (deltaCos2>=0.5)?1:0;  // non-probabilistic
+        function getAlternate1Polarized(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), cosSqrTheta=cosTheta*cosTheta;
+            return (cosSqrTheta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectAlternate1(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=delta2Cos)?true:false;
+        function detectAlternate1(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            return (Math.random()<=probability)?true:false; // no constants
         }
-        function getAlternate2Result(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), deltaCos=Math.abs(Math.cos(delta*Math.PI/180)), posProb=deltaCos*deltaCos;
-            return (Math.random()<=posProb)?1:0;
+        function getAlternate2Polarized(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), probability=cosTheta*cosTheta;
+            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectAlternate2(prt,pol,debug) {
-            const delta=Math.abs(Math.abs(pol.axis)-Math.abs(prt.axis)), delta2Cos=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=0.37+(0.63*delta2Cos))?true:false;
+        function detectAlternate2(photon_degrees, polarizer_degrees) {
+            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
@@ -353,8 +352,9 @@ class Experiment {
             this.phase=1;
             this.distance=0;
             this.axis=Math.random()*360;  // fixed (Mark Payne, 2019-11-23)
-            prt1.mode=mode; prt1.lost=false; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
-            prt2.mode=mode; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            let photonType=(mode=='Quantum')?'QM':'Real'
+            prt1.type=photonType; prt1.lost=false; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
+            prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
             pol1.prime=Math.round(Math.random())==1?true:false;
             pol2.prime=Math.round(Math.random())==1?true:false;
             if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
@@ -364,28 +364,28 @@ class Experiment {
         if (this.phase==1 && this.distance>=(midX-startX)) {
             this.phase=2; this.total+=1;
             // detected
-            if (mode=='Quantum') {prt1.lost=!detectQuantum(prt1,pol1,debug); prt2.lost=!detectKarmaPeny(prt2,pol2,debug)}
-            if (mode=='Realistic') {prt1.lost=!detectRealistic(prt1,pol1,debug); prt2.lost=!detectRealistic(prt2,pol2,debug)}
-            if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1,pol1,debug); prt2.lost=!detectKarmaPeny(prt2,pol2,debug)}
-            if (mode=='Alternate_1') {prt1.lost=!detectAlternate1(prt1,pol1,debug); prt2.lost=!detectAlternate1(prt2,pol2,debug)}
-            if (mode=='Alternate_2') {prt1.lost=!detectAlternate2(prt1,pol1,debug); prt2.lost=!detectAlternate2(prt2,pol2,debug)}
+            if (mode=='Quantum') {prt1.lost=!detectQuantum(); prt2.lost=!detectQuantum()}
+            if (mode=='Realistic') {prt1.lost=!detectRealistic(prt1.axis,pol1.axis); prt2.lost=!detectRealistic(prt2.axis,pol2.axis)}
+            if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1.axis,pol1.axis); prt2.lost=!detectKarmaPeny(prt2.axis,pol2.axis)}
+            if (mode=='Alternate_1') {prt1.lost=!detectAlternate1(prt1.axis,pol1.axis); prt2.lost=!detectAlternate1(prt2.axis,pol2.axis)}
+            if (mode=='Alternate_2') {prt1.lost=!detectAlternate2(prt1.axis,pol1.axis); prt2.lost=!detectAlternate2(prt2.axis,pol2.axis)}
             // polarize
             if (mode=='Quantum') {
-                 prt2.mode='real'; 
-                if (Math.random()>=0.5) {prt1.result=getQuantumResult(prt1,prt2,pol1,pol2,1,debug); prt1.mode='real'; prt2.result=getQuantumResult(prt1,prt2,pol1,pol2,2,debug); prt2.mode='real'}
-                else {prt2.result=getQuantumResult(prt1,prt2,pol1,pol2,2,debug); prt2.mode='real'; prt1.result=getQuantumResult(prt1,prt2,pol1,pol2,1,debug); prt1.mode='real'}
+                prt2.type='Real'; 
+                if (Math.random()>=0.5) {prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'; prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'}
+                else {prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'; prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'}
             } else if (mode=='Realistic') {
-                prt1.result=getRealisticResult(prt1,pol1,debug);
-                prt2.result=getRealisticResult(prt2,pol2,debug);
+                prt1.result=getRealisticPolarized(prt1.axis,pol1.axis);
+                prt2.result=getRealisticPolarized(prt2.axis,pol2.axis);
             } else if (mode=='Karma_Peny') {
-                prt1.result=getKarmaPenyResult(prt1,pol1,debug);
-                prt2.result=getKarmaPenyResult(prt2,pol2,debug);
+                prt1.result=getKarmaPenyPolarized(prt1.axis,pol1.axis);
+                prt2.result=getKarmaPenyPolarized(prt2.axis,pol2.axis);
             } else if (mode=='Alternate_1') {
-                prt1.result=getAlternate1Result(prt1,pol1,debug);
-                prt2.result=getAlternate1Result(prt2,pol2,debug);
+                prt1.result=getAlternate1Polarized(prt1.axis,pol1.axis);
+                prt2.result=getAlternate1Polarized(prt2.axis,pol2.axis);
             } else if (mode=='Alternate_2') {
-                prt1.result=getAlternate2Result(prt1,pol1,debug);
-                prt2.result=getAlternate2Result(prt2,pol2,debug);
+                prt1.result=getAlternate2Polarized(prt1.axis,pol1.axis);
+                prt2.result=getAlternate2Polarized(prt2.axis,pol2.axis);
             }
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();

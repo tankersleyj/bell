@@ -15,7 +15,7 @@ const textJson = {
     "footer2": "<br>",
     "footer3": "<br>",
     "footer4": "<br>",
-    "footer5": `
+    "footer5": `<br>
         Sets of photons are repeatedly created with opposite polarization angles <i>(pre-set to between 0° and 360° for non-quantum modes)</i>.<br>
         Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
         Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br><br>
@@ -30,7 +30,7 @@ const textJson = {
         Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
         QM expects <b>S>=2</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
         <br>
-        <div>Polarization and Detection Graph:<br>
+        <div>Polarization and Detection Graph (<i>Realistic</i>):<br>
         <div class='tab-left'>
         <img src="graph.png" alt="Detection and Polarization Graph"><br>
         <b>x</b> = θ as difference between photon polarization angle and polarizer angle<br>
