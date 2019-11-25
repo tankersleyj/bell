@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.2.0, 2019-11-24', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.2.01, 2019-11-24', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -233,8 +233,8 @@ class Experiment {
         emitter.text=emitter.buildText();
 
         // particles
-        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"a",result:-1,type:'Real',lost:false});
-        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'indigo',name:"b",result:-1,type:'Real',lost:false});
+        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'skyblue',name:"a",result:-1,type:'Real',lost:false});
+        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'skyblue',name:"b",result:-1,type:'Real',lost:false});
         const prt1=this.prt1, prt2=this.prt2;
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
@@ -245,8 +245,8 @@ class Experiment {
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
         // Guages
-        this.gag1 = new Gauge({x:150,y:150,radius:20,axis:0,color1:'gray',color2:'yellow'});
-        this.gag2 = new Gauge({x:450,y:150,radius:20,axis:67.5,color1:'gray',color2:'yellow'});
+        this.gag1 = new Gauge({x:150,y:150,radius:40,axis:0,color1:'greenyellow',color2:'yellowgreen'});
+        this.gag2 = new Gauge({x:450,y:150,radius:40,axis:67.5,color1:'greenyellow',color2:'yellowgreen'});
         
          // Detectors
         this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
