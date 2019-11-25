@@ -1,10 +1,10 @@
 const textJson = {
-    "title": "Testing Bell's Theorem - Computer Experiment",
-    "canHead": `
-        Experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
+    "title": "Testing Bell's Theorem - CHSH Experiment",
+    "canHead": `<br>
+        Bell CHSH computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
         <small>Refer to <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem</a> [I]
         & <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>Explained & Debunked</a> [IV] for theoretical background.</small><br>
-        <small><i>(Select [Mode] and [Fast]. Please excuse misleading polarizer rotations in x-y plane instead of y-z plane)</i></small>`,
+        <small><i>(Select [Mode] and [Fast])</i></small>`,
     "canFoot": '<br>',
     "header1": "<b>Totals</b><br>",
     "header2": "<b>Test Results: a, b (0°, 22.5°)</b><br>",
@@ -22,9 +22,9 @@ const textJson = {
         <b>Mode</b> may be set to:<br>
         <span class='tab-left'><b>Quantum</b> (<i><u>polarize</u> = 'spooky action at a distance', <u>detection</u> = 50% probability</i>)</span><br>
         <span class='tab-left'><b>Realistic</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = |cos(2θ)| probability</i>)</span><br>
-        <span class='tab-left'><b>Karma Peny</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = 0.37+(0.63*|cos(2θ))| probability [IV]</i>)</span><br>
+        <span class='tab-left'><b>Karma Peny</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = 0.37+(0.63*|cos(2θ)|) probability [IV]</i>)</span><br>
         <span class='tab-left'><b>Alternate 1</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) linear, <u>detection</u> = |cos(2θ)| probability</i>)</span><br>
-        <span class='tab-left'><b>Alternate 2</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = 0.37+(0.63*|cos(2θ))| probability</i>)</span><br>
+        <span class='tab-left'><b>Alternate 2</b> (<i>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = 0.37+(0.63*|cos(2θ)|) probability</i>)</span><br>
         <br>
         Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
         Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
@@ -46,7 +46,7 @@ const textJson = {
         <div class='tab-left'>
         [I] Paper <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem (<i>with Realistic & Karma Peny math</i>)</a><br>
         [II] App <a target='tab' href='https://codeserver.net/bell/2'>https://codeserver.net/bell/2</a><br>
-        [III] Code <a target='tab' href='https://github.com/tankersleyj/bell'>https://github.com/tankersleyj/bell</a><br>
+        [III] Code <a target='tab' href='https://github.com/tankersleyj/bell'>https://github.com/tankersleyj/bell</a> <small><i>(or right-click browser background & View Page Source)</i></small><br>
         [IV] Karma Peny <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>Explained & Debunked: Quantum Entanglement & Bell Test Experiments</a><br>
         </div></div><br>
         <div>Other links and forums: <br>
