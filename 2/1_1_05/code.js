@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.2.0, 2019-11-24', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.1.06, 2019-11-24', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -74,7 +74,7 @@ class Particle extends Control {
         draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2); 
         if (text) {this.draw_text(ctx,x,y,text,'black','white');}
     }
-    shift (angle,distance) {this.x+=Point.shiftX(angle,distance); this.y+=Point.shiftY(angle,distance)}
+    shift (angle,distance) {this.x+=Point.shiftX(angle,distance); this.y+=Point.shiftY(angle,distance);}
     buildText() {
         let resultText=['-','+'], axisText=roundTo(this.axis,1);
         return this.result in [0,1]?`${resultText[this.result]}`:`${axisText}°`;
@@ -84,20 +84,6 @@ class Particle extends Control {
         if (this.result===1) {status="+"}
         else if (this.result===0) {status="-"}
         return (this.lost)?"<i>lost</i>":status;
-    }
-}
-class Gauge extends Control {
-    constructor(params={x:0,y:0,radius:0,axis:0,color1:'gray',color2:'yellow'}) {super(params)}
-    draw(ctx) {
-        function draw_arc(x,y,r,start,end,color) {
-            let rad1=(start+0)*Math.PI/180, rad2=(end+0)*Math.PI/180;
-            let grad=ctx.createRadialGradient(x,y,0,x,y,r);
-            grad.addColorStop(0,color); grad.addColorStop(1,'white'); ctx.fillStyle=grad;
-            ctx.beginPath(); ctx.arc(x,y,r,rad1,rad2); ctx.fill();
-        }
-        const x=this.x, y=this.y, r=this.radius, axis=this.axis;
-        const col1=this.color1, col2=this.color2, text=this.text;
-        draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2); 
     }
 }
 class CircleControl extends Control {
@@ -239,15 +225,11 @@ class Experiment {
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:45,zAxis:45,rotate:false,color:'green',name:"a"});
-        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:67.5,zAxis:-45,rotate:false,color:'green',name:"b"});
+        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:45,zAxis:45,rotate:true,color:'green',name:"a"});
+        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:-67.5,zAxis:-45,rotate:true,color:'green',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
-        // Guages
-        this.gag1 = new Gauge({x:150,y:150,radius:20,axis:0,color1:'gray',color2:'yellow'});
-        this.gag2 = new Gauge({x:450,y:150,radius:20,axis:67.5,color1:'gray',color2:'yellow'});
-        
          // Detectors
         this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
         this.det2 = new Detector({x:150,y:250,width:40,height:40,axis:-90,color:'black',name:"D-",pol:pol1});
@@ -294,7 +276,6 @@ class Experiment {
     }
     drawPolarizers () {
         const ctx=this.context;
-        this.gag1.draw(ctx); this.gag2.draw(ctx);
         this.pol1.draw(ctx); this.pol2.draw(ctx);
     }
     drawDetectors () {
@@ -359,7 +340,7 @@ class Experiment {
         }
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
-        const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, gag1=this.gag1, gag2=this.gag2, mode=this.mode.value, debug=this.debug;
+        const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug;
         const startX=300, midX=450, endX=600, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
         if (this.phase===0) {
             this.phase=1;
@@ -372,7 +353,6 @@ class Experiment {
             pol2.prime=Math.round(Math.random())==1?true:false;
             if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
             if (pol2.prime) {pol2.axis=67.5; pol2.name=`b${primeChr}`} else {pol2.axis=22.5; pol2.name='b'}
-            gag1.axis=pol1.axis; gag2.axis=pol2.axis;
             pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
         }
         if (this.phase==1 && this.distance>=(midX-startX)) {
