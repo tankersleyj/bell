@@ -1,5 +1,5 @@
 // variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.2.01, 2019-11-24', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.2.02, 2019-11-24', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 // functions
@@ -130,7 +130,7 @@ class RectControl extends Control {
     }
 }
 class Polarizer extends Control {
-    constructor(params={x:0,y:0, width:0, height:0, axis:0, zAxis:0, color:'blue', rotate:false}) {super(params); this.drawAxis=0}
+    constructor(params={x:0,y:0, width:0, height:0, axis:0, zAxis:0, color:'blue'}) {super(params)}
     draw(ctx) {
         function draw_rect(x,y,w,h,axis,color) {
             let hW=Math.round(w/2), hH=Math.round(h/2);
@@ -143,37 +143,29 @@ class Polarizer extends Control {
             ctx.strokeStyle=color; ctx.stroke();
         }
         const x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, zAxis=this.zAxis, rotate=this.rotate, color=this.color;
-        this.drawAxis=(rotate)?(zAxis>=0?axis:-axis):zAxis;
-        draw_rect(x,y,w,h,this.drawAxis,color); 
+        draw_rect(x,y,w,h,this.zAxis,color); 
         if (this.text) {this.draw_text(ctx,x,y,this.text);}
     }
     buildText() {return `${this.name}=${this.axis}°`;}
 }
 class Detector extends Control {
-    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue', pol:null}) {super(params); this.rotAxis=0;}
+    constructor(params={x:0,y:0, width:0, height:0, axis:0, color:'blue'}) {super(params)}
     draw(ctx) {
-        function draw_rect(x,y,w,h,axis,rotAxis,color) {
+        function draw_rect(x,y,w,h,axis,color) {
             let hW=Math.round(w/2), hH=Math.round(h/2);
             let lP1=new Point({x:x,y:y-hH}), lP2=new Point({x:x,y:y+hH});
             let rP1=new Point({x:x+hW,y:y-hH}), rP2=new Point({x:x+hW,y:y+hH});
-            lP1.rotate(axis,x,y); lP2.rotate(axis,x,y); rP1.rotate(axis,x,y); rP2.rotate(axis,x,y);
-            lP1.rotate(rotAxis,pol.x,pol.y); lP2.rotate(rotAxis,pol.x,pol.y); rP1.rotate(rotAxis,pol.x,pol.y); rP2.rotate(rotAxis,pol.x,pol.y);
+            lP1.rotate(axis-90,x,y); lP2.rotate(axis-90,x,y); rP1.rotate(axis-90,x,y); rP2.rotate(axis-90,x,y);
             ctx.beginPath(); ctx.moveTo(lP1.x,lP1.y);
             ctx.lineTo(rP1.x,rP1.y); ctx.lineTo(rP2.x,rP2.y); ctx.lineTo(lP2.x,lP2.y);
-            let rad1=(axis+rotAxis+90)*Math.PI/180, rad2=(axis+rotAxis+270)*Math.PI/180, r=hW;
+            let rad1=(axis)*Math.PI/180, rad2=(axis+180)*Math.PI/180, r=hW;
             let dP=new Point({x:x,y:y});
-            dP.rotate(rotAxis,pol.x,pol.y);
             ctx.arc(dP.x,dP.y,r,rad1,rad2);
             ctx.strokeStyle=color; ctx.stroke();
         }
-        const x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, pol=this.pol;
-        this.rotAxis=pol.drawAxis-45;
-        draw_rect(x,y,w,h,axis,this.rotAxis,color); 
-        if (this.text) {
-            let tp=new Point({x:x,y:y});
-            tp.rotate(this.rotAxis,pol.x,pol.y);
-            this.draw_text(ctx,tp.x,tp.y,this.text);
-        }
+        const x=this.x, y=this.y, w=this.width, h=this.height, axis=this.axis, color=this.color, pol=this.pol, text=this.text;
+        draw_rect(x,y,w,h,axis,color); 
+        if (text) {this.draw_text(ctx,x,y,text)}
     }
 }
 class Emitter extends CircleControl {constructor (params) {super(params)}}
@@ -239,8 +231,8 @@ class Experiment {
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:45,zAxis:45,rotate:false,color:'green',name:"a"});
-        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:67.5,zAxis:-45,rotate:false,color:'green',name:"b"});
+        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:45,zAxis:45,color:'green',name:"a"});
+        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:67.5,zAxis:-45,color:'green',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
@@ -249,10 +241,10 @@ class Experiment {
         this.gag2 = new Gauge({x:450,y:150,radius:40,axis:67.5,color1:'greenyellow',color2:'yellowgreen'});
         
          // Detectors
-        this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:0,color:'black',name:"D+",pol:pol1});
-        this.det2 = new Detector({x:150,y:250,width:40,height:40,axis:-90,color:'black',name:"D-",pol:pol1});
-        this.det3 = new Detector({x:450,y:250,width:40,height:40,axis:-90,color:'black',name:"D+",pol:pol2});
-        this.det4 = new Detector({x:350,y:150,width:40,height:40,axis:0,color:'black',name:"D-",pol:pol2});
+        this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:90,color:'black',name:"D+"});
+        this.det2 = new Detector({x:150,y:250,width:40,height:40,axis:0,color:'black',name:"D-"});
+        this.det3 = new Detector({x:550,y:150,width:40,height:40,axis:-90,color:'black',name:"D+"});
+        this.det4 = new Detector({x:450,y:250,width:40,height:40,axis:0,color:'black',name:"D-"});
         const det1=this.det1, det2=this.det2, det3=this.det3, det4=this.det4;
         det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
         
@@ -403,10 +395,10 @@ class Experiment {
             }
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
-            if (prt1.result===0) {let detAgl=pol1.drawAxis+45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
-            else {let detAgl=pol1.drawAxis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
-            if (prt2.result===0) {let detAgl=pol2.drawAxis-45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}  // 225,135
-            else {let detAgl=pol2.drawAxis+45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}  // 225,135
+            if (prt1.result===0) {let detAgl=pol1.zAxis+45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
+            else {let detAgl=pol1.zAxis-45; prt1.cos=Math.cos(detAgl*(Math.PI/180)); prt1.sin=Math.sin(detAgl*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}  // -45,45
+            if (prt2.result===0) {let detAgl=pol2.zAxis-45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}  // 225,135
+            else {let detAgl=pol2.zAxis+45; prt2.cos=Math.cos(detAgl*(Math.PI/180)); prt2.sin=Math.sin(detAgl*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}  // 225,135
             // report
             if (!prt1.lost && !prt2.lost) {
                 this.updateReports(true);
