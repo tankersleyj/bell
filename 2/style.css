@@ -1,7 +1,26 @@
-html, body {margin: 16px 16px 16px 16px}
-table {border: 1px solid gray}
-th, td {padding: 0px 8px 0px 8px}
+html, body {margin: 8px 8px 8px 8px; font-family:Arial, Helvetica, sans-serif; font-size:small}
+table, th, td {padding: 0 4px 0 4px; border-collapse:collapse; border:0 solid; vertical-align:top; text-align:left}
+tr.rpt-row td {padding: 1px 4px 1px 4px; border: 1px solid gray}
 #canvas {background: linear-gradient(to bottom, white 0%, azure 100%)}
+.graph-head {font-weight:bold; text-align:right; white-space: nowrap;}
+.graph-note {color:dimgray}
+.mode-head {font-weight:bold; text-align:right; white-space: nowrap;}
+.mode-note {color:dimgray}
+.overview {color:dimgray}
+.ref {font-size:small; color:dimgray}
+.ref-author {font-style:italic}
+.ref-num {color:black}
+.ref-title {text-decoration:underline}
+.rpt-detail {color:black}
+.rpt-detect {background-color:gainsboro}
+.rpt-head {background-color:whitesmoke}
+.rpt-note {text-align:left}
+.rpt-row {border: 1px solid gray; text-align:center}
+.rpt-subtotal {background-color:gainsboro}
+.rpt-title {color:blue}
+.rpt-total {background-color:lightgreen}
 .space-left {margin-left:8px}
 .space-right {margin-right:8px}
-.tab-left {margin-left:32px}
+.sub-link {font-style:italic; font-size:smaller}
+.sub-text {color:dimgray; font-style:italic; font-size:smaller}
+.tab-left {margin-left:16px}
