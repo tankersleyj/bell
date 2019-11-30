@@ -1,5 +1,5 @@
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.3.00, 2019-11-25', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.3.08, 2019-11-30', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -329,7 +329,7 @@ class Experiment {
         // Quantum Calculations
         function getQuantumPolarized(prt1,prt2,pol1,pol2,side) {
             let result=0; 
-            const theta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), cosTheta=Math.abs(Math.cos(theta*Math.PI/180)), probability=cosTheta*cosTheta;
+            const delta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), cosDelta=Math.abs(Math.cos(delta*Math.PI/180)), probability=cosDelta*cosDelta;
             if (side==1) {
                 if (prt2.type=='Real') {
                     if (prt2.result) {result=(Math.random()<=probability)?1:0} else {result=(Math.random()<=probability)?0:1}
@@ -345,43 +345,61 @@ class Experiment {
 
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), probability=cosTheta*cosTheta;
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
         function detectRealistic(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=probability)?true:false; // no constants
         }
 
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), cosSqrTheta=cosTheta*cosTheta;
-            return (cosSqrTheta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+            return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
         function detectKarmaPeny(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
 
         // Alternate 1 Calculations
         function getAlternate1Polarized(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), cosSqrTheta=cosTheta*cosTheta;
-            return (cosSqrTheta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+            return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
         function detectAlternate1(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=probability)?true:false; // no constants
         }
 
         // Alternate 2 Calculations
         function getAlternate2Polarized(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosTheta=Math.cos(theta*Math.PI/180), probability=cosTheta*cosTheta;
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
         function detectAlternate2(photon_degrees, polarizer_degrees) {
-            const theta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((theta+theta)*Math.PI/180));
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
+        
+        // Perfect 1 Calculations
+        function getPerfect1Polarized(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+            return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
+        }
+        function detectPerfect1() {
+            return true;
+        }
+
+        // Perfect 2 Calculations
+        function getPerfect2Polarized(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
+        }
+        function detectPerfect2() {
+            return true;
+        }        
         
         // Polarize photon as vertical or horizontal
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
@@ -411,7 +429,7 @@ class Experiment {
         if (this.phase==1 && this.distance>=(midX-startX)) {
             this.phase=2; this.total+=1;
 
-            // Calculated Polarization (Vertical=+, Horizontal=-)
+            // Calculated Polarization (pass-through=+, Reflected=-)
             if (mode=='Quantum') {
                 prt2.type='Real'; 
                 if (Math.random()>=0.5) {prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'; prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'}
@@ -428,6 +446,12 @@ class Experiment {
             } else if (mode=='Alternate_2') {
                 prt1.result=getAlternate2Polarized(prt1.axis, pol1.axis);
                 prt2.result=getAlternate2Polarized(prt2.axis, pol2.axis);
+            } else if (mode=='Perfect_1') {
+                prt1.result=getPerfect1Polarized(prt1.axis, pol1.axis);
+                prt2.result=getPerfect1Polarized(prt2.axis, pol2.axis);
+            } else if (mode=='Perfect_2') {
+                prt1.result=getPerfect2Polarized(prt1.axis, pol1.axis);
+                prt2.result=getPerfect2Polarized(prt2.axis, pol2.axis);
             }
             
             // Calculate Detected (lost or not)
@@ -436,14 +460,16 @@ class Experiment {
             if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1.axis,pol1.axis); prt2.lost=!detectKarmaPeny(prt2.axis,pol2.axis)}
             if (mode=='Alternate_1') {prt1.lost=!detectAlternate1(prt1.axis,pol1.axis); prt2.lost=!detectAlternate1(prt2.axis,pol2.axis)}
             if (mode=='Alternate_2') {prt1.lost=!detectAlternate2(prt1.axis,pol1.axis); prt2.lost=!detectAlternate2(prt2.axis,pol2.axis)}
+            if (mode=='Perfect_1') {prt1.lost=!detectPerfect1(prt1.axis,pol1.axis); prt2.lost=!detectPerfect1(prt2.axis,pol2.axis)}
+            if (mode=='Perfect_2') {prt1.lost=!detectPerfect2(prt1.axis,pol1.axis); prt2.lost=!detectPerfect2(prt2.axis,pol2.axis)}
             
             // new axis & move calculations
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
             prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
-            if (prt1.result===0) {let moveAngle=pol1.zAxis+45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}
-            else {let moveAngle=pol1.zAxis-45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,-180)}
-            if (prt2.result===0) {let moveAngle=pol2.zAxis-45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}
-            else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,180,0)}
+            if (prt1.result===0) {let moveAngle=pol1.zAxis+45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,90)}
+            else {let moveAngle=pol1.zAxis-45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,90)}
+            if (prt2.result===0) {let moveAngle=pol2.zAxis-45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)}
+            else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)}
             
             // report
             if (!prt1.lost && !prt2.lost) {this.updateReports(true)} else {this.totals.ND+=1; this.updateReports(false)}
