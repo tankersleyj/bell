@@ -15,15 +15,17 @@ const textJson = {
     "footer3": "<br>",
     "footer4": "<br>",
     "footer5": `<br>
-        <div><b>Polarization and Detection Graph</b> (<i>Realistic</i>):<br>
-          <div class='tab-left'>
-            <img src="graph.png" alt="Detection and Polarization Graph, https://codeserver.net/bell/2/graph.png"><br>
-            <table>
-              <tr><td class='graph-head'>X Axis</td><td class='graph-note'>θ as difference between photon polarization angle and polarizer angle</td></tr>
-              <tr><td class='graph-head'>Green</td><td class='graph-note'>Probability of passing through polarizer (<i>vertical, +</i>) instead of being reflected (<i>horizontal, -</i>), |cos²(x)|</td></tr>
-              <tr><td class='graph-head'>Red</td><td class='graph-note'>Detection Probability, |cos(2x)|</td></tr>
-            </table>
-          </div>
+        <b>Modes</b>:<br>
+        <div class='tab-left'>
+          <table>
+            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication, <u>polarize</u> = anti-correlated cos²(Δ) probability, <u>detection</u> = 50% probability</td></tr>
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = |cos(2Δ)| probability</td></tr>
+            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| >= 0.5, <u>detection</u> = 0.37+(0.63*|cos(2Δ)|) probability [II]</td></tr>
+            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| >= 0.5, <u>detection</u> = |cos(2Δ)| probability</td></tr>
+            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = 0.37+(0.63*|cos(2Δ)|) probability</span></td></tr>
+            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| >= 0.5, <u>detection</u> = 100%</td></tr>
+            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = 100%</span></td></tr>
+          </table>
         </div><br>
         <b>Overview</b><br>
         <div class='tab-left overview'>
@@ -35,17 +37,26 @@ const textJson = {
             QM expects <b>S>=2</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
             Select [Fast] to speed up experiment. Select [Freeze] to freeze & unfreeze photons.<br>
         </div><br>
-        <b>Mode</b> may be set to:<br>
-        <div class='tab-left'>
-          <table>
-            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication, <u>polarize</u> = anti-correlated cos²(θ) probability, <u>detection</u> = 50% probability</td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = |cos(2θ)| probability</td></tr>
-            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) >= 0.5, <u>detection</u> = 0.37+(0.63*|cos(2θ)|) probability [IV]</td></tr>
-            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) >= 0.5, <u>detection</u> = |cos(2θ)| probability</td></tr>
-            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = 0.37+(0.63*|cos(2θ)|) probability</span></td></tr>
-          </table>
-        </div>
-        <br>
+        <div><b>Polarization and Detection Graph</b> (<i>Realistic, single photon probabilities</i>):<br>
+          <div class='tab-left'>
+            <img src="graph.png" alt="Detection and Polarization Graph, https://codeserver.net/bell/2/graph.png"><br>
+            <table>
+              <tr><td class='graph-head'>X Axis</td><td class='graph-note'>Δ (<i>delta</i>) = difference in polarization angles between a photon (<i>Pa or Pb</i>) and it's polarizer (<i>a or b</i>)</td></tr>
+              <tr><td class='graph-head'>Green</td><td class='graph-note'>Probability of a photon passing through it's polarizer (<i>+</i>) (<i>instead of being reflected -</i>) = |cos²(Δ)|</td></tr>
+              <tr><td class='graph-head'>Red</td><td class='graph-note'>Probability of a photon being detected by one of it's detectors = |cos(2Δ)|</td></tr>
+            </table>
+          </div>
+        </div><br>
+        <div><b>Symbols</b>:<br>
+          <div class='tab-left'>
+            <table>
+              <tr><td class='key-head'><b>Pa or Pb</b></td><td class='graph-note'><u>Photon</u> with hidden polarization angle λ (<i>lambda</i>)</td></tr>
+              <tr><td class='key-head'><b>a or b</b></td><td class='graph-note'><u>Polarizer</u> with pre-set polarization angle φ (<i>phi</i>)</td></tr>
+              <tr><td class='key-head'><b>Δ</b> (<i>delta</i>)</td><td class='graph-note'><u>Difference</u> in polarization angles between a <u>photon</u> (<i>Pa or Pb</i>) λ and it's <u>polarizer</u> (<i>a or b</i>) φ</td></tr>
+              <tr><td class='key-head'><b>D+ or D-</b></td><td class='graph-note'><u>Detector</u> pass-through (<i><b>+</b></i>) or reflected (<i><b>-</b></i>)</td></tr>
+            </table>
+          </div>
+        </div><br>
         <div>Paper:<br>
           <div class='tab-left ref'>
             <table>

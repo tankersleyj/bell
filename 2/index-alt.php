@@ -24,6 +24,8 @@
           <option value="Karma_Peny">Karma Peny</option>
           <option value="Alternate_1">Alternate 1</option>
           <option value="Alternate_2">Alternate 2</option>
+          <option value="Perfect_1">Perfect 1</option>
+          <option value="Perfect_2">Perfect 2</option>
       </select>
       <button class="space-left space-right" onclick="handleReset()">Reset</button>
       <button class="space-right" onclick="handleStartStop()">Freeze</button>
