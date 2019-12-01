@@ -19,13 +19,13 @@ const textJson = {
         <div class='tab-left'>
           <table>
             <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication, <u>polarize</u> = anti-correlated cos²(Δ) probability, <u>detection</u> = 50% probability</td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = |cos²(2Δ)| probability</td></tr>
-            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| >= 0.5, <u>detection</u> = 0.37+(0.63*|cos(2Δ)|) probability [II]</td></tr>
-            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| >= 0.5, <u>detection</u> = |cos(2Δ)| probability</td></tr>
-            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = 0.37+(0.63*|cos(2Δ)|) probability</span></td></tr>
-            <tr><td class='mode-head'>Alternate 3</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = |cos(2Δ)| probability</td></tr>
-            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| >= 0.5, <u>detection</u> = 100%</td></tr>
-            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = |cos²(Δ)| probability, <u>detection</u> = 100%</span></td></tr>
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) probability, <u>detection</u> = cos²(2Δ) probability</td></tr>
+            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) >= 0.5, <u>detection</u> = 0.37+(0.63*|cos(2Δ)|) probability [II]</td></tr>
+            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) >= 0.5, <u>detection</u> = |cos(2Δ)| probability</td></tr>
+            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) probability, <u>detection</u> = 0.37+(0.63*|cos(2Δ)|) probability</span></td></tr>
+            <tr><td class='mode-head'>Alternate 3</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) probability, <u>detection</u> = |cos(2Δ)| probability</td></tr>
+            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) >= 0.5, <u>detection</u> = 100%</td></tr>
+            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(Δ) probability, <u>detection</u> = 100%</span></td></tr>
           </table>
         </div><br>
         <b>Overview</b><br>
@@ -43,8 +43,8 @@ const textJson = {
             <img src="graph-realistic.png" alt="Detection and Polarization Probabilities Graph, https://codeserver.net/bell/2/graph-realistic.png"><br>
             <table>
               <tr><td class='graph-head'>X Axis</td><td class='graph-note'>Δ (<i>delta</i>) = difference in polarization angles between a photon (<i>Pa or Pb</i>) and it's polarizer (<i>a or b</i>)</td></tr>
-              <tr><td class='graph-head'>Green</td><td class='graph-note'>Probability of a photon passing through it's polarizer (<i>+</i>) (<i>instead of being reflected -</i>) = |cos²(Δ)|</td></tr>
-              <tr><td class='graph-head'>Red</td><td class='graph-note'>Probability of a photon being detected by one of it's detectors = |cos²(2Δ)|</td></tr>
+              <tr><td class='graph-head'>Green</td><td class='graph-note'>Probability of a photon passing through it's polarizer (<i>+</i>) (<i>instead of being reflected -</i>) = cos²(Δ)</td></tr>
+              <tr><td class='graph-head'>Red</td><td class='graph-note'>Probability of a photon being detected by one of it's detectors = cos²(2Δ)</td></tr>
             </table>
           </div>
         </div><br>
