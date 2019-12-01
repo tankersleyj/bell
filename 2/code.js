@@ -1,5 +1,5 @@
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.3.08, 2019-11-30', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.4.00, 2019-11-30', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -349,9 +349,10 @@ class Experiment {
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
         function detectRealistic(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
             return (Math.random()<=probability)?true:false; // no constants
         }
+        
 
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
@@ -383,6 +384,16 @@ class Experiment {
             return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
         
+        // Alternate 3 Calculations
+        function getAlternate3Polarized(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
+        }
+        function detectAlternate3(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            return (Math.random()<=probability)?true:false; // no constants
+        }
+
         // Perfect 1 Calculations
         function getPerfect1Polarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
@@ -446,6 +457,9 @@ class Experiment {
             } else if (mode=='Alternate_2') {
                 prt1.result=getAlternate2Polarized(prt1.axis, pol1.axis);
                 prt2.result=getAlternate2Polarized(prt2.axis, pol2.axis);
+            } else if (mode=='Alternate_3') {
+                prt1.result=getAlternate3Polarized(prt1.axis, pol1.axis);
+                prt2.result=getAlternate3Polarized(prt2.axis, pol2.axis);    
             } else if (mode=='Perfect_1') {
                 prt1.result=getPerfect1Polarized(prt1.axis, pol1.axis);
                 prt2.result=getPerfect1Polarized(prt2.axis, pol2.axis);
@@ -460,6 +474,7 @@ class Experiment {
             if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1.axis,pol1.axis); prt2.lost=!detectKarmaPeny(prt2.axis,pol2.axis)}
             if (mode=='Alternate_1') {prt1.lost=!detectAlternate1(prt1.axis,pol1.axis); prt2.lost=!detectAlternate1(prt2.axis,pol2.axis)}
             if (mode=='Alternate_2') {prt1.lost=!detectAlternate2(prt1.axis,pol1.axis); prt2.lost=!detectAlternate2(prt2.axis,pol2.axis)}
+            if (mode=='Alternate_3') {prt1.lost=!detectAlternate3(prt1.axis,pol1.axis); prt2.lost=!detectAlternate3(prt2.axis,pol2.axis)}
             if (mode=='Perfect_1') {prt1.lost=!detectPerfect1(prt1.axis,pol1.axis); prt2.lost=!detectPerfect1(prt2.axis,pol2.axis)}
             if (mode=='Perfect_2') {prt1.lost=!detectPerfect2(prt1.axis,pol1.axis); prt2.lost=!detectPerfect2(prt2.axis,pol2.axis)}
             
