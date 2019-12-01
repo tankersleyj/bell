@@ -35,7 +35,12 @@ const textJson = {
             Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br><br>
             Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
             Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
-            QM expects <b>S>=2</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
+            QM expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
+            <br>
+            Quantum mode violates Bell's inequalities (<i>S>2</i>) by simulating '<i>spooky action at a distance</i>'.<br>
+            Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2</i>) using only local hidden variables.<br>
+            These experiments demonstrate the '<i>detection loophole</i>' and invalidate similar real-world CHSH experiments.<br>
+            <br>
             Select [Fast] to speed up experiment. Select [Freeze] to freeze & unfreeze photons.<br>
         </div><br>
         <div><b>Probabilities Graph</b> (<i>Realistic, single photon polariaze & detect</i>):<br>
