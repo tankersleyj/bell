@@ -15,41 +15,60 @@ const textJson = {
     "footer3": "<br>",
     "footer4": "<br>",
     "footer5": `<br>
-        <div><b>Polarization and Detection Graph</b> (<i>Realistic</i>):<br>
-          <div class='tab-left'>
-            <img src="graph.png" alt="Detection and Polarization Graph, https://codeserver.net/bell/2/graph.png"><br>
-            <table>
-              <tr><td class='graph-head'>X Axis</td><td class='graph-note'>θ as difference between photon polarization angle and polarizer angle</td></tr>
-              <tr><td class='graph-head'>Red</td><td class='graph-note'>Probability of passing through polarizer (<i>vertical, +</i>) instead of being reflected (<i>horizontal, -</i>), |cos²(x)|</td></tr>
-              <tr><td class='graph-head'>Green</td><td class='graph-note'>Detection Probability, |cos(2x)|</td></tr>
-            </table>
-          </div>
+        <b>Modes</b>:<br>
+        <div class='tab-left'>
+          <table>
+            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication,    <u>detected</u> = 50% probability,        <u>polarized +</u> = anti-correlated cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables,   <u>detected</u> = cos²(2Δ) probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables,  <u>detected</u> = 0.37+(0.63*|cos(2Δ)|) probability [II], <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
+            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>detected</u> = |cos(2Δ)| probability,  <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
+            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>detected</u> = 0.37+(0.63*|cos(2Δ)|) probability, <u>polarize +</u> = cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Alternate 3</td><td class='mode-note'>local hidden variables, <u>detected</u> = |cos(2Δ)| probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
+            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) probability</td></tr>
+          </table>
         </div><br>
         <b>Overview</b><br>
         <div class='tab-left overview'>
-            Sets of photons are repeatedly created with opposite polarization angles <i>(pre-set to between 0° and 360° for non-quantum modes)</i>.
-            Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.
+            Sets of photons are repeatedly created with opposite polarization angles <i>(pre-set to between 0° and 360° for non-quantum modes)</i>.<br>
+            Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
             Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br><br>
             Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
             Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
-            QM expects <b>S>=2</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
+            QM expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
+            <br>
+            Quantum mode violates Bell's inequalities (<i>S>2</i>) by simulating '<i>spooky action at a distance</i>'.<br>
+            Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2</i>) using only local hidden variables.<br>
+            These experiments demonstrate the '<i>detection loophole</i>' and invalidate similar real-world CHSH experiments.<br>
+            <br>
             Select [Fast] to speed up experiment. Select [Freeze] to freeze & unfreeze photons.<br>
         </div><br>
-        <b>Mode</b> may be set to:<br>
-        <div class='tab-left'>
-          <table>
-            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication, <u>polarize</u> = anti-correlated cos²(θ) probability, <u>detection</u> = 50% probability</td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = |cos(2θ)| probability</td></tr>
-            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) >= 0.5, <u>detection</u> = 0.37+(0.63*|cos(2θ)|) probability [IV]</td></tr>
-            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) >= 0.5, <u>detection</u> = |cos(2θ)| probability</td></tr>
-            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>polarize</u> = cos²(θ) probability, <u>detection</u> = 0.37+(0.63*|cos(2θ)|) probability</span></td></tr>
-          </table>
-        </div>
-        <br>
+        <div><b>Probabilities Graph</b> (<i>Realistic, single photon polariaze & detect</i>):<br>
+          <div class='tab-left'>
+            <img src="graph-realistic.png" alt="Detection and Polarization Probabilities Graph, https://codeserver.net/bell/2/graph-realistic.png"><br>
+            <table>
+              <tr><td class='graph-head'>X Axis</td><td class='graph-note'>Δ (<i>delta</i>) = difference in polarization angles between a photon (<i>Pa or Pb</i>) and it's polarizer (<i>a or b</i>)</td></tr>
+              <tr><td class='graph-head'>Red</td><td class='graph-note'>Probability of a photon being detected (<i>not undetected</i>) = cos²(2Δ)</td></tr>
+              <tr><td class='graph-head'>Green</td><td class='graph-note'>Probability of a photon passing through it's polarizer (<i>+</i>) (<i>instead of being reflected -</i>) = cos²(Δ)</td></tr>
+              <tr><td class='graph-head'>Net +</td><td class='graph-note'>Net Probability of + result <i>(Red * Green)</i> = cos²(2Δ) * cos²(Δ)</td></tr>
+              <tr><td class='graph-head'>Net -</td><td class='graph-note'>Net Probability of - result <i>(Red * (1-Green))</i> = cos²(2Δ) * (1-cos²(Δ))</td></tr>
+            </table>
+          </div>
+        </div><br>
+        <div><b>Symbols</b>:<br>
+          <div class='tab-left'>
+            <table>
+              <tr><td class='key-head'><b>Pa or Pb</b></td><td class='graph-note'><u>Photon</u> with hidden polarization angle λ (<i>lambda</i>)</td></tr>
+              <tr><td class='key-head'><b>a or b</b></td><td class='graph-note'><u>Polarizer</u> with pre-set polarization angle φ (<i>phi</i>)</td></tr>
+              <tr><td class='key-head'><b>Δ</b> (<i>delta</i>)</td><td class='graph-note'><u>Difference</u> in polarization angles between a <u>photon</u> (<i>Pa or Pb</i>) λ and it's <u>polarizer</u> (<i>a or b</i>) φ</td></tr>
+              <tr><td class='key-head'><b>D+ or D-</b></td><td class='graph-note'><u>Detector</u> pass-through (<i><b>+</b></i>) or reflected (<i><b>-</b></i>)</td></tr>
+            </table>
+          </div>
+        </div><br>
         <div>Paper:<br>
           <div class='tab-left ref'>
             <table>
-              <tr><td class='ref-num'>[I]</td><td><span class='ref-author'>J.Tankersley</span>, Nov 2019, <span class='ref-title'>Testing Bell's Theorem (<i>with Realistic & Karma Peny math</i>)</span>
+              <tr><td class='ref-num'>[I]</td><td><span class='ref-author'>J.Tankersley</span>, Nov 2019, <span class='ref-title'>Testing Bell's Theorem (<i>with Realistic & Karma Peny math</i>)</span><br>
               <a class='sub-link' target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper</a></td></tr>
             </table>
           </div>
@@ -57,7 +76,7 @@ const textJson = {
         <div>Video:<br>
           <div class='tab-left ref'>
             <table>
-              <tr><td class='ref-num'>[II]</td><td><span class='ref-author'>Karma Peny</span>, Apr 2018, <span class='ref-title'>Explained & Debunked: Quantum Entanglement & Bell Test Experiments</span>
+              <tr><td class='ref-num'>[II]</td><td><span class='ref-author'>Karma Peny</span>, Apr 2018, <span class='ref-title'>Explained & Debunked: Quantum Entanglement & Bell Test Experiments</span><br>
               <a class='sub-link' target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>https://www.youtube.com/watch?v=yOtsEgbg1-s</a></td></tr>
             </table>
           </div>
@@ -65,9 +84,9 @@ const textJson = {
         <div>Forums:<br>
           <div class='tab-left ref'>
             <table>
-              <tr><td class='ref-num'>[III]</td><td>SciPhysicsForums <span class='ref-author'>(with Joy Christian)</span> <span class='ref-title'>Karma Peny Simulation Appears to Violate Bell</span>,
+              <tr><td class='ref-num'>[III]</td><td>SciPhysicsForums <span class='ref-author'>(with Joy Christian)</span> <span class='ref-title'>Karma Peny Simulation Appears to Violate Bell</span><br>
                 <a class='sub-link' target='tab' href='http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=417'>http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=417</a></td></tr>
-              <tr><td class='ref-num'>[IV]</td><td>Bell inequalities and quantum foundations <span class='ref-author'>(with Richard Gill)</span> <span class='ref-title'>Karma Peny Math Appears to Violate Bell</span>,
+              <tr><td class='ref-num'>[IV]</td><td>Bell inequalities and quantum foundations <span class='ref-author'>(with Richard Gill)</span> <span class='ref-title'>Karma Peny Math Appears to Violate Bell</span><br>
                 <a class='sub-link' target='tab' href='https://groups.google.com/forum/#!topic/bell_quantum_foundations/CdvTO7aIOXs'>https://groups.google.com/forum/#!topic/bell_quantum_foundations/CdvTO7aIOXs</a></td></tr>
             </table>
           </div>
@@ -82,9 +101,9 @@ const textJson = {
         </div><br>`
 }
 const reportExpected = {
-    "1": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%", "(1-cos²(22.5))/2 = 7%", "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4])/([1]+[2]+[3]+[4])=0.71"],
-    "2": ["cos²(67.5)/2 = 7%", "(1-cos²(67.5))/2 = 43%", "(1-cos²(67.5))/2 = 43%", "cos²(67.5)/2 = 7%", "([1]-[2]-[3]+[4])/([1]+[2]+[3]+[4])=-0.71"],
-    "3": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%", "(1-cos²(22.5))/2 = 7%", "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4])/([1]+[2]+[3]+[4])=0.71"],
-    "4": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%", "(1-cos²(22.5))/2 = 7%", "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4])/([1]+[2]+[3]+[4])=0.71"],
-    "5": ["0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4=2.83 (>=2)", "not detected"]
+    "1": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%",  "(1-cos²(22.5))/2 = 7%",  "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "total not detected"],
+    "2": ["cos²(67.5)/2 = 7%",  "(1-cos²(67.5))/2 = 43%", "(1-cos²(67.5))/2 = 43%", "cos²(67.5)/2 = 7%",  "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=-0.71", "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "total not detected"],
+    "3": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%",  "(1-cos²(22.5))/2 = 7%",  "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "total not detected"],
+    "4": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%",  "(1-cos²(22.5))/2 = 7%",  "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "total not detected"],
+    "5": ["0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4=2.83", "total not detected"]
 }
