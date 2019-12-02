@@ -1,5 +1,5 @@
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.4.02, 2019-11-30', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.5.00, 2019-12-01', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -202,7 +202,7 @@ class Experiment {
         this.total=0;
         this.distance=0;
         this.statText='';
-        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0, "C1":0, "C2":0, "C3":0, "C4":0, "C":0, "ND":0};
+        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0, "C1":0, "C2":0, "C3":0, "C4":0, "U1":0, "U2":0, "U3":0, "U4":0, "C":0, "ND":0};
         this.debug={};
 
         // report 1 (a=0, b=22.5)
@@ -210,36 +210,56 @@ class Experiment {
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
             {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
+            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
+            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
+            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
+            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
+            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
         ];
-        this.report1Indexes={'11':0,'10':1,'01':2,'00':3};
+        this.report1Indexes={'11':0,'10':1,'01':2,'00':3,'1!':4,'0!':5,'!1':6,'!0':7,'!!':8};
         
         // report 2 (a=0, b′=67.5)
         this.report2=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
             {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
+            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
+            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
+            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
+            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
+            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
         ];
-        this.report2Indexes={'11':0,'10':1,'01':2,'00':3};
+        this.report2Indexes={'11':0,'10':1,'01':2,'00':3,'1!':4,'0!':5,'!1':6,'!0':7,'!!':8};
         
         // report 3 (a′=45, b=22.5)
         this.report3=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
             {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
+            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
+            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
+            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
+            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
+            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
         ];
-        this.report3Indexes={'11':0,'10':1,'01':2,'00':3};
+        this.report3Indexes={'11':0,'10':1,'01':2,'00':3,'1!':4,'0!':5,'!1':6,'!0':7,'!!':8};
         
         // report 4 (a′=45, b′=67.5)
         this.report4=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
             {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0}
+            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
+            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
+            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
+            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
+            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
+            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
         ];
-        this.report4Indexes={'11':0,'10':1,'01':2,'00':3};
+        this.report4Indexes={'11':0,'10':1,'01':2,'00':3,'1!':4,'0!':5,'!1':6,'!0':7,'!!':8};
 
         // emitters
         this.emitter = new Emitter({x:300,y:150,radius:20,color:'skyblue',name:"S"});
@@ -299,7 +319,7 @@ class Experiment {
         this.drawParticles();
 
         // report
-        this.updateReports();
+        this.updateReports({init:true});
         this.updateStatus();
     }
     drawEmitters () {
@@ -341,14 +361,14 @@ class Experiment {
             }
             return result;
         }
-        function detectQuantum() {return (Math.random()<=0.5)?true:false}
+        function detectAtAll_Quantum() {return (Math.random()<=0.5)?true:false}
 
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectRealistic(photon_degrees, polarizer_degrees) {
+        function detectAtAll_Realistic(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
             return (Math.random()<=probability)?true:false; // no constants
         }
@@ -358,7 +378,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectKarmaPeny(photon_degrees, polarizer_degrees) {
+        function detectAtAll_KarmaPeny(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
@@ -368,7 +388,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectAlternate1(photon_degrees, polarizer_degrees) {
+        function detectAtAll_Alternate1(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=probability)?true:false; // no constants
         }
@@ -378,7 +398,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectAlternate2(photon_degrees, polarizer_degrees) {
+        function detectAtAll_Alternate2(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
         }
@@ -388,7 +408,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectAlternate3(photon_degrees, polarizer_degrees) {
+        function detectAtAll_Alternate3(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (Math.random()<=probability)?true:false; // no constants
         }
@@ -398,7 +418,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectPerfect1() {
+        function detectAtAll_Perfect1() {
             return true;
         }
 
@@ -407,7 +427,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
         }
-        function detectPerfect2() {
+        function detectAtAll_Perfect2() {
             return true;
         }        
         
@@ -467,15 +487,15 @@ class Experiment {
                 prt2.result=getPerfect2Polarized(prt2.axis, pol2.axis);
             }
             
-            // Calculate Detected (lost or not)
-            if (mode=='Quantum') {prt1.lost=!detectQuantum(); prt2.lost=!detectQuantum()}
-            if (mode=='Realistic') {prt1.lost=!detectRealistic(prt1.axis,pol1.axis); prt2.lost=!detectRealistic(prt2.axis,pol2.axis)}
-            if (mode=='Karma_Peny') {prt1.lost=!detectKarmaPeny(prt1.axis,pol1.axis); prt2.lost=!detectKarmaPeny(prt2.axis,pol2.axis)}
-            if (mode=='Alternate_1') {prt1.lost=!detectAlternate1(prt1.axis,pol1.axis); prt2.lost=!detectAlternate1(prt2.axis,pol2.axis)}
-            if (mode=='Alternate_2') {prt1.lost=!detectAlternate2(prt1.axis,pol1.axis); prt2.lost=!detectAlternate2(prt2.axis,pol2.axis)}
-            if (mode=='Alternate_3') {prt1.lost=!detectAlternate3(prt1.axis,pol1.axis); prt2.lost=!detectAlternate3(prt2.axis,pol2.axis)}
-            if (mode=='Perfect_1') {prt1.lost=!detectPerfect1(prt1.axis,pol1.axis); prt2.lost=!detectPerfect1(prt2.axis,pol2.axis)}
-            if (mode=='Perfect_2') {prt1.lost=!detectPerfect2(prt1.axis,pol1.axis); prt2.lost=!detectPerfect2(prt2.axis,pol2.axis)}
+            // Calculate Detected at all (lost or not)
+            if (mode=='Quantum') {prt1.lost=!detectAtAll_Quantum(); prt2.lost=!detectAtAll_Quantum()}
+            if (mode=='Realistic') {prt1.lost=!detectAtAll_Realistic(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Realistic(prt2.axis,pol2.axis)}
+            if (mode=='Karma_Peny') {prt1.lost=!detectAtAll_KarmaPeny(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_KarmaPeny(prt2.axis,pol2.axis)}
+            if (mode=='Alternate_1') {prt1.lost=!detectAtAll_Alternate1(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Alternate1(prt2.axis,pol2.axis)}
+            if (mode=='Alternate_2') {prt1.lost=!detectAtAll_Alternate2(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Alternate2(prt2.axis,pol2.axis)}
+            if (mode=='Alternate_3') {prt1.lost=!detectAtAll_Alternate3(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Alternate3(prt2.axis,pol2.axis)}
+            if (mode=='Perfect_1') {prt1.lost=!detectAtAll_Perfect1(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Perfect1(prt2.axis,pol2.axis)}
+            if (mode=='Perfect_2') {prt1.lost=!detectAtAll_Perfect2(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Perfect2(prt2.axis,pol2.axis)}
             
             // new axis & move calculations
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
@@ -486,7 +506,7 @@ class Experiment {
             else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)}
             
             // report
-            if (!prt1.lost && !prt2.lost) {this.updateReports(true)} else {this.totals.ND+=1; this.updateReports(false)}
+            if (!prt1.lost && !prt2.lost) {this.updateReports({detected:true})} else {this.totals.ND+=1; this.updateReports({detected:false})}
             this.statText=`(${prt1.getStatus()},${prt2.getStatus()})`;
             this.updateStatus();
         }
@@ -528,7 +548,7 @@ class Experiment {
         return `
 <table class='rpt-table'>
     <tr class='rpt-row rpt-head'>
-        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Total</td><td>Result</td><td class='rpt-note'>QM Expected</td>
+        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Count</td><td>Result</td><td class='rpt-note'>QM Expected</td>
     </tr>${reportRows}
 </table><div><i><small>${footNote}</small></i></div>`;
     }
@@ -537,49 +557,66 @@ class Experiment {
         <td>${a}</td><td>${b}</td><td>${tot}</td><td>${result}</td>
         <td class='rpt-note'>${note}</td></tr>`;
     }
-    getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.tot}</b>`,`${row.pct}%`,row.note,cls)}
-    updateReports (increment=false) {
-        function getIndex(res1,res2,reportIndexes) {return reportIndexes[`${res1}${res2}`]}
+    getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.tot}</b>`,`${row.pct>=0?row.pct+'%':''}`,row.note,cls)}
+    updateReports (params={init:false, detected:false}) {
+        function getIndex(prt1,prt2,reportIndexes) {
+            const res1=prt1.lost?'!':prt1.result, res2=prt2.lost?'!':prt2.result;
+            return reportIndexes[`${res1}${res2}`]}
         function getE(pp,pm,mp,mm) {
             let e1=pp-pm-mp+mm, e2=pp+pm+mp+mm;
             return e1/e2;
         }
+        // initialize params
+        params.init = params.init?true:false;
+        params.detected = params.detected?true:false;
         // set constants and declare variables
-        const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug;
-        let terminal, reportIndexes, report, cName, eName, aName, bName, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
-        if (!pol1.prime && !pol2.prime) {terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes; cName='C1'; eName='E1'; aName='a'; bName='b'}
-        if (!pol1.prime && pol2.prime) {terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes; cName='C2'; eName='E2'; aName='a'; bName='b′'}
-        if (pol1.prime && !pol2.prime) {terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes; cName='C3'; eName='E3'; aName='a′'; bName='b'}
-        if (pol1.prime && pol2.prime) {terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; cName='C4'; eName='E4'; aName='a′'; bName='b′'}
+        const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug, totals=this.totals;
+        let terminal, reportIndexes, report, cName, uName, eName, aName, bName, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
+        if (!pol1.prime && !pol2.prime) {terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes; cName='C1'; uName='U1'; eName='E1'; aName='a'; bName='b'}
+        if (!pol1.prime && pol2.prime) {terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes; cName='C2'; uName='U2'; eName='E2'; aName='a'; bName='b′'}
+        if (pol1.prime && !pol2.prime) {terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes; cName='C3'; uName='U3'; eName='E3'; aName='a′'; bName='b'}
+        if (pol1.prime && pol2.prime) {terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; cName='C4'; uName='U4'; eName='E4'; aName='a′'; bName='b′'}
         
-        // increment totals
-        if (increment) {
-            let index=getIndex(prt1.result, prt2.result, reportIndexes);
+        // detected totals
+        if (!params.init) {
+            const index=getIndex(prt1, prt2, reportIndexes);
             report[index].tot+=1;
-            this.totals[cName]+=1;
-            this.totals.C+=1;
+            if (params.detected) {
+                totals[cName]+=1;
+                totals.C+=1;
+            }
+            totals[uName]+=1;
         }
         // Build Sub-Report 1,2,3 or 4 (display in terminal 2,3,4 or 5)
         for (let r=1; r<=4; r++) {
-            report[r-1].pct=roundTo((report[r-1].tot/this.totals[cName])*100,1);
+            report[r-1].pct=roundTo((report[r-1].tot/totals[cName])*100,1);
             report[r-1].note=reportExpected[`${reportIndex}`][r-1];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-detail');
         }
-        this.totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
-        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(this.totals[cName],4),`<b>${roundTo(this.totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
+        totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
+        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[cName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
+        // undetected rows 5-9
+        for (let r=5; r<=9; r++) { 
+            report[r-1].pct=roundTo((report[r-1].tot/totals[uName])*100,1);
+            report[r-1].note=reportExpected[`${reportIndex}`][r];
+            reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-undetected');
+        }
+        let undetectTotal = (report[4].tot + report[5].tot + report[6].tot + report[7].tot + report[8].tot) / totals[uName] * 100;
+        reportRows+=this.getRowHtml(`<b>${uName}</b>`,na,na,roundTo(totals[uName],4),`<b>${roundTo(undetectTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
+        // status
         if (mode=='Quantum') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
         else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus);
 
         // Build Total Report 5 (display in terminal 1)
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode})</i><b>:</b><br>`;
-        this.totals.S=this.totals.E1-this.totals.E2+this.totals.E3+this.totals.E4;
-        summaryRows+=this.getRowHtml(`<b>~</b>`,na,na,this.totals.ND,`<i><b>${roundTo((this.totals.ND/(this.totals.C+this.totals.ND))*100,1)}%</b></i>`,`<i>${reportExpected['5'][5]}</i>`,'rpt-detect');
-        summaryRows+=this.getRowHtml(`E1`,'0°','22.5°',roundTo(this.totals.C1,4),`${roundTo(this.totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E2`,'0°','67.5°',roundTo(this.totals.C2,4),`${roundTo(this.totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E3`,'45°','22.5°',roundTo(this.totals.C3,4),`${roundTo(this.totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E4`,'45°','67.5°',roundTo(this.totals.C4,4),`${roundTo(this.totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
-        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,roundTo(this.totals.C,4), `<b><big>${roundTo(this.totals.S,4)}</big></b>`, reportExpected['5'][4],'rpt-total');
+        totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
+        summaryRows+=this.getRowHtml(`E1`,'0°','22.5°', roundTo(totals.C1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E2`,'0°','67.5°', roundTo(totals.C2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E3`,'45°','22.5°',roundTo(totals.C3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E4`,'45°','67.5°',roundTo(totals.C4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
+        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.C,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][4],'rpt-total');
+        summaryRows+=this.getRowHtml(`<b>U</b>`,na,na,totals.ND,`<i><b>${roundTo((totals.ND/(totals.C+totals.ND))*100,1)}%</b></i>`,`<i>${reportExpected['5'][5]}</i>`,'rpt-detect');
         this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '');
         // setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
