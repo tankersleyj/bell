@@ -1,5 +1,5 @@
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.5.00, 2019-12-01', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.6.03, 2019-12-29', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -8,7 +8,7 @@ function animationStart() {experiment.start(); animationId=window.requestAnimati
 function animationStep(time) {experiment.step(time); animationId=window.requestAnimationFrame(animationStep)}
 function animationStop() {if (animationId) {experiment.stop(); window.cancelAnimationFrame(animationId); animationId=0}}
 function eid(name) {return document.getElementById(name)}
-function handleMode(select) {experiment.init()}
+function handleMode(select) {Math.setSeed(Math.random()*99999); experiment.init()}
 function handleOnload() {
   canvas=document.getElementById("canvas"); context=canvas.getContext("2d"); mode=eid("mode");
   canHead=eid("canHead"); canFoot=eid("canFoot"); statusBar=eid("statusBar");
@@ -25,12 +25,30 @@ function handleOnload() {
   experiment.init();
   animationStart();
 }
-function handleRate(rate) {animationStop(); experiment.rate=rate; experiment.phase=0; experiment.updateStatus(); animationStart()}
+function handleRate(rate) {animationStop(); experiment.rate=rate; experiment.updateStatus(); animationStart()}
 function handleReset() {animationStop(); if (!experiment.reset()) {animationStart()} else {animationStart()}}
 function handleStartStop() {if (animationId) {animationStop()} else {animationStart()}}
 function roundTo(val,dec=0) {return Number.parseFloat(Number.parseFloat(val).toFixed(dec))}
 function roundToStr(val,dec=0) {return Number.parseFloat(val).toFixed(dec)}
 function setIdHtml(id,html) {document.getElementById(id).innerHTML=html}
+
+// Seeded Random
+Math.hasSeed = function() {return !isNaN(Math.seed) && Math.seed > 0};
+Math.setSeed = function(seed) {
+    Math.seed=(!isNaN(seed)) ? Math.abs(Math.floor(seed)) % 2147483647 : 0;
+    Math.seedStart=Math.seed;
+    Math.seedCount=0;
+};
+Math.seededRandom = function() {
+    if (Math.hasSeed()) {
+        // Reference (Lehmer LCG RNG): https://en.wikipedia.org/wiki/Lehmer_random_number_generator
+        // Reference (JS): https://gist.github.com/blixt/f17b47c62508be59987b
+        Math.seedCount++;
+        Math.seed = (Math.seed * 48271) % 2147483647;
+        return Math.seed / 2147483647;
+    } else {return Math.random()} 
+};
+Math.setSeed(Math.random()*99999);
 
 // 2d (x,y) point class
 class Point {
@@ -348,89 +366,69 @@ class Experiment {
 
         // Quantum Calculations
         function getQuantumPolarized(prt1,prt2,pol1,pol2,side) {
-            let result=0; 
+            let result=0, randomValue=Math.seededRandom();
             const delta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), cosDelta=Math.abs(Math.cos(delta*Math.PI/180)), probability=cosDelta*cosDelta;
             if (side==1) {
                 if (prt2.type=='Real') {
-                    if (prt2.result) {result=(Math.random()<=probability)?1:0} else {result=(Math.random()<=probability)?0:1}
-                } else {result=(Math.random()>=0.5)?1:0}
+                    if (prt2.result) {result=(randomValue<=probability)?1:0} else {result=(randomValue<=probability)?0:1}
+                } else {result=(randomValue>=0.5)?1:0}
             } else {
                 if (prt1.type=='Real') {
-                    if (prt1.result) {result=(Math.random()<=probability)?1:0} else {result=(Math.random()<=probability)?0:1}
-                } else {result=(Math.random()>=0.5)?1:0}
+                    if (prt1.result) {result=(randomValue<=probability)?1:0} else {result=(randomValue<=probability)?0:1}
+                } else {result=(randomValue>=0.5)?1:0}
             }
-            return result;
+            return result; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
         }
-        function detectAtAll_Quantum() {return (Math.random()<=0.5)?true:false}
+        function detectAtAll_Quantum() {return true}  // (Math.seededRandom()<=0.5)?true:false}  // f(x)=50% probability
 
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
+            return (Math.seededRandom()<=probability)?1:0;  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
         }
         function detectAtAll_Realistic(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
-            return (Math.random()<=probability)?true:false; // no constants
+            return (Math.seededRandom()<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
         }
 
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
-            return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
+            return (cosSqrDelta>=0.5)?1:0;  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
         }
         function detectAtAll_KarmaPeny(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
-        }
-
-        // Alternate 1 Calculations
-        function getAlternate1Polarized(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
-            return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
-        }
-        function detectAtAll_Alternate1(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=probability)?true:false; // no constants
-        }
-
-        // Alternate 2 Calculations
-        function getAlternate2Polarized(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
-        }
-        function detectAtAll_Alternate2(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=0.37+(0.63*probability))?true:false;  // constants
-        }
-        
-        // Alternate 3 Calculations
-        function getAlternate3Polarized(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
-        }
-        function detectAtAll_Alternate3(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (Math.random()<=probability)?true:false; // no constants
+            return (Math.seededRandom()<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
         }
 
         // Perfect 1 Calculations
-        function getPerfect1Polarized(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
-            return (cosSqrDelta>=0.5)?1:0;  // non-probabilistic, 1=vertical(+), 0=horizontal(-)
-        }
-        function detectAtAll_Perfect1() {
-            return true;
-        }
-
-        // Perfect 2 Calculations
         function getPerfect2Polarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (Math.random()<=probability)?1:0;  // probabilistic, 1=vertical(+), 0=horizontal(-)
+            return (Math.seededRandom()<=probability)?1:0;  // f(x) probability, 1=passthrough(+), 0=reflect(-)
         }
         function detectAtAll_Perfect2() {
-            return true;
-        }        
+            return true; // f(x)=1, 1=detected, 0=not detected
+        } 
         
+        // Perfect 2 Calculations
+        function getPerfect1Polarized(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+            return (cosSqrDelta>=0.5)?1:0;  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
+        }
+        function detectAtAll_Perfect1() {
+            return true; // f(x)=1, 1=detected, 0=not detected
+        }
+
+        // Experiment 1 Calculations
+        function getExperiment1Polarized(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+            return (Math.seededRandom()<=probability)?1:0;  // f(x) probability, 1=passthrough(+), 0=reflect(-)
+        }
+        function detectAtAll_Experiment1(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=0.8*cos2Delta*cos2Delta;
+            return (Math.seededRandom()<=probability)?true:false; // 0.8cos^2(2x) probability, 1=detected, 0=not detected
+        }  
+
         // Polarize photon as vertical or horizontal
         function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
         
@@ -443,12 +441,12 @@ class Experiment {
         if (this.phase===0) {
             this.phase=1;
             this.distance=0;
-            this.axis=Math.random()*360;  // fixed (Mark Payne, 2019-11-23)
+            this.axis=Math.seededRandom()*360;  // fixed (Mark Payne, 2019-11-23)
             let photonType=(mode=='Quantum')?'QM':'Real'
             prt1.type=photonType; prt1.lost=false; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
             prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
-            pol1.prime=Math.round(Math.random())==1?true:false;
-            pol2.prime=Math.round(Math.random())==1?true:false;
+            pol1.prime=Math.round(Math.seededRandom())==1?true:false;
+            pol2.prime=Math.round(Math.seededRandom())==1?true:false;
             if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
             if (pol2.prime) {pol2.axis=67.5; pol2.name=`b${primeChr}`} else {pol2.axis=22.5; pol2.name='b'}
             gag1.axis=pol1.axis; gag2.axis=pol2.axis;
@@ -462,7 +460,7 @@ class Experiment {
             // Calculated Polarization (pass-through=+, Reflected=-)
             if (mode=='Quantum') {
                 prt2.type='Real'; 
-                if (Math.random()>=0.5) {prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'; prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'}
+                if (Math.seededRandom()>=0.5) {prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'; prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'}
                 else {prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'; prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'}
             } else if (mode=='Realistic') {
                 prt1.result=getRealisticPolarized(prt1.axis, pol1.axis);
@@ -485,6 +483,9 @@ class Experiment {
             } else if (mode=='Perfect_2') {
                 prt1.result=getPerfect2Polarized(prt1.axis, pol1.axis);
                 prt2.result=getPerfect2Polarized(prt2.axis, pol2.axis);
+            } else if (mode=='Experiment_1') {
+                prt1.result=getExperiment1Polarized(prt1.axis, pol1.axis);
+                prt2.result=getExperiment1Polarized(prt2.axis, pol2.axis);
             }
             
             // Calculate Detected at all (lost or not)
@@ -496,6 +497,7 @@ class Experiment {
             if (mode=='Alternate_3') {prt1.lost=!detectAtAll_Alternate3(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Alternate3(prt2.axis,pol2.axis)}
             if (mode=='Perfect_1') {prt1.lost=!detectAtAll_Perfect1(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Perfect1(prt2.axis,pol2.axis)}
             if (mode=='Perfect_2') {prt1.lost=!detectAtAll_Perfect2(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Perfect2(prt2.axis,pol2.axis)}
+            if (mode=='Experiment_1') {prt1.lost=!detectAtAll_Experiment1(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Experiment1(prt2.axis,pol2.axis)}
             
             // new axis & move calculations
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
@@ -540,7 +542,7 @@ class Experiment {
     
     // Experiment functions
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
-    reset () {if (window.confirm("Reset Statistics?")) {this.init(); return true}}
+    reset () {var seed=prompt("Restart with Random Seed (1 to 2,147,483,646)", Math.floor(Math.random()*99999)); if (seed) {Math.setSeed(seed); this.init(); return true}}
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
@@ -609,7 +611,7 @@ class Experiment {
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus);
 
         // Build Total Report 5 (display in terminal 1)
-        this.header1.innerHTML=`<b>Totals</b> <i>(${mode})</i><b>:</b><br>`;
+        this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, Seed: ${Math.seedStart.toLocaleString()} # ${Math.seedCount.toLocaleString()} = ${Math.seed.toLocaleString()})</i><b>:</b><br>`;
         totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
         summaryRows+=this.getRowHtml(`E1`,'0°','22.5°', roundTo(totals.C1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
         summaryRows+=this.getRowHtml(`E2`,'0°','67.5°', roundTo(totals.C2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
