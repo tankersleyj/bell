@@ -22,18 +22,16 @@
           <option value="Quantum">Quantum</option>
           <option value="Realistic" selected>Realistic</option>
           <option value="Karma_Peny">Karma Peny</option>
-          <option value="Alternate_1">Alternate 1</option>
-          <option value="Alternate_2">Alternate 2</option>
-          <option value="Alternate_3">Alternate 3</option>
           <option value="Perfect_1">Perfect 1</option>
           <option value="Perfect_2">Perfect 2</option>
+          <option value="Experiment_1">Experiment 1</option>
       </select>
-      <button class="space-left space-right" onclick="handleReset()">Reset</button>
-      <button class="space-right" onclick="handleStartStop()">Freeze</button>
-      <button onclick="handleRate(15)">Slow</button>
+      <button class="space-left" onclick="handleReset()">Random Seed</button>
+      <button class="space-left" onclick="handleStartStop()">Freeze</button>
+      <button class="space-left" onclick="handleRate(15)">Slow</button>
       <button onclick="handleRate(60)">Medium</button>
-      <button class="space-right" onclick="handleRate(300)">Fast</button>
-      <span id="statusBar"></span>
+      <button onclick="handleRate(300)">Fast</button>
+      <span class="space-left" id="statusBar"></span>
     </div>
     <div id="canFoot"></div>
     <div id="header1"></div><div id="terminal1"></div><div id="footer1"></div>

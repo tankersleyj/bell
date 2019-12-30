@@ -21,11 +21,9 @@ const textJson = {
             <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication,    <u>detected</u> = 50% probability,        <u>polarized +</u> = anti-correlated cos²(Δ) probability</td></tr>
             <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables,   <u>detected</u> = cos²(2Δ) probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
             <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables,  <u>detected</u> = 0.37+(0.63*|cos(2Δ)|) probability [II], <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
-            <tr><td class='mode-head'>Alternate 1</td><td class='mode-note'>local hidden variables, <u>detected</u> = |cos(2Δ)| probability,  <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
-            <tr><td class='mode-head'>Alternate 2</td><td class='mode-note'>local hidden variables, <u>detected</u> = 0.37+(0.63*|cos(2Δ)|) probability, <u>polarize +</u> = cos²(Δ) probability</td></tr>
-            <tr><td class='mode-head'>Alternate 3</td><td class='mode-note'>local hidden variables, <u>detected</u> = |cos(2Δ)| probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
-            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
-            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
+            <tr><td class='mode-head'>Experiment 1</td><td class='mode-note'>local hidden variables,<u>detected</u> = 0.8*cos²(2Δ) probability, <u>polarize +</u> = cos²(Δ) probability</td></tr>
           </table>
         </div><br>
         <b>Overview</b><br>
@@ -39,7 +37,9 @@ const textJson = {
             <br>
             Quantum mode violates Bell's inequalities (<i>S>2</i>) by simulating '<i>spooky action at a distance</i>'.<br>
             Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2</i>) using only local hidden variables.<br>
-            These experiments demonstrate the '<i>detection loophole</i>' and invalidate similar real-world CHSH experiments.<br>
+            These experiments demonstrate the '<i>detection loophole</i>' in similar real-world CHSH experiments.<br>
+            (<i>Violation of Bell's inequalities can be explained as simple experimental in-efficiencies, such as photon loss around 45° delta,<br>
+            where delta is the difference between a photon's hidden polarization angle and it's Beam Splitting Polarizer</i>).<br>
             <br>
             Select [Fast] to speed up experiment. Select [Freeze] to freeze & unfreeze photons.<br>
         </div><br>
