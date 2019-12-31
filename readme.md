@@ -11,27 +11,21 @@ Code is runnable on modern browsers, and results are repeatable by re-using rand
 ### `Instructions`
 
 Select Mode
+* **Quanum**: non-local, wave collapse, photon communication model
+* **Karma Peny**: local hidden variable model
+* **Realistic**: local hidden variable model
+* **Other**: other local hidden variable models, more detail [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 
-- `Mode` 
-    + `Quanum`: non-local, wave collapse, photon communication model
-    + `Karma Peny`: local hidden variable model
-    + `Realistic`: local hidden variable model
-    + `Other`: other local hidden variable models, more detail [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
-
-Enter a random seed (53 bit PCG recommended)
-
-- `Random Seed`
-    + `0`: no seed, browser.Math.random()
-    + `seed`: 31 bit Lehmer LCG (one 31 bit seed)
-    + `seedHi, seedLow`: 53 bit PCG (two 32 bit seeds)
+Enter a random seed (*53 bit PCG recommended*)
+* **0**: no seed, browser.Math.random()
+* **seed**: 31 bit Lehmer LCG (*one 31 bit seed*)
+* **seedHi, seedLow**: 53 bit PCG (*two 32 bit seeds*)
 
 Set speed
-
-- `Speed`
-   + `freeze`: Stop/start action
-   + `slow`: 15 photon pairs per minute
-   + `medium`: 60 photon pairs per minute (default)
-   + `fast`: 300 photon pairs per minute (recommended)
+* **freeze**: Stop/start action
+* **slow**: 15 photon pairs per minute
+* **medium**: 60 photon pairs per minute (*default*)
+* **fast**: 300 photon pairs per minute (*recommended*)
 
 An explanation of expected experimental results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 
@@ -42,8 +36,8 @@ Development Priorities.
 - `Completed Features:`
     + `Violations`: Violated Bell's in-equalities with local hidden variables
     + `Quality`: S values of 2.83 achieved in multiple modes
-    + `Method`: Photon loss as a probability function of polarization angles (photon & polarizer)
-    + `Method`: Correlation as a probability function of polarization angles (photon & polarizer)
+    + `Method`: Photon loss as a probability function of polarization angles (*photon & polarizer*)
+    + `Method`: Correlation as a probability function of polarization angles (*photon & polarizer*)
     
 - `Needed Features:`
     + `Customize`: Custom Polarizer/Detector Angles
