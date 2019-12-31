@@ -1,0 +1,27 @@
+{
+  "name": "bell",
+  "version": "1.6.07",
+  "description": "JavaScript CHSH Bell Violation Experiment",
+  "main": "2/index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tankersleyj/bell.git"
+  },
+  "keywords": [
+    "javascript",
+    "bell",
+    "chsh",
+    "experiment",
+    "simulation",
+    "physics"
+  ],
+  "author": "James Tankersley Jr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tankersleyj/bell/issues"
+  },
+  "homepage": "https://github.com/tankersleyj/bell#readme"
+}
