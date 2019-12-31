@@ -10,22 +10,26 @@ Code is runnable on modern browsers, and results are repeatable by re-using rand
 
 ### `Instructions`
 
+Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a modern browser (_for example: Google Chrome, Apple Safari or Mozilla Firefox_)
+
 **Select Mode**
 * `Quanum`: non-local, wave collapse, photon communication model
 * `Karma Peny`: local hidden variable model
-* `Realistic`: local hidden variable model **_recommended_**
+* `Realistic`: local hidden variable model (_default setting_)
 * `Other`: more detail [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 
 **Enter a random seed**
 * `0`: no seed, browser.Math.random()
-* `seed`: 31 bit Lehmer LCG (*one 31 bit seed*)
-* `seedHi, seedLow`: 53 bit PCG (*two 32 bit seeds*) **_recommended_**
+* `seed`: 31 bit Lehmer LCG (_one 31 bit seed, default setting_)
+* `seedHi, seedLow`: 53 bit PCG (_two 32 bit seeds_) **_recommended_**
 
 **Set speed**
 * `freeze`: Stop/start action
 * `slow`: 15 photon pairs per minute
-* `medium`: 60 photon pairs per minute (*default*)
+* `medium`: 60 photon pairs per minute (_default setting_)
 * `fast`: 300 photon pairs per minute **_recommended_**
+
+Allow the experiment to run for at least **5 minutes** at **fast** speed.
 
 An explanation of expected experimental results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 
@@ -36,8 +40,8 @@ Development Priorities.
 - `Completed Features:`
     + `Violations`: Violated Bell's in-equalities with local hidden variables
     + `Quality`: S values of 2.83 achieved in multiple modes
-    + `Method`: Photon loss as a probability function of polarization angles (*photon & polarizer*)
-    + `Method`: Correlation as a probability function of polarization angles (*photon & polarizer*)
+    + `Method`: Photon loss as a probability function of polarization angles (_photon & polarizer_)
+    + `Method`: Correlation as a probability function of polarization angles (_photon & polarizer_)
     
 - `Needed Features:`
     + `Customize`: Custom Polarizer/Detector Angles
