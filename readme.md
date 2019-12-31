@@ -1,18 +1,43 @@
-Non-QM simulations of Bell's Inequalities
+# Bell: CHSH tests of Bell's theorem with local hidden variables in JavaScript
 
-# bell: JavaScript Bell's theorem physics test, CHSH violations with local hidden variables.
+This computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.
 
 For information on the computer experiment, see [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper).
-
-Random number generator and starting seeds are run time options (browser dependent Math.random(), Lehmer LCG 31 bit or PCG 53 bit).
 
 Code is runnable on modern browsers, and results are repeatable by re-using random seeds.
 
 ## Documentation
 
+### `Instructions`
+
+Select Mode
+
+- `Mode` 
+    + `Quanum`: non-local, wave collapse, photon communication model
+    + `Karma Peny`: local hidden variable model
+    + `Realistic`: local hidden variable model
+    + `Other`: other local hidden variable models, more detail [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
+
+Enter a random seed (53 bit PCG recommended)
+
+- `Random Seed`
+    + `0`: no seed, browser.Math.random()
+    + `seed`: 31 bit Lehmer LCG (one 31 bit seed)
+    + `seedHi, seedLow`: 53 bit PCG (two 32 bit seeds)
+
+Set speed
+
+- `Speed`
+   + `freeze`: Stop/start action
+   + `slow`: 15 photon pairs per minute
+   + `medium`: 60 photon pairs per minute (default)
+   + `fast`: 300 photon pairs per minute (recommended)
+
+An explanation of expected experimental results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
+
 ### `Project Status`
 
-Development Prioritis.
+Development Priorities.
 
 - `Completed Features:`
     + `Violations`: Violated Bell's in-equalities with local hidden variables
@@ -21,7 +46,7 @@ Development Prioritis.
     + `Method`: Correlation as a probability function of polarization angles (photon & polarizer)
     
 - `Needed Features:`
-    + `Run-Time Option`: Custom Polarizer/Detector Angles
+    + `Customize`: Custom Polarizer/Detector Angles
     + `Validation`: Eberhard photon loss calculations
     + `Quality`: Violation with photon loss between 0% and 20%
     
@@ -31,7 +56,7 @@ Development Prioritis.
 
 ## Caveats
 
-This is a collaborative effort between multiple volenteer developers and scientists.
+This is a collaborative effort between multiple volunteer developers and scientists.
 
 ## License
 The MIT License (MIT)
