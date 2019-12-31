@@ -1,5 +1,6 @@
 const textJson = {
     "title": "Testing Bell's Theorem - CHSH Experiment",
+    "promptSeed": "Restart with Random Seed: \n\t\u25B8 0 = no seed, browser.Math.random() \n\t\u25B8 seed = 31 bit Lehmer LCG (one 31 bit seed)\n\t\u25B8 seedHi, seedLow = 53 bit PCG (two 32 bit seeds)",
     "canHead": `<br>
         Bell CHSH computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
         <small>Refer to <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem</a> [I]

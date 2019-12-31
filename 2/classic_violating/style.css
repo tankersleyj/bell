@@ -1,7 +1,0 @@
-html, body {margin: 16px 16px 16px 16px}
-table {border: 1px solid gray}
-th, td {padding: 0px 8px 0px 8px}
-#canvas {background: linear-gradient(to bottom, white 0%, azure 100%)}
-.space-left {margin-left:8px}
-.space-right {margin-right:8px}
-.tab-left {margin-left:32px}

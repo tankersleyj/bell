@@ -5,7 +5,8 @@
   <style><?php echo file_get_contents("style.css"); ?></style>
   <script>
     <?php 
-        echo file_get_contents("text.js"); 
+        echo file_get_contents("text.js");
+        echo file_get_contents("pcg-random.js");
         echo file_get_contents("code.js"); 
     ?>
   </script>
@@ -20,8 +21,8 @@
       Mode: 
       <select id='mode' onchange='handleMode()'>
           <option value="Quantum">Quantum</option>
-          <option value="Realistic" selected>Realistic</option>
           <option value="Karma_Peny">Karma Peny</option>
+          <option value="Realistic" selected>Realistic</option>
           <option value="Perfect_1">Perfect 1</option>
           <option value="Perfect_2">Perfect 2</option>
           <option value="Experiment_1">Experiment 1</option>
