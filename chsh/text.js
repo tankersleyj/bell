@@ -1,6 +1,6 @@
 const textJson = {
     "title": "Testing Bell's Theorem - CHSH Experiment",
-    "promptSeed": "Restart with Random Seed: \n\t\u25B8 0 = no seed, browser.Math.random() \n\t\u25B8 seed = 31 bit Lehmer LCG (one 31 bit seed)\n\t\u25B8 seedHi, seedLow = 53 bit PCG (two 32 bit seeds)",
+    "promptSeed": "Restart with Random Seed: \n\t\u25B8 0 = Math.random (browser implementation, unknown seed) \n\t\u25B8 seed = 31 bit Lehmer LCG (one 31 bit seed)\n\t\u25B8 seedHi, seedLow = 53 bit PCG (two 32 bit seeds)",
     "canHead": `<br>
         Bell CHSH computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
         <small>Refer to <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem</a> [I]
@@ -20,8 +20,8 @@ const textJson = {
         <div class='tab-left'>
           <table>
             <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication,    <u>detected</u> = 50% probability,        <u>polarized +</u> = anti-correlated cos²(Δ) probability</td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables,   <u>detected</u> = cos²(2Δ) probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
             <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables,  <u>detected</u> = 0.37+(0.63*|cos(2Δ)|) probability [II], <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables,   <u>detected</u> = cos²(2Δ) probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
             <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) probability</td></tr>
             <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
             <tr><td class='mode-head'>Experiment 1</td><td class='mode-note'>local hidden variables,<u>detected</u> = 0.8*cos²(2Δ) probability, <u>polarize +</u> = cos²(Δ) probability</td></tr>

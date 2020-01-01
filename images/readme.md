@@ -1,0 +1,1 @@
+# Images may be be linked to from blogs
