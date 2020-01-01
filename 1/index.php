@@ -1,1 +1,1 @@
-<?php header("Location: /bell/prototype"); ?>
+<?php header("Location: /bell/archive"); ?>

@@ -25,15 +25,14 @@ echo file_get_contents("code.js");
           <option value="Realistic" selected>Realistic</option>
           <option value="Perfect_1">Perfect 1</option>
           <option value="Perfect_2">Perfect 2</option>
-          <!--<option value="Custom">Custom</option>-->
+          <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Random Seed</button>
-    <span class="space-left">Speed:</span>
+    <span class="space-left">Rate:</span>
     <select id='rate' onchange='setRate(this.value)'>
         <option value="15">Slow</option>
         <option value="60" selected>Medium</option>
-        <option value="300">Fast</option>
-        <!--<option value="max">Maximum</option>-->
+        <option value="2400">Fast</option>
     </select>
     <input id="freezeChk" class="space-left" type="checkbox" onchange="freeze(this.checked)">Freeze</input>
     <span class="space-left" id="statusBar"></span>

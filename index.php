@@ -11,7 +11,7 @@
             <b>Computer Experiments:</b><br>
             <ul>
               <li><a href='/bell/chsh' target='_new'>Testing Bell's Theorem - CHSH Experiment</a></li>
-              <li><a href='/bell/prototype' target='_new'>Early Prototype</a></li>
+              <li><a href='/bell/archive' target='_new'>Early Prototype</a></li>
             </ul>
           </p>          
       </div>
