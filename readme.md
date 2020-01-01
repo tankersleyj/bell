@@ -13,25 +13,25 @@ Code is runnable on modern browsers, and results are repeatable by re-using rand
 Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a modern browser (_for example: Google Chrome, Apple Safari or Mozilla Firefox_)
 
 **Select Mode**
-* `Quanum`: non-local, wave collapse, photon communication model
+* `Quanum`: non-local wave collapse model
 * `Karma Peny`: local hidden variable model
 * `Realistic`: local hidden variable model (_default setting_)
-* `Other`: more detail [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
+* `Custom`: user defined settings
 
 **Enter a random seed**
-* `0`: no seed, browser.Math.random()
-* `seed`: 31 bit Lehmer LCG (_one 31 bit seed, default setting_)
+* `0`: Math.random (_browser implementation, unknown seed_)
+* `seed`: 31 bit Lehmer LCG (_one 31 bit seed_)
 * `seedHi, seedLow`: 53 bit PCG (_two 32 bit seeds_) **_recommended_**
 
 **Set speed**
 * `freeze`: Stop/start action
 * `slow`: 15 photon pairs per minute
-* `medium`: 60 photon pairs per minute (_default setting_)
+* `medium`: 60 photon pairs per minute
 * `fast`: 300 photon pairs per minute **_recommended_**
 
 Allow the experiment to run for at least **5 minutes** at **fast** speed.
 
-An explanation of expected experimental results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
+An explanation of experiment theory, setup and expected results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 
 ### `Project Status`
 
