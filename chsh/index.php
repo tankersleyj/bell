@@ -25,7 +25,7 @@ echo file_get_contents("code.js");
           <option value="Realistic" selected>Realistic</option>
           <option value="Perfect_1">Perfect 1</option>
           <option value="Perfect_2">Perfect 2</option>
-          <option value="Custom">Custom</option>
+          <!--<option value="Custom">Custom</option>-->
         </select>
     <button class="space-left" onclick="handleReset()">Random Seed</button>
     <span class="space-left">Rate:</span>
@@ -35,6 +35,7 @@ echo file_get_contents("code.js");
         <option value="2400">Fast</option>
     </select>
     <input id="freezeChk" class="space-left" type="checkbox" onchange="freeze(this.checked)">Freeze</input>
+    <input id="animateChk" class="space-left" type="checkbox" checked>Animate</input>
     <span class="space-left" id="statusBar"></span>
     </div>
     <div id="custom" class="form-div" style="display:none">  <!-- style="display:none" -->
