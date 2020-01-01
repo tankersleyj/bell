@@ -18,18 +18,17 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 * `Realistic`: local hidden variable model (_default setting_)
 * `Custom`: user defined settings
 
-**Enter a random seed**
+**Enter a Random Seed**
 * `0`: Math.random (_browser implementation, unknown seed_)
 * `seed`: 31 bit Lehmer LCG (_one 31 bit seed_)
 * `seedHi, seedLow`: 53 bit PCG (_two 32 bit seeds_) **_recommended_**
 
-**Set speed**
-* `freeze`: Stop/start action
+**Set Rate**
 * `slow`: 15 photon pairs per minute
 * `medium`: 60 photon pairs per minute
-* `fast`: 300 photon pairs per minute **_recommended_**
+* `fast`: 2400 photon pairs per minute **_recommended_**
 
-Allow the experiment to run for at least **5 minutes** at **fast** speed.
+Allow the experiment to run for at least **a few minutes** at **fast** speed.
 
 An explanation of experiment theory, setup and expected results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 

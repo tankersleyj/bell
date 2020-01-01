@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.6.10, 2020-01-01', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.6.12, 2020-01-01', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -476,29 +476,53 @@ class Experiment {
         // Exerpiment Steps
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, gag1=this.gag1, gag2=this.gag2, mode=this.mode.value, debug=this.debug;
-        const startX=300, midX=450, endX=600, startY=150, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
-        
-        // Initialize new particle
+        const startX=300, midX=450, endX=600, startY=150, endY=300, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
+        const animate=eid("animateChk").checked;
+
+        // Phase 0, Initialize new particle
         if (this.phase===0) {
             this.phase=1;
             this.distance=0;
             this.axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
-            let photonType=(mode=='Quantum')?'QM':'Real'
-            prt1.type=photonType; prt1.lost=false; prt1.axis=this.axis; prt1.result=-1; prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
-            prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1; prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+            let photonType=(mode=='Quantum')?'QM':'Real';
+            prt1.type=photonType; prt1.lost=false; prt1.axis=this.axis; prt1.result=-1;
+            prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.result=-1;
             pol1.prime=Math.round(random.number())==1?true:false;
             pol2.prime=Math.round(random.number())==1?true:false;
             if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
             if (pol2.prime) {pol2.axis=67.5; pol2.name=`b${primeChr}`} else {pol2.axis=22.5; pol2.name='b'}
-            gag1.axis=pol1.axis; gag2.axis=pol2.axis;
-            pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
+            
+            // animation (initialize)
+            if (animate) {
+                prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
+                prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
+                prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0;
+                gag1.axis=pol1.axis; gag2.axis=pol2.axis;
+                pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
+            }
+            
         }
-        
-        // Photon Collision with Polarizer
-        if (this.phase==1 && this.distance>=(midX-startX)) {
-            this.phase=2; this.total+=1;
 
-            // Calculated Polarization (pass-through=+, Reflected=-)
+        // Phase 1, Travel to Polarizer 
+        if (this.phase===1) {
+            this.distance+=movePix;
+            if (this.distance>=(midX-startX)) {this.phase=2; this.total+=1; this.distance=(midX-startX)}
+            
+            // animation (move)
+            if (animate) {
+                if (this.distance>=(midX-startX)) {
+                    prt1.x=startX-(midX-startX); prt1.y=startY;
+                    prt2.x=midX; prt2.y=startY;
+                } else {
+                    prt1.x+=prt1.moveX; prt1.y+=prt1.moveY;
+                    prt2.x+=prt2.moveX; prt2.y+=prt2.moveY;
+                }
+            }
+        }
+
+        // Phase 2 - Polarize
+        if (this.phase==2) {
+            // Calculated Polarization (Result: 1=pass-through=+, 0=Reflected=-)  // todo: rename "result" to "polarized"?
             if (mode=='Quantum') {
                 prt2.type='Real'; 
                 if (random.number()>=0.5) {prt1.result=getQuantumPolarized(prt1,prt2,pol1,pol2,1); prt1.type='Real'; prt2.result=getQuantumPolarized(prt1,prt2,pol1,pol2,2); prt2.type='Real'}
@@ -540,45 +564,67 @@ class Experiment {
             if (mode=='Perfect_2') {prt1.lost=!detectAtAll_Perfect2(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Perfect2(prt2.axis,pol2.axis)}
             if (mode=='Experiment_1') {prt1.lost=!detectAtAll_Experiment1(prt1.axis,pol1.axis); prt2.lost=!detectAtAll_Experiment1(prt2.axis,pol2.axis)}
             
-            // new axis & move calculations
+            // Calculate Axis
             prt1.origAxis=prt1.axis;  prt2.origAxis=prt2.axis;
-            prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
-            if (prt1.result===0) {let moveAngle=pol1.zAxis+45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,90)}
-            else {let moveAngle=pol1.zAxis-45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt1.axis=getNewAxis(pol1.axis,prt1.result,0,90)}
-            if (prt2.result===0) {let moveAngle=pol2.zAxis-45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)}
-            else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180)); prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)}
+            if (prt1.result===0) {prt1.axis=getNewAxis(pol1.axis,prt1.result,0,90)} else {prt1.axis=getNewAxis(pol1.axis,prt1.result,0,90)}
+            if (prt2.result===0) {prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)} else {prt2.axis=getNewAxis(pol2.axis,prt2.result,0,90)}
             
+            // animation (calculate move values)
+            if (animate) {
+                prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
+                if (prt1.result===0) {let moveAngle=pol1.zAxis+45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                else {let moveAngle=pol1.zAxis-45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                if (prt2.result===0) {let moveAngle=pol2.zAxis-45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                if (prt1.lost) {prt1.moveX=0; prt1.moveY=0}
+                else {
+                    if (prt1.result===0) {prt1.moveX=movePix*prt1.moveCos; prt1.moveY=movePix*prt1.moveSin}
+                    else {prt1.moveX=-movePix*prt1.moveCos; prt1.moveY=-movePix*prt1.moveSin}
+                }
+                if (prt2.lost) {prt2.moveX=0; prt2.moveY=0}
+                else {
+                    if (prt2.result===0) {prt2.moveX=-movePix*prt2.moveCos; prt2.moveY=-movePix*prt2.moveSin}
+                    else {prt2.moveX=movePix*prt2.moveCos; prt2.moveY=movePix*prt2.moveSin}
+                }
+            }
+                
             // report
-            if (!prt1.lost && !prt2.lost) {this.updateReports({detected:true})} else {this.totals.ND+=1; this.updateReports({detected:false})}
+            if (!prt1.lost && !prt2.lost) {this.updateReports({detected:true})} 
+            else {this.totals.ND+=1; this.updateReports({detected:false})}
             this.statText=`(${prt1.getStatus()},${prt2.getStatus()})`;
             this.updateStatus();
+            this.phase=3;
         }
         
-        // Move Photon 
-        this.distance+=movePix; 
-        if (this.distance>=(endX-startX)) {this.phase=0} // restart
-        else if (this.distance>=(endX-startX-50)) {prt1.moveX=0; prt1.moveY=0; prt2.moveX=0; prt2.moveY=0} // freeze
-        else if (this.phase==2) {
-            if (prt1.lost) { prt1.moveX=0; prt1.moveY=0;
-            } else {
-                if (prt1.result===0) {prt1.moveX=movePix*prt1.moveCos; prt1.moveY=movePix*prt1.moveSin}
-                else {prt1.moveX=-movePix*prt1.moveCos; prt1.moveY=-movePix*prt1.moveSin}
+        // Phase 3 - Travel to Detector
+        if (this.phase===3) {
+            this.distance+=movePix;
+            if (this.distance>=(endX-startX)) {this.phase=0}  // restart
+            
+            // animation (freeze last 50 pixels of movement)
+            if (animate) {
+                if (this.distance>=(endX-startX-50)) {
+                    if (!prt1.lost) {
+                        if (prt1.result===1) {prt1.x=startX-(endX-startX)+50; prt1.y=startY}
+                        else {prt1.x=startX-(midX-startX); prt1.y=endY-50}
+                    }
+                    if (!prt2.lost) {
+                        if (prt2.result===1) {prt2.x=endX-50; prt2.y=startY}
+                        else {prt2.x=midX; prt2.y=endY-50}
+                    }
+                } else {prt1.x+=prt1.moveX; prt1.y+=prt1.moveY; prt2.x+=prt2.moveX; prt2.y+=prt2.moveY}
             }
-            if (prt2.lost) { prt2.moveX=0; prt2.moveY=0;
-            } else {
-                if (prt2.result===0) {prt2.moveX=-movePix*prt2.moveCos; prt2.moveY=-movePix*prt2.moveSin}
-                else {prt2.moveX=movePix*prt2.moveCos; prt2.moveY=movePix*prt2.moveSin}
-            }
-        } else {prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0}
-        prt1.x+=prt1.moveX; prt1.y+=prt1.moveY; prt2.x+=prt2.moveX; prt2.y+=prt2.moveY;
-        
-        // Draw Experiment
-        this.clear();
-        this.drawEmitters();
-        this.drawPolarizers();
-        this.drawDetectors();
-        this.drawLabels();
-        this.drawParticles();
+        }
+
+        // Animation (Draw Experiment)
+        if (animate) {
+            this.clear();
+            this.drawEmitters();
+            this.drawPolarizers();
+            this.drawDetectors();
+            this.drawLabels();
+            this.drawParticles();
+        }
     }
     
     // Experiment functions
