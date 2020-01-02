@@ -23,10 +23,10 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 * `Custom`: user defined settings
 
 **Enter Seed**
-_Source and Polarizers (s,a,b) random number generators (RNG)_
-* `0,0,0`: Math.random (_one zero per RNG, no user seed_)
-* `s,a,b`: 31 bit Lehmer LCG (_one 31 bit seed per RNG_)
-* `s1,s2,a1,a2,b1,b2`: 53 bit PCG (_two 32 bit seeds per PRNG_) **_recommended_**
+_Source (s) and Polarizers (a,b) Random Seeds_
+* `0,0,0`: Math.random (_zeros, not user seeded_)
+* `s,a,b`: 31 bit Lehmer LCG (_31 bit non-zero integer seeds_)
+* `sH,sL,aH,aL,bH,bL`: 53 bit PCG (_32 bit high & low integer seeds_) **_recommended_**
 
 **Set Rate**
 * `slow`: 15 photon pairs per minute
