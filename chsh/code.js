@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.0, 2020-01-01', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.1, 2020-01-01', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -58,9 +58,9 @@ class RandomHandler {
     }
 }
 // RandomHandlers (seperate instances for source and each polorizer)
-var sourceRandom = new RandomHandler(Math.random()*999998+1);
-var polar1Random = new RandomHandler(Math.random()*999998+1);
-var polar2Random = new RandomHandler(Math.random()*999998+1);
+var sourceRandom = new RandomHandler(randomSeed());
+var polar1Random = new RandomHandler(randomSeed());
+var polar2Random = new RandomHandler(randomSeed());
 
 function animationStart() {if (!animationId && !eid("freezeChk").checked) {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}}
 function animationStep(time) {experiment.step(time); animationId=window.requestAnimationFrame(animationStep)}
@@ -68,9 +68,9 @@ function animationStop() {if (animationId) {experiment.stop(); window.cancelAnim
 function eid(name) {return document.getElementById(name)}
 function freeze(val) {if (val===true) {animationStop()} else {animationStart()}}
 function handleMode() {
-    sourceRandom.setSeed(Math.random()*999998+1);
-    polar1Random.setSeed(Math.random()*999998+1);
-    polar2Random.setSeed(Math.random()*999998+1); 
+    sourceRandom.setSeed(randomSeed());
+    polar1Random.setSeed(randomSeed());
+    polar2Random.setSeed(randomSeed()); 
     experiment.init()
 }
 function handleOnload() {
@@ -90,6 +90,7 @@ function handleOnload() {
   animationStart();
 }
 function handleReset() {animationStop(); experiment.reset(); animationStart()}
+function randomSeed() {return Math.floor(Math.random()*999998+1)}
 function roundTo(val,dec=0) {return Number.parseFloat(Number.parseFloat(val).toFixed(dec))}
 function roundToStr(val,dec=0) {return Number.parseFloat(val).toFixed(dec)}
 function setIdHtml(id,html) {document.getElementById(id).innerHTML=html}
@@ -649,9 +650,8 @@ class Experiment {
     // Experiment functions
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
     reset () {
-        // var seed=prompt(textJson.promptSeed,`${Math.floor(Math.random()*999999)}, ${Math.floor(Math.random()*999999)}`); 
-        // if (seed) {random.setSeed(seed); this.init(); return true}
-        var seed=prompt(textJson.promptSeed,`${Math.floor(Math.random()*999998+1)},${Math.floor(Math.random()*999998+1)},${Math.floor(Math.random()*999998+1)}`);
+        var promptDefault=`${randomSeed()},${randomSeed()},${randomSeed()},${randomSeed()},${randomSeed()},${randomSeed()}`
+        var seed=prompt(textJson.promptSeed,promptDefault);
         if (seed) {
             const seeds=seed.split(',');
             if (seeds.length===1) {
@@ -667,7 +667,7 @@ class Experiment {
                 polar1Random.setSeed(seeds.slice(2,4));
                 polar2Random.setSeed(seeds.slice(4,6));
             } else {
-                alert('Please enter 1, 3 or 6 comma seperated numbers')
+                alert('Please enter 3 or 6 comma seperated integers')
             }
             this.init();
             return true;

@@ -4,10 +4,11 @@ This computer experiment violates Bell's Inequalities with Realistic and Karma P
 
 For information on the computer experiment, see [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper).
 
-Code is runnable on modern browsers, and results are repeatable by re-using random seeds.
+Code is compatible with modern browsers, generating up to 2,400 partical pairs per minute, and results are repeatable using random seeds.
 
 A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided.
-Seperate PRNGs and seeds are used to generate values for Source, Polarizer A and Polarizer B.
+
+Seperate PRNGs are used to generate random values for Source, Polarizer A and Polarizer B.
 
 ## Documentation
 
@@ -21,10 +22,11 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 * `Realistic`: local hidden variable model (_default setting_)
 * `Custom`: user defined settings
 
-**Enter Random Seeds**
-* `0`: Math.random (_browser implementation, unknown seed_)
-* `seed`: 31 bit Lehmer LCG (_one 31 bit seed_)
-* `seedHi, seedLow`: 53 bit PCG (_two 32 bit seeds_) **_recommended_**
+**Enter Seed**
+_Source and Polarizers (s,a,b) random number generators (RNG)_
+* `0,0,0`: Math.random (_one zero per RNG, no user seed_)
+* `s,a,b`: 31 bit Lehmer LCG (_one 31 bit seed per RNG_)
+* `s1,s2,a1,a2,b1,b2`: 53 bit PCG (_two 32 bit seeds per PRNG_) **_recommended_**
 
 **Set Rate**
 * `slow`: 15 photon pairs per minute
