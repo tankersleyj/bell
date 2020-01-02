@@ -88,56 +88,6 @@ echo file_get_contents("code.js");
                     </td>
                 </tr>
                 </table>
-                <table>
-                <tr>
-                    <td class='form-name'>Emitter Random:</td> 
-                    <td class='form-data'>
-                        <select id='polarMode' onchange='handleMode()'>
-                          <option value="random">Math.random</option>
-                          <option value="LCG-31">LCG-31</option>
-                          <option value="PCG-53" selected>PCG-53</option>
-                        </select>                   
-                    </td>
-                    <td class='form-tab'></td>
-                    <td class='form-name'>Seed:</td> 
-                    <td class='form-data'><input type="text" id="a1" size="24" value=""></td>
-                    <td class='form-tab'></td>
-                    <td class='form-name'>Index:</td> 
-                    <td class='form-data'><span id="a1"></span></td>
-                </tr>
-                <tr>
-                    <td class='form-name'>Polarizer A Random:</td> 
-                    <td class='form-data'>
-                        <select id='detectMode' onchange='handleMode()'>
-                          <option value="random">Math.random</option>
-                          <option value="LCG-31">LCG-31</option>
-                          <option value="PCG-53" selected>PCG-53</option>
-                        </select>                   
-                    </td>
-                    <td class='form-tab'></td>
-                    <td class='form-name'>Seed:</td> 
-                    <td class='form-data'><input type="text" id="a1" size="24" value=""></td>
-                    <td class='form-tab'></td>
-                    <td class='form-name'>Index:</td> 
-                    <td class='form-data'><span id="a1"></span></td>
-                </tr>
-                <tr>
-                    <td class='form-name'>Polarizer B Random:</td> 
-                    <td class='form-data'>
-                        <select id='detectMode' onchange='handleMode()'>
-                          <option value="random">Math.random</option>
-                          <option value="LCG-31">LCG-31</option>
-                          <option value="PCG-53" selected>PCG-53</option>
-                        </select>                   
-                    </td>
-                    <td class='form-tab'></td>
-                    <td class='form-name'>Seed:</td> 
-                    <td class='form-data'><input type="text" id="a1" size="24" value=""></td>
-                    <td class='form-tab'></td>
-                    <td class='form-name'>Index:</td> 
-                    <td class='form-data'><span id="a1"></span></td>
-                </tr>
-                </table>
             </td>
             <td class='form-tab'></td>
             <td class='form-data'><button onclick="handleRate(15)">Save</button><br><button onclick="handleRate(15)" disabled>Edit</button></td>

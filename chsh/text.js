@@ -1,10 +1,9 @@
 const textJson = {
     "title": "Testing Bell's Theorem - CHSH Experiment",
-    "promptSeed": `Random Seeds\n
-Source and Polarizers (s,a,b) random number generators (RNG):
-\u2022 0,0,0 = Math.random (one zero per RNG, no user seed)
-\u2022 s,a,b = 31 bit Lehmer LCG (one 31 bit non-zero integer per RNG)
-\u2022 s1,s2,a1,a2,b1,b2 = 53 bit PCG (two 32 bit non-zero integers per RNG)\n
+    "promptSeed": `Source (s) and Polarizers (a,b) Random Seeds:
+\u2022 0,0,0 = Math.random (zeros, not user seeded)
+\u2022 s,a,b = 31 bit Lehmer LCG (31 bit non-zero integer seeds)
+\u2022 sH,sL,aH,aL,bH,bL = 53 bit PCG (32 bit high & low integer seeds)\n
 Enter 3 or 6 comma seperated integers:`,
     "canHead": `<br>
         Bell CHSH computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
