@@ -2,6 +2,7 @@ html, body {margin: 8px 8px 8px 8px; font-family:Arial, Helvetica, sans-serif; f
 table, th, td {padding: 0 4px 0 4px; border-collapse:collapse; border:0 solid; vertical-align:top; text-align:left}
 tr.rpt-row td {padding: 1px 4px 1px 4px; border: 1px solid gray}
 #canvas {background: linear-gradient(to bottom, white 0%, azure 100%)}
+.data-seed {color:dimgray; background-color:whitesmoke}
 .form-data {text-align:left; white-space: nowrap; padding: 0 0 0 0}
 .form-div {padding: 4px 0 0 0}
 .form-name {text-align:right; white-space: nowrap; padding: 0 4px 0 0}

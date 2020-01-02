@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.2, 2020-01-01', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.3, 2020-01-02', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -31,25 +31,19 @@ class RandomHandler {
         else {return Math.random()}
     }
     setSeed(seed) {
-        this.index=0;
-        // convert seed to array of seeds
+        this.seed=seed; this.index=0;
+        // convert seed to array of integers
         if (Array.isArray(seed)) {this.seeds=seed}
-        else {this.seeds=(seed||0).toString().split(",").map(n => Math.floor(Number(n)))}
+        else {this.seeds=(seed||0).toString().split(".").map(n => Math.floor(Number(n)))}
         // set random mode
         if (this.seeds.length > 1) {
-            // paper: https://arxiv.org/pdf/1811.04035.pdf
             this.mode="PCG-53";
-            this.seed=this.seeds;
             PcgRandom.prototype.state = function() {return [this.state_[0], this.state_[1]]}; // add state method
             this.pcgRandom = new PcgRandom(this.seeds[0], this.seeds[1]);
         } else if (this.seeds[0] > 0) {
             this.mode="LCG-31";
-            this.seed=this.seeds[0];
             this.lcgRandom = new LcgRandom(this.seeds[0]);
-        } else {
-            this.mode="Math.random";
-            this.seed=this.seeds[0];
-        }        
+        } else {this.mode="Math.random"}        
     }
     state() {
         if (this.mode==="LCG-31") {return this.lcgRandom.state()}
@@ -57,22 +51,15 @@ class RandomHandler {
         else {return "not available"}
     }
 }
-// RandomHandlers (seperate instances for source and each polorizer)
-var sourceRandom = new RandomHandler(randomSeed());
-var polar1Random = new RandomHandler(randomSeed());
-var polar2Random = new RandomHandler(randomSeed());
+// RandomHandler
+var random = new RandomHandler(randomSeed());
 
 function animationStart() {if (!animationId && !eid("freezeChk").checked) {experiment.start(); animationId=window.requestAnimationFrame(animationStep)}}
 function animationStep(time) {experiment.step(time); animationId=window.requestAnimationFrame(animationStep)}
 function animationStop() {if (animationId) {experiment.stop(); window.cancelAnimationFrame(animationId); animationId=0}}
 function eid(name) {return document.getElementById(name)}
 function freeze(val) {if (val===true) {animationStop()} else {animationStart()}}
-function handleMode() {
-    sourceRandom.setSeed(randomSeed());
-    polar1Random.setSeed(randomSeed());
-    polar2Random.setSeed(randomSeed()); 
-    experiment.init()
-}
+function handleMode() {random.setSeed(randomSeed()); experiment.init()}
 function handleOnload() {
   canvas=document.getElementById("canvas"); context=canvas.getContext("2d"); mode=eid("mode");
   canHead=eid("canHead"); canFoot=eid("canFoot"); statusBar=eid("statusBar");
@@ -90,7 +77,7 @@ function handleOnload() {
   animationStart();
 }
 function handleReset() {animationStop(); experiment.reset(); animationStart()}
-function randomSeed() {return Math.floor(Math.random()*999998+1)}
+function randomSeed(double=true) {return (double) ? Number((Math.random()*998+1).toFixed(3)) : Math.floor(Math.random()*999998+1)}
 function roundTo(val,dec=0) {return Number.parseFloat(Number.parseFloat(val).toFixed(dec))}
 function roundToStr(val,dec=0) {return Number.parseFloat(val).toFixed(dec)}
 function setIdHtml(id,html) {document.getElementById(id).innerHTML=html}
@@ -462,11 +449,11 @@ class Experiment {
         }
 
         // Experiment 1 Calculations
-        function getExperiment1Polarized(photon_degrees, polarizer_degrees, randomNumber) {
+        function getCustomPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (randomNumber<=probability)?"+":"-";  // f(x) probability, 1=passthrough(+), 0=reflect(-)
         }
-        function detectAtAll_Experiment1(photon_degrees, polarizer_degrees, randomNumber) {
+        function detectAtAll_Custom(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=0.8*cos2Delta*cos2Delta;
             return (randomNumber<=probability)?true:false; // 0.8cos^2(2x) probability, 1=detected, 0=not detected
         }  
@@ -478,19 +465,19 @@ class Experiment {
         // Exerpiment Steps
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, gag1=this.gag1, gag2=this.gag2, mode=this.mode.value, debug=this.debug;
-        const startX=300, midX=450, endX=600, startY=150, endY=300, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
+        const startX=300, midX=450, endX=600, startY=150, endY=300, gapPix=50, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
 
         // Phase 0, Initialize new particle
         if (this.phase===0) {
             this.animate=eid("animateChk").checked; // enable in phase 0 only
             this.phase=1;
             this.distance=0;
-            this.axis=sourceRandom.number()*360;  // fixed (Mark Payne, 2019-11-23)
+            this.axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
             let photonType=(mode=='Quantum')?'QM':'Real';
             prt1.type=photonType; prt1.lost=false; prt1.axis=this.axis; prt1.polarized="";
             prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.polarized="";
-            pol1.prime=Math.round(polar1Random.number())==1?true:false;
-            pol2.prime=Math.round(polar2Random.number())==1?true:false;
+            pol1.prime=Math.round(random.number())==1?true:false;
+            pol2.prime=Math.round(random.number())==1?true:false;
             if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
             if (pol2.prime) {pol2.axis=67.5; pol2.name=`b${primeChr}`} else {pol2.axis=22.5; pol2.name='b'}
             
@@ -524,19 +511,18 @@ class Experiment {
 
         // Phase 2 - Polarize
         if (this.phase==2) {
-            // Calculated Polarization (polarized: 1=pass-through=+, -1=Reflected=-)
+            // Calculated Polarization (polarized: pass-through="+", Reflected="-")
             if (mode=='Quantum') {
-                // prt2.type='Real';
-                if (sourceRandom.number()>=0.5) {
-                    prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, polar1Random.number()); prt1.type='Real'; 
-                    prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, polar2Random.number()); prt2.type='Real'
+                if (random.number()>=0.5) {
+                    prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real'; 
+                    prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real'
                 } else {
-                    prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, polar2Random.number()); prt2.type='Real';
-                    prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, polar1Random.number()); prt1.type='Real'
+                    prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
+                    prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real'
                 }
             } else if (mode=='Realistic') {
-                prt1.polarized=getRealisticPolarized(prt1.axis, pol1.axis, polar1Random.number());
-                prt2.polarized=getRealisticPolarized(prt2.axis, pol2.axis, polar2Random.number());
+                prt1.polarized=getRealisticPolarized(prt1.axis, pol1.axis, random.number());
+                prt2.polarized=getRealisticPolarized(prt2.axis, pol2.axis, random.number());
             } else if (mode=='Karma_Peny') {
                 prt1.polarized=getKarmaPenyPolarized(prt1.axis, pol1.axis);
                 prt2.polarized=getKarmaPenyPolarized(prt2.axis, pol2.axis);
@@ -544,11 +530,11 @@ class Experiment {
                 prt1.polarized=getPerfect1Polarized(prt1.axis, pol1.axis);
                 prt2.polarized=getPerfect1Polarized(prt2.axis, pol2.axis);
             } else if (mode=='Perfect_2') {
-                prt1.polarized=getPerfect2Polarized(prt1.axis, pol1.axis, polar1Random.number());
-                prt2.polarized=getPerfect2Polarized(prt2.axis, pol2.axis, polar2Random.number());
-            } else if (mode=='Experiment_1') {
-                prt1.polarized=getExperiment1Polarized(prt1.axis, pol1.axis, polar1Random.number());
-                prt2.polarized=getExperiment1Polarized(prt2.axis, pol2.axis, polar2Random.number());
+                prt1.polarized=getPerfect2Polarized(prt1.axis, pol1.axis, random.number());
+                prt2.polarized=getPerfect2Polarized(prt2.axis, pol2.axis, random.number());
+            } else if (mode=='Custom') {
+                prt1.polarized=getCustomPolarized(prt1.axis, pol1.axis, random.number());
+                prt2.polarized=getCustomPolarized(prt2.axis, pol2.axis, random.number());
             }
             
             // Calculate Detected at all (lost or not)
@@ -557,12 +543,12 @@ class Experiment {
                 prt2.lost=!detectAtAll_Quantum();
             }
             if (mode=='Realistic') {
-                prt1.lost=!detectAtAll_Realistic(prt1.axis, pol1.axis, polar1Random.number());
-                prt2.lost=!detectAtAll_Realistic(prt2.axis, pol2.axis, polar2Random.number());
+                prt1.lost=!detectAtAll_Realistic(prt1.axis, pol1.axis, random.number());
+                prt2.lost=!detectAtAll_Realistic(prt2.axis, pol2.axis, random.number());
             }
             if (mode=='Karma_Peny') {
-                prt1.lost=!detectAtAll_KarmaPeny(prt1.axis, pol1.axis ,polar1Random.number());
-                prt2.lost=!detectAtAll_KarmaPeny(prt2.axis, pol2.axis, polar2Random.number());
+                prt1.lost=!detectAtAll_KarmaPeny(prt1.axis, pol1.axis ,random.number());
+                prt2.lost=!detectAtAll_KarmaPeny(prt2.axis, pol2.axis, random.number());
             }
             if (mode=='Perfect_1') {
                 prt1.lost=!detectAtAll_Perfect1(prt1.axis, pol1.axis);
@@ -572,19 +558,15 @@ class Experiment {
                 prt1.lost=!detectAtAll_Perfect2(prt1.axis, pol1.axis);
                 prt2.lost=!detectAtAll_Perfect2(prt2.axis, pol2.axis);
             }
-            if (mode=='Experiment_1') {
-                prt1.lost=!detectAtAll_Experiment1(prt1.axis, pol1.axis, polar1Random.number());
-                prt2.lost=!detectAtAll_Experiment1(prt2.axis, pol2.axis, polar2Random.number());
+            if (mode=='Custom') {
+                prt1.lost=!detectAtAll_Custom(prt1.axis, pol1.axis, random.number());
+                prt2.lost=!detectAtAll_Custom(prt2.axis, pol2.axis, random.number());
             }
-            
+
             // Calculate Axis
-            prt1.origAxis=prt1.axis;
-            prt2.origAxis=prt2.axis;
-            // if (prt1.polarized==="-") {prt1.axis=getNewAxis(pol1.axis,prt1.polarized,0,90)} else {prt1.axis=getNewAxis(pol1.axis,prt1.polarized,0,90)}
-            // if (prt2.polarized==="-") {prt2.axis=getNewAxis(pol2.axis,prt2.polarized,0,90)} else {prt2.axis=getNewAxis(pol2.axis,prt2.polarized,0,90)}
-            prt1.axis=getNewAxis(pol1.axis, prt1.polarized, 0, 90);
-            prt2.axis=getNewAxis(pol2.axis, prt2.polarized, 0, 90);
-            
+            prt1.origAxis=prt1.axis; prt1.axis=getNewAxis(pol1.axis, prt1.polarized, 0, 90);
+            prt2.origAxis=prt2.axis; prt2.axis=getNewAxis(pol2.axis, prt2.polarized, 0, 90);
+
             // animation (calculate move values)
             if (this.animate) {
                 prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
@@ -617,16 +599,16 @@ class Experiment {
             this.distance+=movePix;
             if (this.distance>=(endX-startX)) {this.phase=0}  // restart
             
-            // animation (freeze last 50 pixels of movement)
+            // animation
             if (this.animate) {
-                if (this.distance>=(endX-startX-50)) {
+                if (this.distance>=(endX-startX-gapPix)) {
                     if (!prt1.lost) {
-                        if (prt1.polarized==="+") {prt1.x=startX-(endX-startX)+50; prt1.y=startY}
-                        else {prt1.x=startX-(midX-startX); prt1.y=endY-50}
+                        if (prt1.polarized==="+") {prt1.x=startX-(endX-startX)+gapPix; prt1.y=startY}
+                        else {prt1.x=startX-(midX-startX); prt1.y=endY-gapPix}
                     }
                     if (!prt2.lost) {
-                        if (prt2.polarized==="+") {prt2.x=endX-50; prt2.y=startY}
-                        else {prt2.x=midX; prt2.y=endY-50}
+                        if (prt2.polarized==="+") {prt2.x=endX-gapPix; prt2.y=startY}
+                        else {prt2.x=midX; prt2.y=endY-gapPix}
                     }
                 } else {prt1.x+=prt1.moveX; prt1.y+=prt1.moveY; prt2.x+=prt2.moveX; prt2.y+=prt2.moveY}
             }
@@ -646,28 +628,8 @@ class Experiment {
     // Experiment functions
     clear () {let cvs=this.canvas; context.clearRect(0,0,cvs.width,cvs.height);}
     reset () {
-        var promptDefault=`${randomSeed()},${randomSeed()},${randomSeed()},${randomSeed()},${randomSeed()},${randomSeed()}`
-        var seed=prompt(textJson.promptSeed,promptDefault);
-        if (seed) {
-            const seeds=seed.split(',');
-            if (seeds.length===1) {
-                sourceRandom.setSeed(seed);
-                polar1Random.setSeed(seed);
-                polar2Random.setSeed(seed); 
-            } else if (seeds.length===3) {
-                sourceRandom.setSeed(seeds[0]);
-                polar1Random.setSeed(seeds[1]);
-                polar2Random.setSeed(seeds[2]); 
-            } else if (seeds.length===6) {
-                sourceRandom.setSeed(seeds.slice(0,2));
-                polar1Random.setSeed(seeds.slice(2,4));
-                polar2Random.setSeed(seeds.slice(4,6));
-            } else {
-                alert('Please enter 3 or 6 comma seperated integers')
-            }
-            this.init();
-            return true;
-        }
+        var seed=prompt(textJson.promptSeed,`${randomSeed()}`);
+        if (seed) {random.setSeed(seed); this.init(); return true}
     }
     start () {this.timeLast=window.performance.now()}
     stop () {}
@@ -693,6 +655,12 @@ class Experiment {
         function getE(pp,pm,mp,mm) {
             let e1=pp-pm-mp+mm, e2=pp+pm+mp+mm;
             return e1/e2;
+        }
+        function seedStatus(seed) {
+            var numSeeds = [seed].map(n => Number(n));
+            if (numSeeds.indexOf(0) >= 0) {return "<span class='data-seed'>Non-repeatable seed</span>"}
+            // else if (numSeeds.length!==[...new Set(numSeeds)].length) {return "<span class='data-seed'>Warning duplicate seed</span>"}
+            else {return `Seed: <span class='data-seed'>${numSeeds.join(', ')}</span>`}
         }
         // initialize params
         params.init = params.init?true:false;
@@ -737,12 +705,8 @@ class Experiment {
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus);
 
         // Build Total Report 5 (display in terminal 1)
-        this.header1.innerHTML=`<b>Totals</b> <i>(${mode})</i><b>:</b><br>`
-        this.footer1.innerHTML=`<small><i>
-            Source: PRNG=${sourceRandom.mode}, Seed=${sourceRandom.seed}, Index=${sourceRandom.index}, State=${sourceRandom.state()}<br>
-            Polarizer A: PRNG=${polar1Random.mode}, Seed=${polar1Random.seed}, Index=${polar1Random.index}, State=${polar1Random.state()}<br>
-            Polarizer B: PRNG=${polar2Random.mode}, Seed=${polar2Random.seed}, Index=${polar2Random.index}, State=${polar2Random.state()}<br>
-            </i></small><br>`;
+        this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
+        this.footer1.innerHTML=`<small><i>Random=${random.mode}, Seed=${random.seed}, Index=${random.index}, State=${random.state()}</i></small><br><br>`;
         totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
         summaryRows+=this.getRowHtml(`E1`,'0°','22.5°', roundTo(totals.C1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
         summaryRows+=this.getRowHtml(`E2`,'0°','67.5°', roundTo(totals.C2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
