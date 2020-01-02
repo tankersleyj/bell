@@ -24,7 +24,7 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 _Source, Polarizer A, Polarizer B_
 * `0`: Math.random (_no seed_)
 * `integer`: 31 bit Lehmer LCG (_31 bit non-zero integer seed_)
-* `decimal`: 53 bit PCG (_64 bit double seed_) **_recommended_**
+* `decimal`: 53 bit PCG (_64 bit decimal seed_) **_recommended_**
 
 **Set Rate**
 * `slow`: 15 photon pairs per minute
