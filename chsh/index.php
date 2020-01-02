@@ -91,7 +91,11 @@ echo file_get_contents("code.js");
             </td>
             <td class='form-tab'></td>
             <td class='form-tab'></td>
-            <td class='form-data'><button onclick="handleRate(15)">Save</button><br><button onclick="handleRate(15)" disabled>Edit</button></td>
+            <td class='form-data'>
+                <button onclick="handleRate(15)">Save</button><br>
+                <button onclick="handleRate(15)" disabled>Edit</button><br>
+                <span class="data-note">In Development</span>
+            </td>
         </tr>
         </table>
     </div>

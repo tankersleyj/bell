@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.3, 2020-01-02', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.4, 2020-01-02', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -243,10 +243,14 @@ class Experiment {
         // properties
         this.rate=eid('rate').value;
         this.phase=0;
-        this.total=0;
         this.distance=0;
         this.statText='';
-        this.totals={"E1":0, "E2":0, "E3":0, "E4":0, "S":0, "C1":0, "C2":0, "C3":0, "C4":0, "U1":0, "U2":0, "U3":0, "U4":0, "C":0, "ND":0};
+        this.totals={
+            "Count":0, "Count1":0, "Count2":0, "Count3":0, "Count4":0, 
+            "E1":0, "E2":0, "E3":0, "E4":0, 
+            "Lost":0, "Lost1":0, "Lost2":0, "Lost3":0, "Lost4":0,
+            "S":0
+        };
         this.debug={};
 
         // mode visibility
@@ -469,7 +473,7 @@ class Experiment {
 
         // Phase 0, Initialize new particle
         if (this.phase===0) {
-            this.animate=eid("animateChk").checked; // enable in phase 0 only
+            this.animate=eid("animateChk").checked;  // start|stop animation
             this.phase=1;
             this.distance=0;
             this.axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
@@ -485,17 +489,15 @@ class Experiment {
             if (this.animate) {
                 prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
                 prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
-                prt1.moveX=-movePix, prt1.moveY=0, prt2.moveX=movePix, prt2.moveY=0;
                 gag1.axis=pol1.axis; gag2.axis=pol2.axis;
                 pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
             }
-            
         }
 
         // Phase 1, Travel to Polarizer 
         if (this.phase===1) {
             this.distance+=movePix;
-            if (this.distance>=(midX-startX)) {this.phase=2; this.total+=1; this.distance=(midX-startX)}
+            if (this.distance>=(midX-startX)) {this.phase=2; this.distance=(midX-startX)}
             
             // animation (move)
             if (this.animate) {
@@ -503,22 +505,22 @@ class Experiment {
                     prt1.x=startX-(midX-startX); prt1.y=startY;
                     prt2.x=midX; prt2.y=startY;
                 } else {
-                    prt1.x+=prt1.moveX; prt1.y+=prt1.moveY;
-                    prt2.x+=prt2.moveX; prt2.y+=prt2.moveY;
+                    prt1.moveX=-movePix; prt1.x+=prt1.moveX; // prt1.moveY=0; prt1.y+=prt1.moveY;
+                    prt2.moveX=movePix; prt2.x+=prt2.moveX; // prt2.moveY=0; prt2.y+=prt2.moveY;
                 }
             }
         }
 
         // Phase 2 - Polarize
         if (this.phase==2) {
-            // Calculated Polarization (polarized: pass-through="+", Reflected="-")
+            // Calculated Polarization ("+"=pass-through, "-"=Reflected)
             if (mode=='Quantum') {
                 if (random.number()>=0.5) {
                     prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real'; 
-                    prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real'
+                    prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
                 } else {
                     prt2.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
-                    prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real'
+                    prt1.polarized=getQuantumPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real';
                 }
             } else if (mode=='Realistic') {
                 prt1.polarized=getRealisticPolarized(prt1.axis, pol1.axis, random.number());
@@ -567,28 +569,19 @@ class Experiment {
             prt1.origAxis=prt1.axis; prt1.axis=getNewAxis(pol1.axis, prt1.polarized, 0, 90);
             prt2.origAxis=prt2.axis; prt2.axis=getNewAxis(pol2.axis, prt2.polarized, 0, 90);
 
-            // animation (calculate move values)
+            // animation 
             if (this.animate) {
+                // calculate trignometric move ratios
                 prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
                 if (prt1.polarized==="-") {let moveAngle=pol1.zAxis+45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180))}
                 else {let moveAngle=pol1.zAxis-45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180))}
                 if (prt2.polarized==="-") {let moveAngle=pol2.zAxis-45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180))}
                 else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180))}
-                if (prt1.lost) {prt1.moveX=0; prt1.moveY=0}
-                else {
-                    if (prt1.polarized==="-") {prt1.moveX=movePix*prt1.moveCos; prt1.moveY=movePix*prt1.moveSin}
-                    else {prt1.moveX=-movePix*prt1.moveCos; prt1.moveY=-movePix*prt1.moveSin}
-                }
-                if (prt2.lost) {prt2.moveX=0; prt2.moveY=0}
-                else {
-                    if (prt2.polarized==="-") {prt2.moveX=-movePix*prt2.moveCos; prt2.moveY=-movePix*prt2.moveSin}
-                    else {prt2.moveX=movePix*prt2.moveCos; prt2.moveY=movePix*prt2.moveSin}
-                }
             }
                 
             // report
             if (!prt1.lost && !prt2.lost) {this.updateReports({detected:true})} 
-            else {this.totals.ND+=1; this.updateReports({detected:false})}
+            else {this.totals.Lost+=1; this.updateReports({detected:false})}
             this.statText=`(${prt1.getStatus()},${prt2.getStatus()})`;
             this.updateStatus();
             this.phase=3;
@@ -602,6 +595,7 @@ class Experiment {
             // animation
             if (this.animate) {
                 if (this.distance>=(endX-startX-gapPix)) {
+                    // stop at detector
                     if (!prt1.lost) {
                         if (prt1.polarized==="+") {prt1.x=startX-(endX-startX)+gapPix; prt1.y=startY}
                         else {prt1.x=startX-(midX-startX); prt1.y=endY-gapPix}
@@ -610,7 +604,22 @@ class Experiment {
                         if (prt2.polarized==="+") {prt2.x=endX-gapPix; prt2.y=startY}
                         else {prt2.x=midX; prt2.y=endY-gapPix}
                     }
-                } else {prt1.x+=prt1.moveX; prt1.y+=prt1.moveY; prt2.x+=prt2.moveX; prt2.y+=prt2.moveY}
+                } else {
+                    // calculate move increment
+                    if (prt1.lost) {prt1.moveX=0; prt1.moveY=0}
+                    else {
+                        if (prt1.polarized==="-") {prt1.moveX=movePix*prt1.moveCos; prt1.moveY=movePix*prt1.moveSin}
+                        else {prt1.moveX=-movePix*prt1.moveCos; prt1.moveY=-movePix*prt1.moveSin}
+                    }
+                    if (prt2.lost) {prt2.moveX=0; prt2.moveY=0}
+                    else {
+                        if (prt2.polarized==="-") {prt2.moveX=-movePix*prt2.moveCos; prt2.moveY=-movePix*prt2.moveSin}
+                        else {prt2.moveX=movePix*prt2.moveCos; prt2.moveY=movePix*prt2.moveSin}
+                    }
+                    // move
+                    prt1.x+=prt1.moveX; prt1.y+=prt1.moveY;
+                    prt2.x+=prt2.moveX; prt2.y+=prt2.moveY;
+                }
             }
         }
 
@@ -667,38 +676,38 @@ class Experiment {
         params.detected = params.detected?true:false;
         // set constants and declare variables
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug, totals=this.totals;
-        let terminal, reportIndexes, report, cName, uName, eName, aName, bName, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
-        if (!pol1.prime && !pol2.prime) {terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes; cName='C1'; uName='U1'; eName='E1'; aName='a'; bName='b'}
-        if (!pol1.prime && pol2.prime) {terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes; cName='C2'; uName='U2'; eName='E2'; aName='a'; bName='b′'}
-        if (pol1.prime && !pol2.prime) {terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes; cName='C3'; uName='U3'; eName='E3'; aName='a′'; bName='b'}
-        if (pol1.prime && pol2.prime) {terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; cName='C4'; uName='U4'; eName='E4'; aName='a′'; bName='b′'}
+        let terminal, reportIndexes, report, countName, lostName, eName, aName, bName, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
+        if (!pol1.prime && !pol2.prime) {terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes; countName='Count1'; lostName='Lost1'; eName='E1'; aName='a'; bName='b'}
+        if (!pol1.prime && pol2.prime) {terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes; countName='Count2'; lostName='Lost2'; eName='E2'; aName='a'; bName='b′'}
+        if (pol1.prime && !pol2.prime) {terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes; countName='Count3'; lostName='Lost3'; eName='E3'; aName='a′'; bName='b'}
+        if (pol1.prime && pol2.prime) {terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; countName='Count4'; lostName='Lost4'; eName='E4'; aName='a′'; bName='b′'}
         
         // detected totals
         if (!params.init) {
             const index=getIndex(prt1, prt2, reportIndexes);
             report[index].tot+=1;
             if (params.detected) {
-                totals[cName]+=1;
-                totals.C+=1;
+                totals[countName]+=1;
+                totals.Count+=1;
             }
-            totals[uName]+=1;
+            totals[lostName]+=1;
         }
         // Build Sub-Report 1,2,3 or 4 (display in terminal 2,3,4 or 5)
         for (let r=1; r<=4; r++) {
-            report[r-1].pct=roundTo((report[r-1].tot/totals[cName])*100,1);
+            report[r-1].pct=roundTo((report[r-1].tot/totals[countName])*100,1);
             report[r-1].note=reportExpected[`${reportIndex}`][r-1];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-detail');
         }
         totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
-        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[cName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
+        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[countName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
         // undetected rows 5-9
         for (let r=5; r<=9; r++) { 
-            report[r-1].pct=roundTo((report[r-1].tot/totals[uName])*100,1);
+            report[r-1].pct=roundTo((report[r-1].tot/totals[lostName])*100,1);
             report[r-1].note=reportExpected[`${reportIndex}`][r];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-undetected');
         }
-        let undetectTotal = (report[4].tot + report[5].tot + report[6].tot + report[7].tot + report[8].tot) / totals[uName] * 100;
-        reportRows+=this.getRowHtml(`<b>${uName}</b>`,na,na,roundTo(totals[uName],4),`<b>${roundTo(undetectTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
+        let lostTotal = (report[4].tot + report[5].tot + report[6].tot + report[7].tot + report[8].tot) / totals[lostName] * 100;
+        reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
         // status
         if (mode=='Quantum') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
         else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
@@ -708,12 +717,12 @@ class Experiment {
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
         this.footer1.innerHTML=`<small><i>Random=${random.mode}, Seed=${random.seed}, Index=${random.index}, State=${random.state()}</i></small><br><br>`;
         totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
-        summaryRows+=this.getRowHtml(`E1`,'0°','22.5°', roundTo(totals.C1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E2`,'0°','67.5°', roundTo(totals.C2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E3`,'45°','22.5°',roundTo(totals.C3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E4`,'45°','67.5°',roundTo(totals.C4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
-        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.C,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][4],'rpt-total');
-        summaryRows+=this.getRowHtml(`<b>U</b>`,na,na,totals.ND,`<i><b>${roundTo((totals.ND/(totals.C+totals.ND))*100,1)}%</b></i>`,`<i>${reportExpected['5'][5]}</i>`,'rpt-detect');
+        summaryRows+=this.getRowHtml(`E1`,'0°','22.5°', roundTo(totals.Count1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E2`,'0°','67.5°', roundTo(totals.Count2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E3`,'45°','22.5°',roundTo(totals.Count3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E4`,'45°','67.5°',roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
+        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][4],'rpt-total');
+        summaryRows+=this.getRowHtml(`<b>Lost</b>`,na,na,totals.Lost,`<i><b>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</b></i>`,`<i>${reportExpected['5'][5]}</i>`,'rpt-detect');
         this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '');
         // setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
