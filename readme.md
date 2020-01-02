@@ -6,6 +6,9 @@ For information on the computer experiment, see [here](https://sites.google.com/
 
 Code is runnable on modern browsers, and results are repeatable by re-using random seeds.
 
+A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided.
+Seperate PRNGs and seeds are used to generate values for Source, Polarizer A and Polarizer B.
+
 ## Documentation
 
 ### `Instructions`
@@ -18,7 +21,7 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 * `Realistic`: local hidden variable model (_default setting_)
 * `Custom`: user defined settings
 
-**Enter a Random Seed**
+**Enter Random Seeds**
 * `0`: Math.random (_browser implementation, unknown seed_)
 * `seed`: 31 bit Lehmer LCG (_one 31 bit seed_)
 * `seedHi, seedLow`: 53 bit PCG (_two 32 bit seeds_) **_recommended_**
@@ -53,7 +56,7 @@ Development Priorities.
 
 ## Caveats
 
-This is a collaborative effort between multiple volunteer developers and scientists.
+This is a collaborative effort between multiple volunteer developers and scientists, primarily through email and public and private blogs.
 
 ## License
 The MIT License (MIT)
