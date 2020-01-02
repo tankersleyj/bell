@@ -25,7 +25,7 @@ echo file_get_contents("code.js");
           <option value="Realistic" selected>Realistic</option>
           <option value="Perfect_1">Perfect 1</option>
           <option value="Perfect_2">Perfect 2</option>
-          <!--<option value="Custom">Custom</option>-->
+          <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Seed</button>
     <span class="space-left">Rate:</span>
@@ -89,6 +89,7 @@ echo file_get_contents("code.js");
                 </tr>
                 </table>
             </td>
+            <td class='form-tab'></td>
             <td class='form-tab'></td>
             <td class='form-data'><button onclick="handleRate(15)">Save</button><br><button onclick="handleRate(15)" disabled>Edit</button></td>
         </tr>

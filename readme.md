@@ -4,11 +4,9 @@ This computer experiment violates Bell's Inequalities with Realistic and Karma P
 
 For information on the computer experiment, see [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper).
 
-Code is compatible with modern browsers, generating up to 2,400 partical pairs per minute, and results are repeatable using random seeds.
+Code is compatible with modern browsers, generating up to 2,400 particle pairs per minute, and results are repeatable using random seeds.
 
 A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided.
-
-Seperate PRNGs are used to generate random values for Source, Polarizer A and Polarizer B.
 
 ## Documentation
 
@@ -22,11 +20,11 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 * `Realistic`: local hidden variable model (_default setting_)
 * `Custom`: user defined settings
 
-**Enter Seed**
-_Source (s) and Polarizers (a,b) Random Seeds_
-* `0,0,0`: Math.random (_zeros, not user seeded_)
-* `s,a,b`: 31 bit Lehmer LCG (_31 bit non-zero integer seeds_)
-* `sH,sL,aH,aL,bH,bL`: 53 bit PCG (_32 bit high & low integer seeds_) **_recommended_**
+**Set Random Seeds**
+_Source, Polarizer A, Polarizer B_
+* `0`: Math.random (_no seed_)
+* `integer`: 31 bit Lehmer LCG (_31 bit non-zero integer seed_)
+* `decimal`: 53 bit PCG (_64 bit double seed_) **_recommended_**
 
 **Set Rate**
 * `slow`: 15 photon pairs per minute
@@ -56,14 +54,16 @@ Development Priorities.
     + `R`: Simplified numeric only translation to R for academic use
     + `3D`: Visual simulation in 2.5D or 3D
 
-## Caveats
+## Caveats and Attributions
 
-This is a collaborative effort between multiple volunteer developers and scientists, primarily through email and public and private blogs.
+Significant contributions and/or guidance from Karma Peny, Chantal Roth and Richard Gill.
+
+53-bit PCG PRNG (https://github.com/thomcc/pcg-random) Copyright 2014 Thom Chiovoloni, under MIT license 
 
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019 James Tankersley Jr
+Copyright (c) 2019-2020 James Tankersley Jr
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
