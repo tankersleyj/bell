@@ -11,10 +11,10 @@ const textJson = {
         & <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>Explained & Debunked</a> [II] for theoretical background.</small>`,
     "canFoot": '<br>',
     "header1": "<b>Totals:</b><br>",
-    "header2": "<b>Test 1 Results</b> <i>(a=0°, b=22.5°)</i><b>:</b><br>",
-    "header3": "<b>Test 2 Results</b> <i>(a=0°, b′=67.5°)</i><b>:</b></b><br>",
-    "header4": "<b>Test 3 Results</b> <i>(a′=45°, b=22.5°)</i><b>:</b></b><br>",
-    "header5": "<b>Test 4 Results</b> <i>(a′=45°, b′=67.5°)</i><b>:</b></b><br>",
+    "header2": "<b>Test Part 1</b> <i>(a=0°, b=22.5°)</i><b>:</b><br>",
+    "header3": "<b>Test Part 2</b> <i>(a=0°, b′=67.5°)</i><b>:</b></b><br>",
+    "header4": "<b>Test Part 3</b> <i>(a′=45°, b=22.5°)</i><b>:</b></b><br>",
+    "header5": "<b>Test Part 4</b> <i>(a′=45°, b′=67.5°)</i><b>:</b></b><br>",
     "footer1": "<br>",
     "footer2": "<br>",
     "footer3": "<br>",
@@ -63,7 +63,7 @@ const textJson = {
         <b>Expermiment</b><br>
         <div class='tab-left paragraph'>
             Sets of photons are repeatedly created with opposite polarization angles <i>(pre-set to between 0° and 360° for non-quantum modes)</i>.<br>
-            Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
+            Polarizers a, a′, b and b′ are set to default angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
             Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br><br>
             Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
             Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
@@ -134,9 +134,9 @@ const textJson = {
         </div><br>`
 }
 const reportExpected = {
-    "1": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%",  "(1-cos²(22.5))/2 = 7%",  "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
-    "2": ["cos²(67.5)/2 = 7%",  "(1-cos²(67.5))/2 = 43%", "(1-cos²(67.5))/2 = 43%", "cos²(67.5)/2 = 7%",  "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=-0.71", "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
-    "3": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%",  "(1-cos²(22.5))/2 = 7%",  "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
-    "4": ["cos²(22.5)/2 = 43%", "(1-cos²(22.5))/2 = 7%",  "(1-cos²(22.5))/2 = 7%",  "cos²(22.5)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
-    "5": ["0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4=2.83", "Lost a or b"]
+    "1": ["QM Expected (<i>a-b=22.5</i>)", "cos²(a-b)/2 = 43%", "(1-cos²(a-b))/2 = 7%",  "(1-cos²(a-b))/2 = 7%",  "cos²(a-b)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
+    "2": ["QM Expected (<i>a-b′=67.5</i>)", "cos²(a-b′)/2 = 7%",  "(1-cos²(a-b′))/2 = 43%", "(1-cos²(a-b′))/2 = 43%", "cos²(a-b′)/2 = 7%",  "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=-0.71", "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
+    "3": ["QM Expected (<i>a′-b=22.5</i>)", "cos²(a′-b)/2 = 43%", "(1-cos²(a′-b))/2 = 7%",  "(1-cos²(a′-b))/2 = 7%",  "cos²(a′-b)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
+    "4": ["QM Expected (<i>a′-b′=22.5</i>)", "cos²(a′-b′)/2 = 3%", "(1-cos²(a′-b′))/2 = 7%",  "(1-cos²(a′-b′))/2 = 7%",  "cos²(a′-b′)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
+    "5": ["QM Expected", "0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4=2.83", "Lost a or b"]
 }

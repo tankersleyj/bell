@@ -20,12 +20,12 @@ echo file_get_contents("code.js");
     <div id="controls">
         Mode: 
         <select id='mode' onchange='handleMode()'>
-          <option value="Quantum">Quantum</option>
-          <option value="Karma_Peny">Karma Peny</option>
-          <option value="Realistic" selected>Realistic</option>
-          <option value="Perfect_1">Perfect 1</option>
-          <option value="Perfect_2">Perfect 2</option>
-          <option value="Custom">Custom</option>
+            <option value="Quantum">Quantum</option>
+            <option value="Realistic" selected>Realistic</option>
+            <option value="Perfect">Perfect</option>
+            <option value="Karma_Peny">Karma Peny</option>
+            <option value="Real_Perfect">Real Perfect</option>
+            <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Seed</button>
     <span class="space-left">Rate:</span>
@@ -65,9 +65,10 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Polarize +:</td> 
                     <td class='form-data'>
                         <select id='polarizeMode' disabled>
-                          <option value="Quantum">QM correlated cos²(Δ) probability</option>
-                          <option value="Realistic" selected>Real cos²(Δ) probability</option>
-                          <option value="Karma_Peny">Peny cos²(Δ) >= 0.5</option>
+                          <option value="Quantum">Quantum, cos²(Δ) correlated</option>
+                          <option value="Realistic" selected>Realistic, cos²(Δ) probability</option>
+                          <option value="Karma_Peny">Karma Peny, cos²(Δ) >= 0.5</option>
+                          <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                         </select>                   
                     </td>
                 </tr>
@@ -75,9 +76,10 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Detect Rate:</td> 
                     <td class='form-data'>
                         <select id='detectMode' disabled>
-                          <option value="Quantum">Perfect 100%</option>
-                          <option value="Realistic" selected>Real cos²(2Δ) probability</option>
-                          <option value="Karma_Peny">Peny 0.37+(0.63*|cos(2Δ)|) probability</option>
+                          <option value="Quantum">Quantum, 100%</option>
+                          <option value="Realistic" selected>Realistic, cos²(2Δ) probability</option>
+                          <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
+                          <option value="Perfect">Perfect, 100%</option>
                         </select>                   
                     </td>
                 </tr>
