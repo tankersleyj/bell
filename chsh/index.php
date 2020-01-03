@@ -48,42 +48,36 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Polarizer Degrees:</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>a:</td> 
-                    <td class='form-data'><input type="text" id="a1" size="4" value="45"></td>
+                    <td class='form-data'><input type="text" id="polarizeA1" size="4" value="0" disabled></td>
                     <td class='form-tab'></td>
                     <td class='form-name'>a':</td> 
-                    <td class='form-data'><input type="text" id="a2" size="4" value="0"></td>
+                    <td class='form-data'><input type="text" id="polarizeA2" size="4" value="45" disabled></td>
                     <td class='form-tab'></td>
                     <td class='form-name'>b:</td> 
-                    <td class='form-data'><input type="text" id="b1" size="4" value="22.5"></td>
+                    <td class='form-data'><input type="text" id="polarizeB1" size="4" value="22.5" disabled></td>
                     <td class='form-tab'></td>
                     <td class='form-name'>b':</td> 
-                    <td class='form-data'><input type="text" id="b2" size="4" value="67.5"></td>
+                    <td class='form-data'><input type="text" id="polarizeB2" size="4" value="67.5" disabled></td>
                 </tr>
                 </table>
                 <table>
                 <tr>
-                    <td class='form-name'>Polarize Method:</td> 
+                    <td class='form-name'>Polarize +:</td> 
                     <td class='form-data'>
-                        <select id='polarMode' onchange='handleMode()'>
-                          <option value="Quantum">Quantum</option>
-                          <option value="Karma_Peny">Karma Peny</option>
-                          <option value="Realistic" selected>Realistic</option>
-                          <option value="Perfect_1">Perfect 1</option>
-                          <option value="Perfect_2">Perfect 2</option>
-                          <option value="Custom">Custom</option>
+                        <select id='polarizeMode' disabled>
+                          <option value="Quantum">QM correlated cos²(Δ) probability</option>
+                          <option value="Realistic" selected>Real cos²(Δ) probability</option>
+                          <option value="Karma_Peny">Peny cos²(Δ) >= 0.5</option>
                         </select>                   
                     </td>
                 </tr>
                 <tr>
-                    <td class='form-name'>Detection Method:</td> 
+                    <td class='form-name'>Detect Rate:</td> 
                     <td class='form-data'>
-                        <select id='detectMode' onchange='handleMode()'>
-                          <option value="Quantum">Quantum</option>
-                          <option value="Karma_Peny">Karma Peny</option>
-                          <option value="Realistic" selected>Realistic</option>
-                          <option value="Perfect_1">Perfect 1</option>
-                          <option value="Perfect_2">Perfect 2</option>
-                          <option value="Custom">Custom</option>
+                        <select id='detectMode' disabled>
+                          <option value="Quantum">Perfect 100%</option>
+                          <option value="Realistic" selected>Real cos²(2Δ) probability</option>
+                          <option value="Karma_Peny">Peny 0.37+(0.63*|cos(2Δ)|) probability</option>
                         </select>                   
                     </td>
                 </tr>
@@ -92,8 +86,8 @@ echo file_get_contents("code.js");
             <td class='form-tab'></td>
             <td class='form-tab'></td>
             <td class='form-data'>
-                <button onclick="handleRate(15)">Save</button><br>
-                <button onclick="handleRate(15)" disabled>Edit</button><br>
+                <button id='customEdit' onclick="handleCustomEdit()">Edit</button>
+                <button id='customRun' onclick="handleCustomRun()" disabled>Run</button><br>
                 <span class="data-note">In Development</span>
             </td>
         </tr>

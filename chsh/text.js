@@ -6,7 +6,8 @@ const textJson = {
 \u2022 decimal = 53 bit PCG (recommended)`,
     "canHead": `<br>
         Bell CHSH computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
-        <small>Refer to <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem</a> [I]
+        Scroll down for <b>Run Instructions</b>.
+        <small>See <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem</a> [I]
         & <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>Explained & Debunked</a> [II] for theoretical background.</small>`,
     "canFoot": '<br>',
     "header1": "<b>Totals:</b><br>",
@@ -19,33 +20,61 @@ const textJson = {
     "footer3": "<br>",
     "footer4": "<br>",
     "footer5": `<br>
+        <b>Instructions</b><br>
+        <div class='tab-left paragraph'>
+            Select [Mode], [Seed] and [Rate] to start experiment.<br>
+            In Custom mode, press [Edit] to customize parameters and press [Run].<br>
+            Allow experiment to run for at least a few minutes at <b>Fast</b> rate to generate sufficient results.<br>
+            Check [Freeze] to pause the expermiment and review results.<br>
+        </div><br>
         <b>Modes</b>:<br>
         <div class='tab-left'>
           <table>
-            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>non-local communication,    <u>detected</u> = 50% probability,        <u>polarized +</u> = anti-correlated cos²(Δ) probability</td></tr>
-            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>local hidden variables,  <u>detected</u> = 0.37+(0.63*|cos(2Δ)|) probability [II], <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>local hidden variables,   <u>detected</u> = cos²(2Δ) probability,   <u>polarize +</u> = cos²(Δ) probability</td></tr>
-            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) probability</td></tr>
-            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>local hidden variables,   <u>detected</u> = 100%, <u>polarize +</u> = cos²(Δ) >= 0.5</td></tr>
-            <tr><td class='mode-head'>Experiment 1</td><td class='mode-note'>local hidden variables,<u>detected</u> = 0.8*cos²(2Δ) probability, <u>polarize +</u> = cos²(Δ) probability</td></tr>
+            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>
+                non-local communication,
+                <u>polarize +</u> = anti-correlated cos²(Δ) probability,
+                <u>detect raate</u> = 100%
+            </td></tr>
+            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>
+                local hidden variables,
+                <u>polarize +</u> = cos²(Δ) >= 0.5,
+                <u>detect rate</u> = 0.37+(0.63*|cos(2Δ)|) probability [II]
+            </td></tr>
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>
+                local hidden variables,
+                <u>polarize +</u> = cos²(Δ) probability,
+                <u>detect rate</u> = cos²(2Δ) probability
+            </td></tr>
+            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>
+                local hidden variables,
+                <u>polarize +</u> = cos²(Δ) probability,
+                <u>detect rate</u> = 100%
+            </td></tr>
+            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>
+                local hidden variables,
+                <u>polarize +</u> = cos²(Δ) >= 0.5,
+                <u>detect rate</u> = 100%
+            </td></tr>
+            <tr><td class='mode-head'>Custom</td><td class='mode-note'>
+                Customize polarizer angles and polarization and detection formulas
+            </td></tr>
           </table>
         </div><br>
-        <b>Overview</b><br>
-        <div class='tab-left overview'>
+        <b>Expermiment</b><br>
+        <div class='tab-left paragraph'>
             Sets of photons are repeatedly created with opposite polarization angles <i>(pre-set to between 0° and 360° for non-quantum modes)</i>.<br>
             Polarizers a, a′, b and b′ are set to angles of 0°, 45°, 22.5° and 67.5° respectively.<br>
             Polarizer angles (<i>a or a′ and b or b′</i>) are randomly selected before each set of photons are measured.<br><br>
             Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
             Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
-            QM expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
+            Quantum Theory expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
             <br>
-            Quantum mode violates Bell's inequalities (<i>S>2</i>) by simulating '<i>spooky action at a distance</i>'.<br>
-            Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2</i>) using only local hidden variables.<br>
-            These experiments demonstrate the '<i>detection loophole</i>' in similar real-world CHSH experiments.<br>
-            (<i>Violation of Bell's inequalities can be explained as simple experimental in-efficiencies, such as photon loss around 45° delta,<br>
-            where delta is the difference between a photon's hidden polarization angle and it's Beam Splitting Polarizer</i>).<br>
+            Quantum mode violates Bell's inequalities (<i>S>2, ~=2.83</i>) by simulating '<i>spooky action at a distance</i>'.<br>
+            Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2, ~=2.83</i>) using only local hidden variables.<br>
             <br>
-            Select [Fast] to speed up experiment. Select [Freeze] to freeze & unfreeze photons.<br>
+            These experiments demonstrate the 'detection loophole', (<i>photon loss when a photon's polarization<br>
+            angle is approximately half way between it's Polarizer's pass-through and reflection angles</i>),<br>
+            and may be responsible for similar results in physical (<i>non-simulated</i>) CHSH experiments.<br>
         </div><br>
         <div><b>Probabilities Graph</b> (<i>Realistic, single photon polariaze & detect</i>):<br>
           <div class='tab-left'>
