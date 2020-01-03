@@ -16,8 +16,9 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 
 **Select Mode**
 * `Quanum`: non-local wave collapse model
-* `Karma Peny`: local hidden variable model
 * `Realistic`: local hidden variable model (_default setting_)
+* `Karma Peny`: local hidden variable model
+* `Perfect`: local hidden variable model
 * `Custom`: user defined settings
 
 **Set Random Seeds**

@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.5, 2020-01-02', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.6, 2020-01-02', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -282,10 +282,10 @@ class Experiment {
         // Custom Settings
         const isCustom = (this.mode.value=='Custom');
         setVis(eid('custom'),isCustom);
-        this.polarizeA1 = (isCustom) ? eid('polarizeA1').value : 0;
-        this.polarizeA2 = (isCustom) ? eid('polarizeA2').value : 45;
-        this.polarizeB1 = (isCustom) ? eid('polarizeB1').value : 22.5;
-        this.polarizeB2 = (isCustom) ? eid('polarizeB2').value : 67.5;
+        this.polarizeA1 = (isCustom) ? Number(eid('polarizeA1').value) : 0;
+        this.polarizeA2 = (isCustom) ? Number(eid('polarizeA2').value) : 45;
+        this.polarizeB1 = (isCustom) ? Number(eid('polarizeB1').value) : 22.5;
+        this.polarizeB2 = (isCustom) ? Number(eid('polarizeB2').value) : 67.5;
         this.polarizeMode = (isCustom) ? eid('polarizeMode').value : this.mode.value;
         this.detectMode = (isCustom) ? eid('detectMode').value : this.mode.value;
         
@@ -446,7 +446,7 @@ class Experiment {
             return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
         }
         function detectAtAll_Quantum() {return true}  // (random.number()<=0.5)?true:false}  // f(x)=50% probability
-
+        
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
@@ -456,7 +456,7 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
             return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
         }
-
+        
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
@@ -466,26 +466,26 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (randomNumber<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
         }
-
-        // Perfect 1 Calculations
-        function getPerfect1Polarized(photon_degrees, polarizer_degrees, randomNumber) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (randomNumber<=probability)?"+":"-";  // f(x) probability, 1=passthrough(+), 0=reflect(-)
-        }
-        function detectAtAll_Perfect1() {
-            return true; // f(x)=1, 1=detected, 0=not detected
-        } 
         
-        // Perfect 2 Calculations
-        function getPerfect2Polarized(photon_degrees, polarizer_degrees) {
+        // Perfect Calculations
+        function getPerfectPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
         }
-        function detectAtAll_Perfect2() {
+        function detectAtAll_Perfect() {
             return true; // f(x)=1, 1=detected, 0=not detected
         }
+        
+        // Real Perfect Calculations
+        function getRealPerfectPolarization(photon_degrees, polarizer_degrees, randomNumber) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+            return (randomNumber<=probability)?"+":"-";  // f(x) probability, 1=passthrough(+), 0=reflect(-)
+        }
+        function detectAtAll_RealPerfect() {
+            return true; // f(x)=1, 1=detected, 0=not detected
+        } 
 
-        // Experiment 1 Calculations
+        // Custom Calculations
         function getCustomPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (randomNumber<=probability)?"+":"-";  // f(x) probability, 1=passthrough(+), 0=reflect(-)
@@ -558,15 +558,15 @@ class Experiment {
             } else if (mode=='Realistic') {
                 prt1.polarized=getRealisticPolarized(prt1.axis, pol1.axis, random.number());
                 prt2.polarized=getRealisticPolarized(prt2.axis, pol2.axis, random.number());
+            } else if (mode=='Perfect') {
+                prt1.polarized=getPerfectPolarized(prt1.axis, pol1.axis);
+                prt2.polarized=getPerfectPolarized(prt2.axis, pol2.axis);
             } else if (mode=='Karma_Peny') {
                 prt1.polarized=getKarmaPenyPolarized(prt1.axis, pol1.axis);
                 prt2.polarized=getKarmaPenyPolarized(prt2.axis, pol2.axis);
-            } else if (mode=='Perfect_1') {
-                prt1.polarized=getPerfect1Polarized(prt1.axis, pol1.axis, random.number());
-                prt2.polarized=getPerfect1Polarized(prt2.axis, pol2.axis, random.number());
-            } else if (mode=='Perfect_2') {
-                prt1.polarized=getPerfect2Polarized(prt1.axis, pol1.axis);
-                prt2.polarized=getPerfect2Polarized(prt2.axis, pol2.axis);
+            } else if (mode=='Real_Perfect') {
+                prt1.polarized=getRealPerfectPolarization(prt1.axis, pol1.axis, random.number());
+                prt2.polarized=getRealPerfectPolarization(prt2.axis, pol2.axis, random.number());
             } else if (mode=='Custom') {
                 prt1.polarized=getCustomPolarized(prt1.axis, pol1.axis, random.number());
                 prt2.polarized=getCustomPolarized(prt2.axis, pol2.axis, random.number());
@@ -581,17 +581,17 @@ class Experiment {
                 prt1.lost=!detectAtAll_Realistic(prt1.axis, pol1.axis, random.number());
                 prt2.lost=!detectAtAll_Realistic(prt2.axis, pol2.axis, random.number());
             }
+            if (mode=='Perfect') {
+                prt1.lost=!detectAtAll_Perfect(prt1.axis, pol1.axis);
+                prt2.lost=!detectAtAll_Perfect(prt2.axis, pol2.axis);
+            }
             if (mode=='Karma_Peny') {
                 prt1.lost=!detectAtAll_KarmaPeny(prt1.axis, pol1.axis ,random.number());
                 prt2.lost=!detectAtAll_KarmaPeny(prt2.axis, pol2.axis, random.number());
             }
-            if (mode=='Perfect_1') {
-                prt1.lost=!detectAtAll_Perfect1(prt1.axis, pol1.axis);
-                prt2.lost=!detectAtAll_Perfect1(prt2.axis, pol2.axis);
-            }
-            if (mode=='Perfect_2') {
-                prt1.lost=!detectAtAll_Perfect2(prt1.axis, pol1.axis);
-                prt2.lost=!detectAtAll_Perfect2(prt2.axis, pol2.axis);
+            if (mode=='Real_Perfect') {
+                prt1.lost=!detectAtAll_RealPerfect(prt1.axis, pol1.axis);
+                prt2.lost=!detectAtAll_RealPerfect(prt2.axis, pol2.axis);
             }
             if (mode=='Custom') {
                 prt1.lost=!detectAtAll_Custom(prt1.axis, pol1.axis, random.number());
@@ -676,11 +676,11 @@ class Experiment {
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
-    getHeaderHtml(reportRows,aName,bName,footNote) {
+    getHeaderHtml(reportRows,aName,bName,expected,footNote) {
         return `
 <table class='rpt-table'>
     <tr class='rpt-row rpt-head'>
-        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Count</td><td>polarized</td><td class='rpt-note'>QM Expected</td>
+        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Count</td><td>polarized</td><td class='rpt-note'>${expected}</td>
     </tr>${reportRows}
 </table><div><i><small>${footNote}</small></i></div>`;
     }
@@ -709,11 +709,23 @@ class Experiment {
         params.detected = params.detected?true:false;
         // set constants and declare variables
         const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug, totals=this.totals;
-        let terminal, reportIndexes, report, countName, lostName, eName, aName, bName, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
-        if (!pol1.prime && !pol2.prime) {terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes; countName='Count1'; lostName='Lost1'; eName='E1'; aName='a'; bName='b'}
-        if (!pol1.prime && pol2.prime) {terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes; countName='Count2'; lostName='Lost2'; eName='E2'; aName='a'; bName='b′'}
-        if (pol1.prime && !pol2.prime) {terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes; countName='Count3'; lostName='Lost3'; eName='E3'; aName='a′'; bName='b'}
-        if (pol1.prime && pol2.prime) {terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes; countName='Count4'; lostName='Lost4'; eName='E4'; aName='a′'; bName='b′'}
+        let header, terminal, reportIndexes, report, countName, lostName, eName, aName, bName, aValue, bValue, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
+        if (!pol1.prime && !pol2.prime) {
+            header=this.header2; terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes;
+            countName='Count1'; lostName='Lost1'; eName='E1'; aName='a'; bName='b'; aValue=this.polarizeA1; bValue=this.polarizeB1;
+        }
+        if (!pol1.prime && pol2.prime) {
+            header=this.header3; terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes;
+            countName='Count2'; lostName='Lost2'; eName='E2'; aName='a'; bName='b′'; aValue=this.polarizeA1; bValue=this.polarizeB2;
+        }
+        if (pol1.prime && !pol2.prime) {
+            header=this.header4; terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes;
+            countName='Count3'; lostName='Lost3'; eName='E3'; aName='a′'; bName='b'; aValue=this.polarizeA2; bValue=this.polarizeB1;
+        }
+        if (pol1.prime && pol2.prime) {
+            header=this.header5; terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes;
+            countName='Count4'; lostName='Lost4'; eName='E4'; aName='a′'; bName='b′'; aValue=this.polarizeA2; bValue=this.polarizeB2;
+        }
         
         // detected totals
         if (!params.init) {
@@ -728,35 +740,40 @@ class Experiment {
         // Build Sub-Report 1,2,3 or 4 (display in terminal 2,3,4 or 5)
         for (let r=1; r<=4; r++) {
             report[r-1].pct=roundTo((report[r-1].tot/totals[countName])*100,1);
-            report[r-1].note=reportExpected[`${reportIndex}`][r-1];
+            // report[r-1].note=reportExpected[`${reportIndex}`][r-1];
+            report[r-1].note=reportExpected[`${reportIndex}`][r];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-detail');
         }
         totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
-        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[countName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
+        // reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[countName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
+        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[countName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][5],'rpt-subtotal');
         // undetected rows 5-9
         for (let r=5; r<=9; r++) { 
             report[r-1].pct=roundTo((report[r-1].tot/totals[lostName])*100,1);
-            report[r-1].note=reportExpected[`${reportIndex}`][r];
+            // report[r-1].note=reportExpected[`${reportIndex}`][r];
+            report[r-1].note=reportExpected[`${reportIndex}`][r+1];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-undetected');
         }
         let lostTotal = (report[4].tot + report[5].tot + report[6].tot + report[7].tot + report[8].tot) / totals[lostName] * 100;
-        reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
+        // reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
+        reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][11],'rpt-detect');
         // status
         if (mode=='Quantum') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
         else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
-        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportStatus);
+        header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°)</i><b>:</b></b><br>`;
+        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportExpected[`${reportIndex}`][0], reportStatus);
 
         // Build Total Report 5 (display in terminal 1)
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
         this.footer1.innerHTML=`<small><i>Random=${random.mode}, Seed=${random.seed}, Index=${random.index}, State=${random.state()}</i></small><br><br>`;
         totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
-        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.Count1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.Count2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.Count3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
-        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][4],'rpt-total');
-        summaryRows+=this.getRowHtml(`<b>Lost</b>`,na,na,totals.Lost,`<i><b>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</b></i>`,`<i>${reportExpected['5'][5]}</i>`,'rpt-detect');
-        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '');
+        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.Count1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][1],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.Count2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][2],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.Count3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][3],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
+        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][5],'rpt-total');
+        summaryRows+=this.getRowHtml(`<b>Lost</b>`,na,na,totals.Lost,`<i><b>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</b></i>`,`<i>${reportExpected['5'][6]}</i>`,'rpt-detect');
+        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', reportExpected['5'][0], '');
         // setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
 }
