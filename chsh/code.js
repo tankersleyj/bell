@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.4, 2020-01-02', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.5, 2020-01-02', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -10,7 +10,6 @@ var header1, header2, header3, header4, header5, footer1, footer2, footer3, foot
 
 // Lehmer LCG Random, https://gist.github.com/blixt/f17b47c62508be59987b
 class LcgRandom {
-    // References (Lehmer LCG RNG): https://en.wikipedia.org/wiki/Lehmer_random_number_generator
     constructor(seed) {this.setSeed(seed)}
     number() {
         this.seed = (this.seed * 48271) % 2147483647;
@@ -22,7 +21,7 @@ class LcgRandom {
 
 // Random Handler
 class RandomHandler {
-    // Seed: 0=Math.random(), 1-2147483646=LcgRandom(), seedHi,seedLo=PcgRandom()
+    // Seed: 0=Math.random(), integer=LcgRandom(), seedHi,seedLo=PcgRandom()
     constructor(seed) {this.setSeed(seed)}
     number() {
         this.index++;
@@ -37,13 +36,18 @@ class RandomHandler {
         else {this.seeds=(seed||0).toString().split(".").map(n => Math.floor(Number(n)))}
         // set random mode
         if (this.seeds.length > 1) {
+            // 53 bit PGC RNG, https://en.wikipedia.org/wiki/Permuted_congruential_generator
             this.mode="PCG-53";
             PcgRandom.prototype.state = function() {return [this.state_[0], this.state_[1]]}; // add state method
             this.pcgRandom = new PcgRandom(this.seeds[0], this.seeds[1]);
         } else if (this.seeds[0] > 0) {
+            // 31 bit Lehmer LCG RNG, https://en.wikipedia.org/wiki/Lehmer_random_number_generator
             this.mode="LCG-31";
             this.lcgRandom = new LcgRandom(this.seeds[0]);
-        } else {this.mode="Math.random"}        
+        } else {
+            // browser dependent, commonly xorshift128+, no user seed, https://v8.dev/blog/math-random
+            this.mode="Math.random";
+        }        
     }
     state() {
         if (this.mode==="LCG-31") {return this.lcgRandom.state()}
@@ -58,8 +62,30 @@ function animationStart() {if (!animationId && !eid("freezeChk").checked) {exper
 function animationStep(time) {experiment.step(time); animationId=window.requestAnimationFrame(animationStep)}
 function animationStop() {if (animationId) {experiment.stop(); window.cancelAnimationFrame(animationId); animationId=0}}
 function eid(name) {return document.getElementById(name)}
+function eid_enable(name,enable) {document.getElementById(name).disabled=!enable}
 function freeze(val) {if (val===true) {animationStop()} else {animationStart()}}
-function handleMode() {random.setSeed(randomSeed()); experiment.init()}
+function enableCustom(enable) {
+    eid_enable('freezeChk',!enable); eid("freezeChk").checked=enable;
+    eid_enable('customEdit',!enable); eid_enable('customRun',enable);
+    eid_enable('polarizeA1',enable); eid_enable('polarizeA2',enable);
+    eid_enable('polarizeB1',enable); eid_enable('polarizeB2',enable);
+    eid_enable('polarizeMode',enable); eid_enable('detectMode',enable);
+}
+function handleCustomEdit() {
+    enableCustom(true);
+    animationStop();
+}
+function handleCustomRun() {
+    enableCustom(false);
+    experiment.init();
+    animationStart();
+}
+function handleMode() {
+    random.setSeed(randomSeed());
+    enableCustom(false);
+    experiment.init();
+    animationStart();
+}
 function handleOnload() {
   canvas=document.getElementById("canvas"); context=canvas.getContext("2d"); mode=eid("mode");
   canHead=eid("canHead"); canFoot=eid("canFoot"); statusBar=eid("statusBar");
@@ -253,10 +279,17 @@ class Experiment {
         };
         this.debug={};
 
-        // mode visibility
-        setVis(eid('custom'),(this.mode.value=='Custom'));
+        // Custom Settings
+        const isCustom = (this.mode.value=='Custom');
+        setVis(eid('custom'),isCustom);
+        this.polarizeA1 = (isCustom) ? eid('polarizeA1').value : 0;
+        this.polarizeA2 = (isCustom) ? eid('polarizeA2').value : 45;
+        this.polarizeB1 = (isCustom) ? eid('polarizeB1').value : 22.5;
+        this.polarizeB2 = (isCustom) ? eid('polarizeB2').value : 67.5;
+        this.polarizeMode = (isCustom) ? eid('polarizeMode').value : this.mode.value;
+        this.detectMode = (isCustom) ? eid('detectMode').value : this.mode.value;
         
-        // report 1 (a=0, b=22.5)
+        // report 1 (a, b)
         this.report1=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
@@ -270,7 +303,7 @@ class Experiment {
         ];
         this.report1Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
         
-        // report 2 (a=0, b′=67.5)
+        // report 2 (a, b′)
         this.report2=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
@@ -284,7 +317,7 @@ class Experiment {
         ];
         this.report2Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
         
-        // report 3 (a′=45, b=22.5)
+        // report 3 (a′, b)
         this.report3=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
@@ -298,7 +331,7 @@ class Experiment {
         ];
         this.report3Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
         
-        // report 4 (a′=45, b′=67.5)
+        // report 4 (a′, b′)
         this.report4=[
             {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
             {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
@@ -324,14 +357,14 @@ class Experiment {
         prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:45,zAxis:45,color:'indianred',name:"a"});
-        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:67.5,zAxis:-45,color:'indianred',name:"b"});
+        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:this.polarizeA1,zAxis:45,color:'indianred',name:"a"});
+        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:this.polarizeB1,zAxis:-45,color:'indianred',name:"b"});
         const pol1=this.pol1, pol2=this.pol2;
         pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
 
         // Guages
-        this.gag1 = new Gauge({x:150,y:150,radius:60,axis:0,color1:'greenyellow',color2:'yellowgreen'});
-        this.gag2 = new Gauge({x:450,y:150,radius:60,axis:67.5,color1:'greenyellow',color2:'yellowgreen'});
+        this.gag1 = new Gauge({x:150,y:150,radius:60,axis:pol1.axis,color1:'greenyellow',color2:'yellowgreen'});
+        this.gag2 = new Gauge({x:450,y:150,radius:60,axis:pol2.axis,color1:'greenyellow',color2:'yellowgreen'});
         
          // Detectors
         this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:90,color:'green',name:"D+"});
@@ -435,20 +468,20 @@ class Experiment {
         }
 
         // Perfect 1 Calculations
-        function getPerfect2Polarized(photon_degrees, polarizer_degrees, randomNumber) {
+        function getPerfect1Polarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (randomNumber<=probability)?"+":"-";  // f(x) probability, 1=passthrough(+), 0=reflect(-)
         }
-        function detectAtAll_Perfect2() {
+        function detectAtAll_Perfect1() {
             return true; // f(x)=1, 1=detected, 0=not detected
         } 
         
         // Perfect 2 Calculations
-        function getPerfect1Polarized(photon_degrees, polarizer_degrees) {
+        function getPerfect2Polarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
         }
-        function detectAtAll_Perfect1() {
+        function detectAtAll_Perfect2() {
             return true; // f(x)=1, 1=detected, 0=not detected
         }
 
@@ -482,8 +515,8 @@ class Experiment {
             prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.polarized="";
             pol1.prime=Math.round(random.number())==1?true:false;
             pol2.prime=Math.round(random.number())==1?true:false;
-            if (pol1.prime) {pol1.axis=45; pol1.name=`a${primeChr}`} else {pol1.axis=0; pol1.name='a'}
-            if (pol2.prime) {pol2.axis=67.5; pol2.name=`b${primeChr}`} else {pol2.axis=22.5; pol2.name='b'}
+            if (pol1.prime) {pol1.axis=this.polarizeA2; pol1.name=`a${primeChr}`} else {pol1.axis=this.polarizeA1; pol1.name='a'}
+            if (pol2.prime) {pol2.axis=this.polarizeB2; pol2.name=`b${primeChr}`} else {pol2.axis=this.polarizeB1; pol2.name='b'}
             
             // animation (initialize)
             if (this.animate) {
@@ -529,11 +562,11 @@ class Experiment {
                 prt1.polarized=getKarmaPenyPolarized(prt1.axis, pol1.axis);
                 prt2.polarized=getKarmaPenyPolarized(prt2.axis, pol2.axis);
             } else if (mode=='Perfect_1') {
-                prt1.polarized=getPerfect1Polarized(prt1.axis, pol1.axis);
-                prt2.polarized=getPerfect1Polarized(prt2.axis, pol2.axis);
+                prt1.polarized=getPerfect1Polarized(prt1.axis, pol1.axis, random.number());
+                prt2.polarized=getPerfect1Polarized(prt2.axis, pol2.axis, random.number());
             } else if (mode=='Perfect_2') {
-                prt1.polarized=getPerfect2Polarized(prt1.axis, pol1.axis, random.number());
-                prt2.polarized=getPerfect2Polarized(prt2.axis, pol2.axis, random.number());
+                prt1.polarized=getPerfect2Polarized(prt1.axis, pol1.axis);
+                prt2.polarized=getPerfect2Polarized(prt2.axis, pol2.axis);
             } else if (mode=='Custom') {
                 prt1.polarized=getCustomPolarized(prt1.axis, pol1.axis, random.number());
                 prt2.polarized=getCustomPolarized(prt2.axis, pol2.axis, random.number());
@@ -717,10 +750,10 @@ class Experiment {
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
         this.footer1.innerHTML=`<small><i>Random=${random.mode}, Seed=${random.seed}, Index=${random.index}, State=${random.state()}</i></small><br><br>`;
         totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
-        summaryRows+=this.getRowHtml(`E1`,'0°','22.5°', roundTo(totals.Count1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E2`,'0°','67.5°', roundTo(totals.Count2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E3`,'45°','22.5°',roundTo(totals.Count3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E4`,'45°','67.5°',roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.Count1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][0],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.Count2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][1],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.Count3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][2],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][3],'rpt-detail');
         summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][4],'rpt-total');
         summaryRows+=this.getRowHtml(`<b>Lost</b>`,na,na,totals.Lost,`<i><b>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</b></i>`,`<i>${reportExpected['5'][5]}</i>`,'rpt-detect');
         this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', '');

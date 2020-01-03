@@ -12,8 +12,8 @@ tr.rpt-row td {padding: 1px 4px 1px 4px; border: 1px solid gray}
 .graph-note {color:dimgray}
 .mode-head {font-weight:bold; text-align:right; white-space: nowrap;}
 .mode-note {color:dimgray}
+.paragraph {color:dimgray}
 .key-head {text-align:right; white-space: nowrap;}
-.overview {color:dimgray}
 .ref {font-size:small; color:dimgray}
 .ref-author {font-style:italic}
 .ref-num {color:black}
