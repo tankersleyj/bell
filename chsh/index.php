@@ -20,11 +20,12 @@ echo file_get_contents("code.js");
     <div id="controls">
         Mode: 
         <select id='mode' onchange='handleMode()'>
-            <option value="Quantum">Quantum</option>
-            <option value="Realistic" selected>Realistic</option>
+            <option value="Quantum_Theory">Quantum Theory</option>
+            <option value="Real" selected>Real</option>
             <option value="Perfect">Perfect</option>
-            <option value="Karma_Peny">Karma Peny</option>
             <option value="Real_Perfect">Real Perfect</option>
+            <option value="Realistic" selected>Realistic</option>
+            <option value="Karma_Peny">Karma Peny</option>
             <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Seed</button>
@@ -65,10 +66,12 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Polarize +:</td> 
                     <td class='form-data'>
                         <select id='polarizeMode' disabled>
-                          <option value="Quantum">Quantum, cos²(Δ) correlated</option>
+                          <option value="Quantum_Theory">Quantum Theory, cos²(Δ) correlated</option>
+                          <option value="Real">Real, cos²(Δ) probability</option>
+                          <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
+                          <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
                           <option value="Realistic" selected>Realistic, cos²(Δ) probability</option>
                           <option value="Karma_Peny">Karma Peny, cos²(Δ) >= 0.5</option>
-                          <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                         </select>                   
                     </td>
                 </tr>
@@ -76,10 +79,12 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Detect Rate:</td> 
                     <td class='form-data'>
                         <select id='detectMode' disabled>
-                          <option value="Quantum">Quantum, 100%</option>
+                          <option value="Quantum_Theory">Quantum Theory, 100%</option>
+                          <option value="Real">Real, cos²(2Δ) probability</option>
+                          <option value="Perfect">Perfect, 100%</option>
+                          <option value="Real_Perfect">Real Perfect, 100%</option>
                           <option value="Realistic" selected>Realistic, cos²(2Δ) probability</option>
                           <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
-                          <option value="Perfect">Perfect, 100%</option>
                         </select>                   
                     </td>
                 </tr>
@@ -90,7 +95,6 @@ echo file_get_contents("code.js");
             <td class='form-data'>
                 <button id='customEdit' onclick="handleCustomEdit()">Edit</button>
                 <button id='customRun' onclick="handleCustomRun()" disabled>Run</button><br>
-                <span class="data-note">In Development</span>
             </td>
         </tr>
         </table>
