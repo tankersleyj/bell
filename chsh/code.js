@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.8, 2020-01-03', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.9, 2020-01-03', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -156,8 +156,9 @@ class Particle extends Control {
             ctx.beginPath(); ctx.arc(x,y,r,rad1,rad2); ctx.fill();
         }
         const x=this.x, y=this.y, r=this.radius, axis=this.axis, type=this.type, lost=this.lost;
-        const qcolor='gray', col1=(type=='QT'||lost)?qcolor:this.color1, col2=(type=='QT'||lost)?qcolor:this.color2, text=(type=='QT'||lost)?'?':this.text;
-        draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2); 
+        const qcolor='lightgray', col1=(type=='QT'||lost)?qcolor:this.color1, col2=(type=='QT'||lost)?qcolor:this.color2, text=(type=='QT'||lost)?'?':this.text;
+        if (axis===undefined) {draw_arc(x,y,r,0,360,qcolor)}
+        else {draw_arc(x,y,r,axis+90,axis+180+90,col1); draw_arc(x,y,r,axis+180+90,axis+90,col2)}
         if (text) {this.draw_text(ctx,x,y,text,'black','white');}
     }
     shift (angle,distance) {this.x+=Point.shiftX(angle,distance); this.y+=Point.shiftY(angle,distance)}
@@ -500,10 +501,15 @@ class Experiment {
             this.animate=eid("animateChk").checked;  // start|stop animation
             this.phase=1;
             this.distance=0;
-            this.axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
-            let photonType=(mode=='Quantum_Theory')?'QT':'Real';
-            prt1.type=photonType; prt1.lost=false; prt1.axis=this.axis; prt1.polarized="";
-            prt2.type=photonType; prt2.lost=false; prt2.axis=this.axis>=180?this.axis-180:this.axis+180; prt2.polarized="";
+            if (mode=='Quantum_Theory') {
+                this.axis=undefined;
+                prt1.type='QT'; prt1.lost=false; prt1.axis=undefined; prt1.polarized="";
+                prt2.type='QT'; prt2.lost=false; prt2.axis=undefined; prt2.polarized="";              
+            } else {
+                this.axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
+                prt1.type='Real'; prt1.lost=false; prt1.axis=this.axis; prt1.polarized="";
+                prt2.type='Real'; prt2.lost=false; prt2.axis=(this.axis>=180) ? this.axis-180 : this.axis+180; prt2.polarized="";     
+            }
             pol1.prime=Math.round(random.number())==1?true:false;
             pol2.prime=Math.round(random.number())==1?true:false;
             if (pol1.prime) {pol1.axis=this.polarizeA2; pol1.name=`a${primeChr}`} else {pol1.axis=this.polarizeA1; pol1.name='a'}
@@ -539,10 +545,15 @@ class Experiment {
         if (this.phase==2) {
             // Calculated Polarization ("+"=pass-through, "-"=Reflected)
             if (this.polarizeMode=='Quantum_Theory') {
+                this.axis=random.number()*360;
                 if (random.number()>=0.5) {
+                    prt1.axis=this.axis;
+                    prt2.axis=(this.axis>=180) ? this.axis-180 : this.axis+180;  
                     prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real'; 
                     prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
                 } else {
+                    prt2.axis=this.axis;
+                    prt1.axis=(this.axis>=180) ? this.axis-180 : this.axis+180;  
                     prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
                     prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real';
                 }
