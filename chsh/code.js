@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.10, 2020-01-03', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.12, 2020-01-03', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -347,33 +347,36 @@ class Experiment {
         this.report4Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
 
         // emitter (source)
-        this.emitter = new Emitter({x:300,y:150,radius:20,color:'skyblue',name:"S"});
-        const emitter=this.emitter;
-        emitter.text=emitter.buildText();
+        this.emitterS = new Emitter({x:300,y:150,radius:20,color:'skyblue',name:"S"});
+        const emitterS=this.emitterS;
+        emitterS.text=emitterS.buildText();
 
         // particles
-        this.prt1 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'skyblue',name:"a",polarized:"",type:'Real',lost:false});
-        this.prt2 = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'skyblue',name:"b",polarized:"",type:'Real',lost:false});
-        const prt1=this.prt1, prt2=this.prt2;
-        prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
+        this.photonA = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'skyblue',name:"a",polarized:"",type:'Real',lost:false});
+        this.photonB = new Particle({x:300,y:150,radius:20,axis:0,color1:'orange',color2:'skyblue',name:"b",polarized:"",type:'Real',lost:false});
+        const photonA=this.photonA, photonB=this.photonB;
+        photonA.text=photonA.buildText(); photonB.text=photonB.buildText();
 
         // Polarizers
-        this.pol1 = new Polarizer({x:150,y:150,width:40,height:40,axis:this.polarizeA1,zAxis:45,color:'indianred',name:"a"});
-        this.pol2 = new Polarizer({x:450,y:150,width:40,height:40,axis:this.polarizeB1,zAxis:-45,color:'indianred',name:"b"});
-        const pol1=this.pol1, pol2=this.pol2;
-        pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
+        this.polarizerA = new Polarizer({x:150,y:150,width:40,height:40,axis:this.polarizeA1,zAxis:45,color:'indianred',name:"a"});
+        this.polarizerB = new Polarizer({x:450,y:150,width:40,height:40,axis:this.polarizeB1,zAxis:-45,color:'indianred',name:"b"});
+        const polarizerA=this.polarizerA, polarizerB=this.polarizerB;
+        polarizerA.text=polarizerA.buildText(); polarizerB.text=polarizerB.buildText();
 
-        // Guages
-        this.gag1 = new Gauge({x:150,y:150,radius:60,axis:pol1.axis,color1:'greenyellow',color2:'yellowgreen'});
-        this.gag2 = new Gauge({x:450,y:150,radius:60,axis:pol2.axis,color1:'greenyellow',color2:'yellowgreen'});
+        // Gauges
+        this.gaugeA = new Gauge({x:150,y:150,radius:60,axis:polarizerA.axis,color1:'greenyellow',color2:'yellowgreen'});
+        this.gaugeB = new Gauge({x:450,y:150,radius:60,axis:polarizerB.axis,color1:'greenyellow',color2:'yellowgreen'});
         
          // Detectors
-        this.det1 = new Detector({x:50,y:150,width:40,height:40,axis:90,color:'green',name:"D+"});
-        this.det2 = new Detector({x:150,y:250,width:40,height:40,axis:0,color:'green',name:"D-"});
-        this.det3 = new Detector({x:550,y:150,width:40,height:40,axis:-90,color:'green',name:"D+"});
-        this.det4 = new Detector({x:450,y:250,width:40,height:40,axis:0,color:'green',name:"D-"});
-        const det1=this.det1, det2=this.det2, det3=this.det3, det4=this.det4;
-        det1.text=det1.buildText(); det2.text=det2.buildText(), det3.text=det3.buildText(); det4.text=det4.buildText();     
+        this.detectorA1 = new Detector({x:50,y:150,width:40,height:40,axis:90,color:'green',name:"D+"});
+        this.detectorA2 = new Detector({x:150,y:250,width:40,height:40,axis:0,color:'green',name:"D-"});
+        this.detectorB1 = new Detector({x:550,y:150,width:40,height:40,axis:-90,color:'green',name:"D+"});
+        this.detectorB2 = new Detector({x:450,y:250,width:40,height:40,axis:0,color:'green',name:"D-"});
+        const detectorA1=this.detectorA1, detectorA2=this.detectorA2, detectorB1=this.detectorB1, detectorB2=this.detectorB2;
+        detectorA1.text=detectorA1.buildText();
+        detectorA2.text=detectorA2.buildText();
+        detectorB1.text=detectorB1.buildText();
+        detectorB2.text=detectorB2.buildText();     
         
         // Labels
         this.lab0 = new Label({x:300,y:50,color:'blue',name:imageTitle,font:"18px Arial"});
@@ -409,15 +412,15 @@ class Experiment {
     }
     drawEmitters () {
         const ctx=this.context;
-        this.emitter.draw(ctx);
+        this.emitterS.draw(ctx);
     }
     drawPolarizers () {
         const ctx=this.context;
-        this.gag1.draw(ctx); this.gag2.draw(ctx); this.pol1.draw(ctx); this.pol2.draw(ctx);
+        this.gaugeA.draw(ctx); this.gaugeB.draw(ctx); this.polarizerA.draw(ctx); this.polarizerB.draw(ctx);
     }
     drawDetectors () {
         const ctx=this.context;
-        this.det1.draw(ctx); this.det2.draw(ctx); this.det3.draw(ctx); this.det4.draw(ctx);
+        this.detectorA1.draw(ctx); this.detectorA2.draw(ctx); this.detectorB1.draw(ctx); this.detectorB2.draw(ctx);
     }
     drawLabels () {
         const ctx=this.context;
@@ -425,61 +428,61 @@ class Experiment {
     }
     drawParticles () {
         const ctx=this.context;
-        this.prt1.draw(ctx); this.prt2.draw(ctx);
+        this.photonA.draw(ctx); this.photonB.draw(ctx);
     }
     
     // Timed Experiment Steps (photon movement, then polarization and detection)
     step (time) {
 
-        // Quantum_Theory Calculations (wave collapse, communicating particles)
-        function getQuantumTheoryPolarized(prt1,prt2,pol1,pol2,side,randomNumber) {
-            let polarized="";
-            const delta=Math.abs(Math.abs(pol2.axis)-Math.abs(pol1.axis)), cosDelta=Math.abs(Math.cos(delta*Math.PI/180)), probability=cosDelta*cosDelta;
+        // Quantum Anti-Correlated Calculations (wave collapse, communicating particles)
+        function getQuantumAntiPolarized(photonA,photonB,polarizerA,polarizerB,side,randomNumber) {
+            let polarized="", delta, cosDelta, probability;
             if (side==1) {
-                if (prt2.type=='Real') {
-                    if (prt2.polarized==="+") {polarized=(randomNumber<=probability)?"+":"-"} else {polarized=(randomNumber<=probability)?"-":"+"}
-                    prt1.type='Real';
+                delta=Math.abs(Math.abs(polarizerA.axis)-Math.abs(photonA.axis)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+                polarized=(randomNumber<=probability) ? "+" : "-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
+                photonA.type='Real';
+                photonB.axis= (polarizerA.axis>=180) ? polarizerA.axis-180 : polarizerA.axis+180;  // anti-correlate entangled particle
+            } else {
+                delta=Math.abs(Math.abs(polarizerB.axis)-Math.abs(photonB.axis)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+                polarized=(randomNumber<=probability) ? "+" : "-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
+                photonB.type='Real';
+                photonA.axis= (polarizerB.axis>=180) ? polarizerB.axis-180 : polarizerB.axis+180;  // anti-correlate entangled particle
+            }
+            return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
+        }
+        function getQuantumAntiDetected() {return true}
+
+        // Quantum_Theory Calculations (wave collapse, communicating particles)
+        function getQuantumTheoryPolarized(photonA,photonB,polarizerA,polarizerB,side,randomNumber) {
+            let polarized="";
+            const delta=Math.abs(Math.abs(polarizerB.axis)-Math.abs(polarizerA.axis)), cosDelta=Math.abs(Math.cos(delta*Math.PI/180)), probability=cosDelta*cosDelta;
+            if (side==1) {
+                if (photonB.type=='Real') {
+                    if (photonB.polarized==="+") {polarized=(randomNumber<=probability)?"+":"-"} else {polarized=(randomNumber<=probability)?"-":"+"}
+                    photonA.type='Real';
                 } else {
                     polarized=(randomNumber>=0.5) ? "+" : "-";
-                    prt1.type='Real';
+                    photonA.type='Real';
                 }
             } else {
-                if (prt1.type=='Real') {
-                    if (prt1.polarized==="+") {polarized=(randomNumber<=probability)?"+":"-"} else {polarized=(randomNumber<=probability)?"-":"+"}
-                    prt2.type='Real';
+                if (photonA.type=='Real') {
+                    if (photonA.polarized==="+") {polarized=(randomNumber<=probability)?"+":"-"} else {polarized=(randomNumber<=probability)?"-":"+"}
+                    photonB.type='Real';
                 } else {
                     polarized=(randomNumber>=0.5) ? "+" : "-";
-                    prt2.type='Real';
+                    photonB.type='Real';
                 }
             }
             return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
         }
         function getQuantumTheoryDetected() {return true}
         
-        // Quantum Anti-Correlated Calculations (wave collapse, communicating particles)
-        function getQuantumAntiPolarized(prt1,prt2,pol1,pol2,side,randomNumber) {
-            let polarized="", delta, cosDelta, probability;
-            if (side==1) {
-                delta=Math.abs(Math.abs(pol1.axis)-Math.abs(prt1.axis)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-                polarized=(randomNumber<=probability) ? "+" : "-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
-                prt1.type='Real';
-                prt2.axis= (pol1.axis>=180) ? pol1.axis-180 : pol1.axis+180;  // instantly anti-correlate entangled particle
-            } else {
-                delta=Math.abs(Math.abs(pol2.axis)-Math.abs(prt2.axis)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-                polarized=(randomNumber<=probability) ? "+" : "-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
-                prt2.type='Real';
-                prt1.axis= (pol2.axis>=180) ? pol2.axis-180 : pol2.axis+180;  // instantly anti-correlate entangled particle
-            }
-            return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
-        }
-        function getQuantumAntiDetected() {return true}
-        
-        // Real Calculations
-        function getRealPolarized(photon_degrees, polarizer_degrees, randomNumber) {
+        // Realistic Calculations
+        function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
         }
-        function getRealDetected(photon_degrees, polarizer_degrees, randomNumber) {
+        function getRealisticDetected(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
             return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
         }
@@ -493,16 +496,6 @@ class Experiment {
             return true; // f(x)=1, 1=detected, 0=not detected
         }
         
-        // Realistic Calculations
-        function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
-        }
-        function getRealDetected(photon_degrees, polarizer_degrees, randomNumber) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
-            return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
-        }
-        
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
@@ -513,12 +506,22 @@ class Experiment {
             return (randomNumber<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
         }
 
+        // Test Calculations
+        function getTestPolarized(photon_degrees, polarizer_degrees, randomNumber) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+            return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
+        }
+        function getTestDetected(photon_degrees, polarizer_degrees, randomNumber) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta; // probability=0+(1*cos2Delta);
+            return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
+        }
+
         // Polarize photon as vertical or horizontal
         function getNewAxis(dAxis,polarized,passAdd,reflectAdd) {return (polarized==="+") ? dAxis+passAdd : dAxis+reflectAdd;}
         
         // Exerpiment Steps
         this.timeLast=this.timeLast?this.timeLast:time;  this.timeDiff=time-this.timeLast; this.timeLast=time;
-        const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, gag1=this.gag1, gag2=this.gag2, mode=this.mode.value, debug=this.debug;
+        const photonA=this.photonA, photonB=this.photonB, polarizerA=this.polarizerA, polarizerB=this.polarizerB, gaugeA=this.gaugeA, gaugeB=this.gaugeB, mode=this.mode.value, debug=this.debug;
         const startX=300, midX=450, endX=600, startY=150, endY=300, gapPix=50, sec=this.timeDiff/1000, perSec=this.rate/60, movePix=sec*perSec*(endX-startX);
 
         // Phase 0, Initialize new particle
@@ -527,24 +530,24 @@ class Experiment {
             this.phase=1;
             this.distance=0;
             if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {
-                prt1.type='QT'; prt1.lost=false; prt1.axis=undefined; prt1.polarized="";
-                prt2.type='QT'; prt2.lost=false; prt2.axis=undefined; prt2.polarized="";              
+                photonA.type='QT'; photonA.lost=false; photonA.polarized=""; photonA.axis=undefined;
+                photonB.type='QT'; photonB.lost=false; photonB.polarized=""; photonB.axis=undefined;         
             } else {
                 const axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
-                prt1.type='Real'; prt1.lost=false; prt1.axis=axis; prt1.polarized="";
-                prt2.type='Real'; prt2.lost=false; prt2.axis=(axis>=180) ? axis-180 : axis+180; prt2.polarized="";     
+                photonA.type='Real'; photonA.lost=false; photonA.polarized=""; photonA.axis=axis; 
+                photonB.type='Real'; photonB.lost=false; photonB.polarized=""; photonB.axis= (axis>=180) ? axis-180 : axis+180;  // created with opposite polarization
             }
-            pol1.prime=Math.round(random.number())==1?true:false;
-            pol2.prime=Math.round(random.number())==1?true:false;
-            if (pol1.prime) {pol1.axis=this.polarizeA2; pol1.name=`a${primeChr}`} else {pol1.axis=this.polarizeA1; pol1.name='a'}
-            if (pol2.prime) {pol2.axis=this.polarizeB2; pol2.name=`b${primeChr}`} else {pol2.axis=this.polarizeB1; pol2.name='b'}
+            polarizerA.prime=Math.round(random.number())==1?true:false;
+            polarizerB.prime=Math.round(random.number())==1?true:false;
+            if (polarizerA.prime) {polarizerA.axis=this.polarizeA2; polarizerA.name=`a${primeChr}`} else {polarizerA.axis=this.polarizeA1; polarizerA.name='a'}
+            if (polarizerB.prime) {polarizerB.axis=this.polarizeB2; polarizerB.name=`b${primeChr}`} else {polarizerB.axis=this.polarizeB1; polarizerB.name='b'}
             
             // animation (initialize)
             if (this.animate) {
-                prt1.x=startX; prt1.y=startY; prt1.text=prt1.buildText();
-                prt2.x=startX; prt2.y=startY; prt2.text=prt2.buildText();
-                gag1.axis=pol1.axis; gag2.axis=pol2.axis;
-                pol1.text=pol1.buildText(); pol2.text=pol2.buildText();
+                photonA.x=startX; photonA.y=startY; photonA.text=photonA.buildText();
+                photonB.x=startX; photonB.y=startY; photonB.text=photonB.buildText();
+                gaugeA.axis=polarizerA.axis; gaugeB.axis=polarizerB.axis;
+                polarizerA.text=polarizerA.buildText(); polarizerB.text=polarizerB.buildText();
             }
         }
 
@@ -556,11 +559,11 @@ class Experiment {
             // animation (move)
             if (this.animate) {
                 if (this.distance>=(midX-startX)) {
-                    prt1.x=startX-(midX-startX); prt1.y=startY;
-                    prt2.x=midX; prt2.y=startY;
+                    photonA.x=startX-(midX-startX); photonA.y=startY;
+                    photonB.x=midX; photonB.y=startY;
                 } else {
-                    prt1.moveX=-movePix; prt1.x+=prt1.moveX; // prt1.moveY=0; prt1.y+=prt1.moveY;
-                    prt2.moveX=movePix; prt2.x+=prt2.moveX; // prt2.moveY=0; prt2.y+=prt2.moveY;
+                    photonA.moveX=-movePix; photonA.x+=photonA.moveX; // photonA.moveY=0; photonA.y+=photonA.moveY;
+                    photonB.moveX=movePix; photonB.x+=photonB.moveX; // photonB.moveY=0; photonB.y+=photonB.moveY;
                 }
             }
         }
@@ -568,86 +571,91 @@ class Experiment {
         // Phase 2 - Polarize
         if (this.phase==2) {
             // Calculated Polarization ("+"=pass-through, "-"=Reflected)
+            if (this.polarizeMode=='Quantum_Anti') {
+                if (random.number()>=0.5) {
+                    // photon 1 encounters polarizer first (first measurement)
+                    photonA.axis=random.number()*360; 
+                    photonA.polarized=getQuantumAntiPolarized(photonA, photonB, polarizerA, polarizerB, 1, random.number());
+                    photonB.polarized=getQuantumAntiPolarized(photonA, photonB, polarizerA, polarizerB, 2, random.number());;
+                } else {
+                    // photon 2 encounters polarizer first (first measurement)
+                    photonB.axis=random.number()*360;
+                    photonB.polarized=getQuantumAntiPolarized(photonA, photonB, polarizerA, polarizerB, 2, random.number());
+                    photonA.polarized=getQuantumAntiPolarized(photonA, photonB, polarizerA, polarizerB, 1, random.number());
+                }
+            }
             if (this.polarizeMode=='Quantum_Theory') {
                 if (random.number()>=0.5) {
                     // photon 1 encounters polarizer first (first measurement)
-                    prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number());
-                    prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number());
+                    photonA.polarized=getQuantumTheoryPolarized(photonA, photonB, polarizerA, polarizerB, 1, random.number());
+                    photonB.polarized=getQuantumTheoryPolarized(photonA, photonB, polarizerA, polarizerB, 2, random.number());
                 } else {
                     // photon 2 encounters polarizer first (first measurement)
-                    prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number());
-                    prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number());
+                    photonB.polarized=getQuantumTheoryPolarized(photonA, photonB, polarizerA, polarizerB, 2, random.number());
+                    photonA.polarized=getQuantumTheoryPolarized(photonA, photonB, polarizerA, polarizerB, 1, random.number());
                 }
-            } else if (this.polarizeMode=='Quantum_Anti') {
-                if (random.number()>=0.5) {
-                    // photon 1 encounters polarizer first (first measurement)
-                    prt1.axis=random.number()*360; 
-                    prt1.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 1, random.number());
-                    prt2.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 2, random.number());;
-                } else {
-                    // photon 2 encounters polarizer first (first measurement)
-                    prt2.axis=random.number()*360;
-                    prt2.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 2, random.number());
-                    prt1.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 1, random.number());
-                }
-            } else if (this.polarizeMode=='Real' || this.polarizeMode=='Real_Perfect') {
-                prt1.polarized=getRealPolarized(prt1.axis, pol1.axis, random.number());
-                prt2.polarized=getRealPolarized(prt2.axis, pol2.axis, random.number());
-            } else if (this.polarizeMode=='Perfect') {
-                prt1.polarized=getPerfectPolarized(prt1.axis, pol1.axis);
-                prt2.polarized=getPerfectPolarized(prt2.axis, pol2.axis);
-            } else if (this.polarizeMode=='Karma_Peny') {
-                prt1.polarized=getKarmaPenyPolarized(prt1.axis, pol1.axis);
-                prt2.polarized=getKarmaPenyPolarized(prt2.axis, pol2.axis);
-            } else if (this.polarizeMode=='Realistic') {
-                prt1.polarized=getRealisticPolarized(prt1.axis, pol1.axis, random.number());
-                prt2.polarized=getRealisticPolarized(prt2.axis, pol2.axis, random.number());
+            }
+            if (this.polarizeMode=='Realistic' || this.polarizeMode=='Real_Perfect') {
+                photonA.polarized=getRealisticPolarized(photonA.axis, polarizerA.axis, random.number());
+                photonB.polarized=getRealisticPolarized(photonB.axis, polarizerB.axis, random.number());
+            }
+            if (this.polarizeMode=='Perfect') {
+                photonA.polarized=getPerfectPolarized(photonA.axis, polarizerA.axis);
+                photonB.polarized=getPerfectPolarized(photonB.axis, polarizerB.axis);
+            }
+            if (this.polarizeMode=='Karma_Peny') {
+                photonA.polarized=getKarmaPenyPolarized(photonA.axis, polarizerA.axis);
+                photonB.polarized=getKarmaPenyPolarized(photonB.axis, polarizerB.axis);
+            }
+            if (this.polarizeMode=='Test') {
+                photonA.polarized=getTestPolarized(photonA.axis, polarizerA.axis, random.number());
+                photonB.polarized=getTestPolarized(photonB.axis, polarizerB.axis, random.number());
             }
             
             // Calculate Detected at all (lost or not)
             if (this.detectMode=='Quantum_Theory') {
-                prt1.lost=!getQuantumTheoryDetected();
-                prt2.lost=!getQuantumTheoryDetected();
+                photonA.lost=!getQuantumTheoryDetected();
+                photonB.lost=!getQuantumTheoryDetected();
             }
             if (this.detectMode=='Quantum_Anti') {
-                prt1.lost=!getQuantumAntiDetected();
-                prt2.lost=!getQuantumAntiDetected();
-            }
-            if (this.detectMode=='Real') {
-                prt1.lost=!getRealDetected(prt1.axis, pol1.axis, random.number());
-                prt2.lost=!getRealDetected(prt2.axis, pol2.axis, random.number());
-            }
-            if (this.detectMode=='Perfect' || this.detectMode=='Real_Perfect') {
-                prt1.lost=!getPerfectDetected(prt1.axis, pol1.axis);
-                prt2.lost=!getPerfectDetected(prt2.axis, pol2.axis);
+                photonA.lost=!getQuantumAntiDetected();
+                photonB.lost=!getQuantumAntiDetected();
             }
             if (this.detectMode=='Realistic') {
-                prt1.lost=!getRealDetected(prt1.axis, pol1.axis, random.number());
-                prt2.lost=!getRealDetected(prt2.axis, pol2.axis, random.number());
+                photonA.lost=!getRealisticDetected(photonA.axis, polarizerA.axis, random.number());
+                photonB.lost=!getRealisticDetected(photonB.axis, polarizerB.axis, random.number());
+            }
+            if (this.detectMode=='Perfect' || this.detectMode=='Real_Perfect') {
+                photonA.lost=!getPerfectDetected(photonA.axis, polarizerA.axis);
+                photonB.lost=!getPerfectDetected(photonB.axis, polarizerB.axis);
             }
             if (this.detectMode=='Karma_Peny') {
-                prt1.lost=!getKarmaPenyDetected(prt1.axis, pol1.axis ,random.number());
-                prt2.lost=!getKarmaPenyDetected(prt2.axis, pol2.axis, random.number());
+                photonA.lost=!getKarmaPenyDetected(photonA.axis, polarizerA.axis ,random.number());
+                photonB.lost=!getKarmaPenyDetected(photonB.axis, polarizerB.axis, random.number());
+            }
+            if (this.detectMode=='Test') {
+                photonA.lost=!getTestDetected(photonA.axis, polarizerA.axis, random.number());
+                photonB.lost=!getTestDetected(photonB.axis, polarizerB.axis, random.number());
             }
 
             // Calculate Axis
-            prt1.origAxis=prt1.axis; prt1.axis=getNewAxis(pol1.axis, prt1.polarized, 0, 90);
-            prt2.origAxis=prt2.axis; prt2.axis=getNewAxis(pol2.axis, prt2.polarized, 0, 90);
+            photonA.origAxis=photonA.axis; photonA.axis=getNewAxis(polarizerA.axis, photonA.polarized, 0, 90);
+            photonB.origAxis=photonB.axis; photonB.axis=getNewAxis(polarizerB.axis, photonB.polarized, 0, 90);
 
             // animation 
             if (this.animate) {
                 // calculate trignometric move ratios
-                prt1.text=prt1.buildText(); prt2.text=prt2.buildText();
-                if (prt1.polarized==="-") {let moveAngle=pol1.zAxis+45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180))}
-                else {let moveAngle=pol1.zAxis-45; prt1.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt1.moveSin=Math.sin(moveAngle*(Math.PI/180))}
-                if (prt2.polarized==="-") {let moveAngle=pol2.zAxis-45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180))}
-                else {let moveAngle=pol2.zAxis+45; prt2.moveCos=Math.cos(moveAngle*(Math.PI/180)); prt2.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                photonA.text=photonA.buildText(); photonB.text=photonB.buildText();
+                if (photonA.polarized==="-") {let moveAngle=polarizerA.zAxis+45; photonA.moveCos=Math.cos(moveAngle*(Math.PI/180)); photonA.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                else {let moveAngle=polarizerA.zAxis-45; photonA.moveCos=Math.cos(moveAngle*(Math.PI/180)); photonA.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                if (photonB.polarized==="-") {let moveAngle=polarizerB.zAxis-45; photonB.moveCos=Math.cos(moveAngle*(Math.PI/180)); photonB.moveSin=Math.sin(moveAngle*(Math.PI/180))}
+                else {let moveAngle=polarizerB.zAxis+45; photonB.moveCos=Math.cos(moveAngle*(Math.PI/180)); photonB.moveSin=Math.sin(moveAngle*(Math.PI/180))}
             }
                 
             // report
-            if (!prt1.lost && !prt2.lost) {this.updateReports({detected:true})} 
+            if (!photonA.lost && !photonB.lost) {this.updateReports({detected:true})} 
             else {this.totals.Lost+=1; this.updateReports({detected:false})}
-            this.statText=`(${prt1.getStatus()},${prt2.getStatus()})`;
+            this.statText=`(${photonA.getStatus()},${photonB.getStatus()})`;
             this.updateStatus();
             this.phase=3;
         }
@@ -661,29 +669,29 @@ class Experiment {
             if (this.animate) {
                 if (this.distance>=(endX-startX-gapPix)) {
                     // stop at detector
-                    if (!prt1.lost) {
-                        if (prt1.polarized==="+") {prt1.x=startX-(endX-startX)+gapPix; prt1.y=startY}
-                        else {prt1.x=startX-(midX-startX); prt1.y=endY-gapPix}
+                    if (!photonA.lost) {
+                        if (photonA.polarized==="+") {photonA.x=startX-(endX-startX)+gapPix; photonA.y=startY}
+                        else {photonA.x=startX-(midX-startX); photonA.y=endY-gapPix}
                     }
-                    if (!prt2.lost) {
-                        if (prt2.polarized==="+") {prt2.x=endX-gapPix; prt2.y=startY}
-                        else {prt2.x=midX; prt2.y=endY-gapPix}
+                    if (!photonB.lost) {
+                        if (photonB.polarized==="+") {photonB.x=endX-gapPix; photonB.y=startY}
+                        else {photonB.x=midX; photonB.y=endY-gapPix}
                     }
                 } else {
                     // calculate move increment
-                    if (prt1.lost) {prt1.moveX=0; prt1.moveY=0}
+                    if (photonA.lost) {photonA.moveX=0; photonA.moveY=0}
                     else {
-                        if (prt1.polarized==="-") {prt1.moveX=movePix*prt1.moveCos; prt1.moveY=movePix*prt1.moveSin}
-                        else {prt1.moveX=-movePix*prt1.moveCos; prt1.moveY=-movePix*prt1.moveSin}
+                        if (photonA.polarized==="-") {photonA.moveX=movePix*photonA.moveCos; photonA.moveY=movePix*photonA.moveSin}
+                        else {photonA.moveX=-movePix*photonA.moveCos; photonA.moveY=-movePix*photonA.moveSin}
                     }
-                    if (prt2.lost) {prt2.moveX=0; prt2.moveY=0}
+                    if (photonB.lost) {photonB.moveX=0; photonB.moveY=0}
                     else {
-                        if (prt2.polarized==="-") {prt2.moveX=-movePix*prt2.moveCos; prt2.moveY=-movePix*prt2.moveSin}
-                        else {prt2.moveX=movePix*prt2.moveCos; prt2.moveY=movePix*prt2.moveSin}
+                        if (photonB.polarized==="-") {photonB.moveX=-movePix*photonB.moveCos; photonB.moveY=-movePix*photonB.moveSin}
+                        else {photonB.moveX=movePix*photonB.moveCos; photonB.moveY=movePix*photonB.moveSin}
                     }
                     // move
-                    prt1.x+=prt1.moveX; prt1.y+=prt1.moveY;
-                    prt2.x+=prt2.moveX; prt2.y+=prt2.moveY;
+                    photonA.x+=photonA.moveX; photonA.y+=photonA.moveY;
+                    photonB.x+=photonB.moveX; photonB.y+=photonB.moveY;
                 }
             }
         }
@@ -723,8 +731,8 @@ class Experiment {
     }
     getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.tot}</b>`,`${row.pct>=0?row.pct+'%':''}`,row.note,cls)}
     updateReports (params={init:false, detected:false}) {
-        function getIndex(prt1,prt2,reportIndexes) {
-            const res1=prt1.lost?'!':prt1.polarized, res2=prt2.lost?'!':prt2.polarized;
+        function getIndex(photonA,photonB,reportIndexes) {
+            const res1=photonA.lost?'!':photonA.polarized, res2=photonB.lost?'!':photonB.polarized;
             return reportIndexes[`${res1}${res2}`]}
         function getE(pp,pm,mp,mm) {
             let e1=pp-pm-mp+mm, e2=pp+pm+mp+mm;
@@ -740,28 +748,28 @@ class Experiment {
         params.init = params.init?true:false;
         params.detected = params.detected?true:false;
         // set constants and declare variables
-        const prt1=this.prt1, prt2=this.prt2, pol1=this.pol1, pol2=this.pol2, mode=this.mode.value, debug=this.debug, totals=this.totals;
+        const photonA=this.photonA, photonB=this.photonB, polarizerA=this.polarizerA, polarizerB=this.polarizerB, mode=this.mode.value, debug=this.debug, totals=this.totals;
         let header, terminal, reportIndexes, report, countName, lostName, eName, aName, bName, aValue, bValue, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
-        if (!pol1.prime && !pol2.prime) {
+        if (!polarizerA.prime && !polarizerB.prime) {
             header=this.header2; terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes;
             countName='Count1'; lostName='Lost1'; eName='E1'; aName='a'; bName='b'; aValue=this.polarizeA1; bValue=this.polarizeB1;
         }
-        if (!pol1.prime && pol2.prime) {
+        if (!polarizerA.prime && polarizerB.prime) {
             header=this.header3; terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes;
             countName='Count2'; lostName='Lost2'; eName='E2'; aName='a'; bName='b′'; aValue=this.polarizeA1; bValue=this.polarizeB2;
         }
-        if (pol1.prime && !pol2.prime) {
+        if (polarizerA.prime && !polarizerB.prime) {
             header=this.header4; terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes;
             countName='Count3'; lostName='Lost3'; eName='E3'; aName='a′'; bName='b'; aValue=this.polarizeA2; bValue=this.polarizeB1;
         }
-        if (pol1.prime && pol2.prime) {
+        if (polarizerA.prime && polarizerB.prime) {
             header=this.header5; terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes;
             countName='Count4'; lostName='Lost4'; eName='E4'; aName='a′'; bName='b′'; aValue=this.polarizeA2; bValue=this.polarizeB2;
         }
         
         // detected totals
         if (!params.init) {
-            const index=getIndex(prt1, prt2, reportIndexes);
+            const index=getIndex(photonA, photonB, reportIndexes);
             report[index].tot+=1;
             if (params.detected) {
                 totals[countName]+=1;
@@ -790,8 +798,8 @@ class Experiment {
         // reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
         reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][11],'rpt-detect');
         // status
-        if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
-        else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
+        if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {reportStatus=`(${photonA.getStatus()},${photonB.getStatus()})`}
+        else {reportStatus=`A=${roundTo(photonA.origAxis,1)}°, B=${roundTo(photonB.origAxis,1)}° (${photonA.getStatus()},${photonB.getStatus()})`}
         header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°)</i><b>:</b></b><br>`;
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, "Total", reportExpected[`${reportIndex}`][0], reportStatus);
 
