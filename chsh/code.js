@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.9, 2020-01-03', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.10, 2020-01-03', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -438,15 +438,41 @@ class Experiment {
             if (side==1) {
                 if (prt2.type=='Real') {
                     if (prt2.polarized==="+") {polarized=(randomNumber<=probability)?"+":"-"} else {polarized=(randomNumber<=probability)?"-":"+"}
-                } else {polarized=(randomNumber>=0.5)?"+":"-"}
+                    prt1.type='Real';
+                } else {
+                    polarized=(randomNumber>=0.5) ? "+" : "-";
+                    prt1.type='Real';
+                }
             } else {
                 if (prt1.type=='Real') {
                     if (prt1.polarized==="+") {polarized=(randomNumber<=probability)?"+":"-"} else {polarized=(randomNumber<=probability)?"-":"+"}
-                } else {polarized=(randomNumber>=0.5)?"+":"-"}
+                    prt2.type='Real';
+                } else {
+                    polarized=(randomNumber>=0.5) ? "+" : "-";
+                    prt2.type='Real';
+                }
             }
             return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
         }
-        function getQuantumTheoryDetected() {return true}  // (random.number()<=0.5)?true:false}  // f(x)=50% probability
+        function getQuantumTheoryDetected() {return true}
+        
+        // Quantum Anti-Correlated Calculations (wave collapse, communicating particles)
+        function getQuantumAntiPolarized(prt1,prt2,pol1,pol2,side,randomNumber) {
+            let polarized="", delta, cosDelta, probability;
+            if (side==1) {
+                delta=Math.abs(Math.abs(pol1.axis)-Math.abs(prt1.axis)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+                polarized=(randomNumber<=probability) ? "+" : "-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
+                prt1.type='Real';
+                prt2.axis= (pol1.axis>=180) ? pol1.axis-180 : pol1.axis+180;  // instantly anti-correlate entangled particle
+            } else {
+                delta=Math.abs(Math.abs(pol2.axis)-Math.abs(prt2.axis)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+                polarized=(randomNumber<=probability) ? "+" : "-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
+                prt2.type='Real';
+                prt1.axis= (pol2.axis>=180) ? pol2.axis-180 : pol2.axis+180;  // instantly anti-correlate entangled particle
+            }
+            return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
+        }
+        function getQuantumAntiDetected() {return true}
         
         // Real Calculations
         function getRealPolarized(photon_degrees, polarizer_degrees, randomNumber) {
@@ -488,7 +514,6 @@ class Experiment {
         }
 
         // Polarize photon as vertical or horizontal
-        // function getNewAxis(dAxis,detected,detAdd,rejAdd) {return (detected) ? dAxis+detAdd : dAxis+rejAdd;}
         function getNewAxis(dAxis,polarized,passAdd,reflectAdd) {return (polarized==="+") ? dAxis+passAdd : dAxis+reflectAdd;}
         
         // Exerpiment Steps
@@ -501,14 +526,13 @@ class Experiment {
             this.animate=eid("animateChk").checked;  // start|stop animation
             this.phase=1;
             this.distance=0;
-            if (mode=='Quantum_Theory') {
-                this.axis=undefined;
+            if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {
                 prt1.type='QT'; prt1.lost=false; prt1.axis=undefined; prt1.polarized="";
                 prt2.type='QT'; prt2.lost=false; prt2.axis=undefined; prt2.polarized="";              
             } else {
-                this.axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
-                prt1.type='Real'; prt1.lost=false; prt1.axis=this.axis; prt1.polarized="";
-                prt2.type='Real'; prt2.lost=false; prt2.axis=(this.axis>=180) ? this.axis-180 : this.axis+180; prt2.polarized="";     
+                const axis=random.number()*360;  // fixed (Mark Payne, 2019-11-23)
+                prt1.type='Real'; prt1.lost=false; prt1.axis=axis; prt1.polarized="";
+                prt2.type='Real'; prt2.lost=false; prt2.axis=(axis>=180) ? axis-180 : axis+180; prt2.polarized="";     
             }
             pol1.prime=Math.round(random.number())==1?true:false;
             pol2.prime=Math.round(random.number())==1?true:false;
@@ -545,17 +569,26 @@ class Experiment {
         if (this.phase==2) {
             // Calculated Polarization ("+"=pass-through, "-"=Reflected)
             if (this.polarizeMode=='Quantum_Theory') {
-                this.axis=random.number()*360;
                 if (random.number()>=0.5) {
-                    prt1.axis=this.axis;
-                    prt2.axis=(this.axis>=180) ? this.axis-180 : this.axis+180;  
-                    prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real'; 
-                    prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
+                    // photon 1 encounters polarizer first (first measurement)
+                    prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number());
+                    prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number());
                 } else {
-                    prt2.axis=this.axis;
-                    prt1.axis=(this.axis>=180) ? this.axis-180 : this.axis+180;  
-                    prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number()); prt2.type='Real';
-                    prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number()); prt1.type='Real';
+                    // photon 2 encounters polarizer first (first measurement)
+                    prt2.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 2, random.number());
+                    prt1.polarized=getQuantumTheoryPolarized(prt1, prt2, pol1, pol2, 1, random.number());
+                }
+            } else if (this.polarizeMode=='Quantum_Anti') {
+                if (random.number()>=0.5) {
+                    // photon 1 encounters polarizer first (first measurement)
+                    prt1.axis=random.number()*360; 
+                    prt1.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 1, random.number());
+                    prt2.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 2, random.number());;
+                } else {
+                    // photon 2 encounters polarizer first (first measurement)
+                    prt2.axis=random.number()*360;
+                    prt2.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 2, random.number());
+                    prt1.polarized=getQuantumAntiPolarized(prt1, prt2, pol1, pol2, 1, random.number());
                 }
             } else if (this.polarizeMode=='Real' || this.polarizeMode=='Real_Perfect') {
                 prt1.polarized=getRealPolarized(prt1.axis, pol1.axis, random.number());
@@ -575,6 +608,10 @@ class Experiment {
             if (this.detectMode=='Quantum_Theory') {
                 prt1.lost=!getQuantumTheoryDetected();
                 prt2.lost=!getQuantumTheoryDetected();
+            }
+            if (this.detectMode=='Quantum_Anti') {
+                prt1.lost=!getQuantumAntiDetected();
+                prt2.lost=!getQuantumAntiDetected();
             }
             if (this.detectMode=='Real') {
                 prt1.lost=!getRealDetected(prt1.axis, pol1.axis, random.number());
@@ -753,7 +790,7 @@ class Experiment {
         // reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
         reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][11],'rpt-detect');
         // status
-        if (mode=='Quantum_Theory') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
+        if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
         else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
         header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°)</i><b>:</b></b><br>`;
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, "Total", reportExpected[`${reportIndex}`][0], reportStatus);

@@ -21,6 +21,7 @@ echo file_get_contents("code.js");
         Mode: 
         <select id='mode' onchange='handleMode()'>
             <option value="Quantum_Theory">Quantum Theory</option>
+            <option value="Quantum_Anti">Quantum Anti-Correlated</option>
             <option value="Real" selected>Real</option>
             <option value="Perfect">Perfect</option>
             <option value="Real_Perfect">Real Perfect</option>
@@ -66,7 +67,8 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Polarize +:</td> 
                     <td class='form-data'>
                         <select id='polarizeMode' disabled>
-                          <option value="Quantum_Theory">Quantum Theory, cos²(Δ) correlated</option>
+                          <option value="Quantum_Theory">Quantum Theory, cos²(polarizers Δ)</option>
+                          <option value="Quantum_Anti">Quantum Anti-correlated, cos²(Δ)</option>
                           <option value="Real">Real, cos²(Δ) probability</option>
                           <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                           <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
@@ -80,6 +82,7 @@ echo file_get_contents("code.js");
                     <td class='form-data'>
                         <select id='detectMode' disabled>
                           <option value="Quantum_Theory">Quantum Theory, 100%</option>
+                          <option value="Quantum_Anti">Quantum Anti-correlated, 100%</option>
                           <option value="Real">Real, cos²(2Δ) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
