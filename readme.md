@@ -6,7 +6,7 @@ For information on the computer experiment, see [here](https://sites.google.com/
 
 Code is compatible with modern browsers, generating up to 2,400 particle pairs per minute, and results are repeatable using random seeds.
 
-A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided.
+A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided, see **Set Random Seeds** below.
 
 ## Documentation
 
@@ -15,11 +15,17 @@ A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided.
 Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a modern browser (_for example: Google Chrome, Apple Safari or Mozilla Firefox_)
 
 **Select Mode**
-* `Quanum`: non-local wave collapse model
-* `Realistic`: local hidden variable model (_default setting_)
-* `Karma Peny`: local hidden variable model
-* `Perfect`: local hidden variable model
+* `Quanum Theory`
+* `Real`
+* `Perfect`
+* `Real Perfect`
+* `Realistic` (_default setting_)
+* `Karma Peny`
 * `Custom`: user defined settings
+
+Quantum Theory mode models particles with no polarization angles until measured, then particles communicate and correlate polarizations.
+All other modes are Non-Quantum Theory models where particles do not communicate and are created with opposite hidden polarizaton angles.
+See [paper](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper) for calculation details.
 
 **Set Random Seeds**
 _Source, Polarizer A, Polarizer B_
@@ -43,15 +49,13 @@ Development Priorities.
 - `Completed Features:`
     + `Violations`: Violated Bell's in-equalities with local hidden variables
     + `Quality`: S values of 2.83 achieved in multiple modes
-    + `Method`: Photon loss as a probability function of polarization angles (_photon & polarizer_)
-    + `Method`: Correlation as a probability function of polarization angles (_photon & polarizer_)
+    + `Customize`: Select Calculation mix and Polarizer Angles
     
-- `Needed Features:`
-    + `Customize`: Custom Polarizer/Detector Angles
+- `Wanted Features:`
     + `Validation`: Eberhard photon loss calculations
-    + `Quality`: Violation with photon loss between 0% and 20%
+    + `Quality`: Violation with photon loss below 20%
     
-- `Wanted Features`
+- `Possible Enhancements`
     + `R`: Simplified numeric only translation to R for academic use
     + `3D`: Visual simulation in 2.5D or 3D
 

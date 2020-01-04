@@ -46,19 +46,19 @@ echo file_get_contents("code.js");
             <td>
                 <table>
                 <tr>
-                    <td class='form-name'>Polarizer Degrees:</td>
+                    <td class='form-name'>Polarizer Angles:</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>a:</td> 
-                    <td class='form-data'><input type="text" id="polarizeA1" size="4" value="0" disabled></td>
+                    <td class='form-data'><input type="text" id="polarizeA1" size="4" value="0" disabled>°</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>a':</td> 
-                    <td class='form-data'><input type="text" id="polarizeA2" size="4" value="45" disabled></td>
+                    <td class='form-data'><input type="text" id="polarizeA2" size="4" value="45" disabled>°</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>b:</td> 
-                    <td class='form-data'><input type="text" id="polarizeB1" size="4" value="22.5" disabled></td>
+                    <td class='form-data'><input type="text" id="polarizeB1" size="4" value="22.5" disabled>°</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>b':</td> 
-                    <td class='form-data'><input type="text" id="polarizeB2" size="4" value="67.5" disabled></td>
+                    <td class='form-data'><input type="text" id="polarizeB2" size="4" value="67.5" disabled>°</td>
                 </tr>
                 </table>
                 <table>
@@ -83,7 +83,7 @@ echo file_get_contents("code.js");
                           <option value="Real">Real, cos²(2Δ) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
-                          <option value="Realistic" selected>Realistic, cos²(2Δ) probability</option>
+                          <option value="Realistic" selected>Realistic, X * cos²(2Δ) probability</option>
                           <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
                         </select>                   
                     </td>
