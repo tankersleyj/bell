@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.7, 2020-01-02', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.8, 2020-01-03', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -445,14 +445,14 @@ class Experiment {
             }
             return polarized; // f(x)=communicating probability, 1=passthrough(+), 0=reflect(-)
         }
-        function detectionRate_QuantumTheory() {return true}  // (random.number()<=0.5)?true:false}  // f(x)=50% probability
+        function getQuantumTheoryDetected() {return true}  // (random.number()<=0.5)?true:false}  // f(x)=50% probability
         
         // Real Calculations
         function getRealPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
         }
-        function detectionRate_Real(photon_degrees, polarizer_degrees, randomNumber) {
+        function getRealDetected(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
             return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
         }
@@ -462,26 +462,26 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
         }
-        function detectionRate_Perfect() {
+        function getPerfectDetected() {
             return true; // f(x)=1, 1=detected, 0=not detected
         }
-
+        
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
             return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
         }
-        function detectionRate_Realistic(photon_degrees, polarizer_degrees, randomNumber) {
+        function getRealDetected(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
             return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
         }
-
+        
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
             return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
         }
-        function detectionRate_KarmaPeny(photon_degrees, polarizer_degrees, randomNumber) {
+        function getKarmaPenyDetected(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
             return (randomNumber<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
         }
@@ -562,24 +562,24 @@ class Experiment {
             
             // Calculate Detected at all (lost or not)
             if (this.detectMode=='Quantum_Theory') {
-                prt1.lost=!detectionRate_QuantumTheory();
-                prt2.lost=!detectionRate_QuantumTheory();
+                prt1.lost=!getQuantumTheoryDetected();
+                prt2.lost=!getQuantumTheoryDetected();
             }
             if (this.detectMode=='Real') {
-                prt1.lost=!detectionRate_Real(prt1.axis, pol1.axis, random.number());
-                prt2.lost=!detectionRate_Real(prt2.axis, pol2.axis, random.number());
+                prt1.lost=!getRealDetected(prt1.axis, pol1.axis, random.number());
+                prt2.lost=!getRealDetected(prt2.axis, pol2.axis, random.number());
             }
             if (this.detectMode=='Perfect' || this.detectMode=='Real_Perfect') {
-                prt1.lost=!detectionRate_Perfect(prt1.axis, pol1.axis);
-                prt2.lost=!detectionRate_Perfect(prt2.axis, pol2.axis);
+                prt1.lost=!getPerfectDetected(prt1.axis, pol1.axis);
+                prt2.lost=!getPerfectDetected(prt2.axis, pol2.axis);
             }
             if (this.detectMode=='Realistic') {
-                prt1.lost=!detectionRate_Realistic(prt1.axis, pol1.axis, random.number());
-                prt2.lost=!detectionRate_Realistic(prt2.axis, pol2.axis, random.number());
+                prt1.lost=!getRealDetected(prt1.axis, pol1.axis, random.number());
+                prt2.lost=!getRealDetected(prt2.axis, pol2.axis, random.number());
             }
             if (this.detectMode=='Karma_Peny') {
-                prt1.lost=!detectionRate_KarmaPeny(prt1.axis, pol1.axis ,random.number());
-                prt2.lost=!detectionRate_KarmaPeny(prt2.axis, pol2.axis, random.number());
+                prt1.lost=!getKarmaPenyDetected(prt1.axis, pol1.axis ,random.number());
+                prt2.lost=!getKarmaPenyDetected(prt2.axis, pol2.axis, random.number());
             }
 
             // Calculate Axis
@@ -660,17 +660,17 @@ class Experiment {
     start () {this.timeLast=window.performance.now()}
     stop () {}
     updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
-    getHeaderHtml(reportRows,aName,bName,expected,footNote) {
+    getHeaderHtml(reportRows,aName,bName,totalHead,expectHead,footNote) {
         return `
 <table class='rpt-table'>
     <tr class='rpt-row rpt-head'>
-        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Count</td><td>polarized</td><td class='rpt-note'>${expected}</td>
+        <td>Case</td><td>${aName}</td><td>${bName}</td><td>Count</td><td>${totalHead}</td><td class='rpt-note'>${expectHead}</td>
     </tr>${reportRows}
 </table><div><i><small>${footNote}</small></i></div>`;
     }
-    getRowHtml (num,a,b,tot,polarized,note,cls) {
+    getRowHtml (num,a,b,tot,percent,note,cls) {
         return `<tr class='rpt-row ${cls}'><td class='rpt-title'>${num}</td>
-        <td>${a}</td><td>${b}</td><td>${tot}</td><td>${polarized}</td>
+        <td>${a}</td><td>${b}</td><td>${tot}</td><td>${percent}</td>
         <td class='rpt-note'>${note}</td></tr>`;
     }
     getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.tot}</b>`,`${row.pct>=0?row.pct+'%':''}`,row.note,cls)}
@@ -745,7 +745,7 @@ class Experiment {
         if (mode=='Quantum_Theory') {reportStatus=`(${prt1.getStatus()},${prt2.getStatus()})`}
         else {reportStatus=`A=${roundTo(prt1.origAxis,1)}°, B=${roundTo(prt2.origAxis,1)}° (${prt1.getStatus()},${prt2.getStatus()})`}
         header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°)</i><b>:</b></b><br>`;
-        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, reportExpected[`${reportIndex}`][0], reportStatus);
+        terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, "Total", reportExpected[`${reportIndex}`][0], reportStatus);
 
         // Build Total Report 5 (display in terminal 1)
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
@@ -757,7 +757,7 @@ class Experiment {
         summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
         summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][5],'rpt-total');
         summaryRows+=this.getRowHtml(`<b>Lost</b>`,na,na,totals.Lost,`<i><b>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</b></i>`,`<i>${reportExpected['5'][6]}</i>`,'rpt-detect');
-        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', reportExpected['5'][0], '');
+        this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', "Total", reportExpected['5'][0], '');
         // setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
 }

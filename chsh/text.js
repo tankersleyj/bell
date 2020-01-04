@@ -20,6 +20,12 @@ const textJson = {
     "footer3": "<br>",
     "footer4": "<br>",
     "footer5": `<br>
+        <b>Purpose</b><br>
+        <div class='tab-left paragraph'>
+            Physical Bell experiments attempt to prove that quantum systems are non-deterministic.<br>
+            This computer experiment attempts to prove that quantum systems may instead be deterministic,<br>
+            by generating similar results as physical experiments while using local hidden variable models.
+        </div><br>
         <b>Instructions</b><br>
         <div class='tab-left paragraph'>
             Select [Mode], [Seed] and [Rate] to start experiment.<br>
@@ -30,30 +36,35 @@ const textJson = {
         <b>Modes</b>:<br>
         <div class='tab-left'>
           <table>
-            <tr><td class='mode-head'>Quantum</td><td class='mode-note'>
-                non-local communication,
-                <u>polarize +</u> = anti-correlated cos²(Δ) probability,
-                <u>detect raate</u> = 100%
+            <tr><td class='mode-head'>Quantum Theory</td><td class='mode-note'>
+                non-local,
+                <u>polarize +</u> = cos²(Δ) correlated ,
+                <u>detect rate</u> = 100%
             </td></tr>
-            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>
-                local hidden variables,
-                <u>polarize +</u> = cos²(Δ) >= 0.5,
-                <u>detect rate</u> = 0.37+(0.63*|cos(2Δ)|) probability [II]
-            </td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>
-                local hidden variables,
+            <tr><td class='mode-head'>Real</td><td class='mode-note'>
+                local,
                 <u>polarize +</u> = cos²(Δ) probability,
                 <u>detect rate</u> = cos²(2Δ) probability
             </td></tr>
-            <tr><td class='mode-head'>Perfect 1</td><td class='mode-note'>
-                local hidden variables,
+            <tr><td class='mode-head'>Perfect</td><td class='mode-note'>
+                local,
+                <u>polarize +</u> = cos²(Δ) >= 0.5,
+                <u>detect rate</u> = 100%
+            </td></tr>
+            <tr><td class='mode-head'>Real Perfect</td><td class='mode-note'>
+                local,
                 <u>polarize +</u> = cos²(Δ) probability,
                 <u>detect rate</u> = 100%
             </td></tr>
-            <tr><td class='mode-head'>Perfect 2</td><td class='mode-note'>
-                local hidden variables,
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>
+                local,
+                <u>polarize +</u> = cos²(Δ) probability,
+                <u>detect rate</u> = cos²(2Δ) probability
+            </td></tr>
+            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>
+                local,
                 <u>polarize +</u> = cos²(Δ) >= 0.5,
-                <u>detect rate</u> = 100%
+                <u>detect rate</u> = 0.37+(0.63*|cos(2Δ)|) probability
             </td></tr>
             <tr><td class='mode-head'>Custom</td><td class='mode-note'>
                 Customize polarizer angles and polarization and detection formulas
