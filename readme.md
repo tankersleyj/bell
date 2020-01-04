@@ -16,14 +16,13 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 
 **Select Mode**
 * `Quanum Theory`
-* `Real`
+* `Karma Peny`
+* `Realistic` (_default setting_)
 * `Perfect`
 * `Real Perfect`
-* `Realistic` (_default setting_)
-* `Karma Peny`
 * `Custom`: user defined settings
 
-Quantum Theory mode models particles with no polarization angles until measured, then particles communicate and correlate polarizations.
+Quantum Theory and Quantum Anti-Correlated modes model particles with no polarization angles until measured, then particles communicate and correlate polarizations.
 All other modes are Non-Quantum Theory models where particles do not communicate and are created with opposite hidden polarizaton angles.
 See [paper](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper) for calculation details.
 

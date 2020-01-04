@@ -21,12 +21,10 @@ echo file_get_contents("code.js");
         Mode: 
         <select id='mode' onchange='handleMode()'>
             <option value="Quantum_Theory">Quantum Theory</option>
-            <option value="Quantum_Anti">Quantum Anti-Correlated</option>
-            <option value="Real" selected>Real</option>
+            <option value="Karma_Peny">Karma Peny</option>
+            <option value="Realistic" selected>Realistic</option>
             <option value="Perfect">Perfect</option>
             <option value="Real_Perfect">Real Perfect</option>
-            <option value="Realistic" selected>Realistic</option>
-            <option value="Karma_Peny">Karma Peny</option>
             <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Seed</button>
@@ -69,11 +67,11 @@ echo file_get_contents("code.js");
                         <select id='polarizeMode' disabled>
                           <option value="Quantum_Theory">Quantum Theory, cos²(polarizers Δ)</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, cos²(Δ)</option>
-                          <option value="Real">Real, cos²(Δ) probability</option>
+                          <option value="Karma_Peny">Karma Peny, cos²(Δ) >= 0.5</option>
+                          <option value="Realistic" selected>Realistic, cos²(Δ) probability</option>
                           <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                           <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
-                          <option value="Realistic" selected>Realistic, cos²(Δ) probability</option>
-                          <option value="Karma_Peny">Karma Peny, cos²(Δ) >= 0.5</option>
+                          <option value="Test">Test</option>
                         </select>                   
                     </td>
                 </tr>
@@ -83,11 +81,11 @@ echo file_get_contents("code.js");
                         <select id='detectMode' disabled>
                           <option value="Quantum_Theory">Quantum Theory, 100%</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, 100%</option>
-                          <option value="Real">Real, cos²(2Δ) probability</option>
+                          <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
+                          <option value="Realistic" selected>Realistic, m+(n*cos²(2Δ)) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
-                          <option value="Realistic" selected>Realistic, X * cos²(2Δ) probability</option>
-                          <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
+                          <option value="Test">Test</option>
                         </select>                   
                     </td>
                 </tr>
