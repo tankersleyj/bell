@@ -79,6 +79,7 @@ const textJson = {
             Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
             Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
             Quantum Theory expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
+            Eberhard (<i>indevelopment</i>) <b>J<b> = Count(a,b) + Count(a,b′) + Count(a′,b) - Count(a′,b′) - Single(A) - Single(B)</b><br>
             <br>
             Quantum mode violates Bell's inequalities (<i>S>2, ~=2.83</i>) by simulating '<i>spooky action at a distance</i>'.<br>
             Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2, ~=2.83</i>) using only local hidden variables.<br>
@@ -112,7 +113,7 @@ const textJson = {
         <div>Paper:<br>
           <div class='tab-left ref'>
             <table>
-              <tr><td class='ref-num'>[I]</td><td><span class='ref-author'>J.Tankersley</span>, Nov 2019, <span class='ref-title'>Testing Bell's Theorem (<i>with Realistic & Karma Peny math</i>)</span><br>
+              <tr><td class='ref-num'>[I]</td><td><span class='ref-author'>J.Tankersley</span> 2020, <span class='ref-title'>Testing Bell's Theorem (<i>with Realistic & Karma Peny math</i>)</span><br>
               <a class='sub-link' target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper</a></td></tr>
             </table>
           </div>
@@ -149,5 +150,5 @@ const reportExpected = {
     "2": ["QM Expected (<i>a-b′=67.5</i>)", "cos²(a-b′)/2 = 7%",  "(1-cos²(a-b′))/2 = 43%", "(1-cos²(a-b′))/2 = 43%", "cos²(a-b′)/2 = 7%",  "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=-0.71", "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
     "3": ["QM Expected (<i>a′-b=22.5</i>)", "cos²(a′-b)/2 = 43%", "(1-cos²(a′-b))/2 = 7%",  "(1-cos²(a′-b))/2 = 7%",  "cos²(a′-b)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
     "4": ["QM Expected (<i>a′-b′=22.5</i>)", "cos²(a′-b′)/2 = 3%", "(1-cos²(a′-b′))/2 = 7%",  "(1-cos²(a′-b′))/2 = 7%",  "cos²(a′-b′)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
-    "5": ["QM Expected", "0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4=2.83", "Lost a or b"]
+    "5": ["QM Expected", "0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4 = 2.83", "Lost a or b", "Coincidence(a,b)", "Coincidence(a,b′)", "Coincidence(a′,b)", "Coincidence(a′,b′)", "Singe(a)", "Single(b)", "C1+C2+C3-C4-S1-S2 <= 0"]
 }

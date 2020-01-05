@@ -21,8 +21,8 @@ echo file_get_contents("code.js");
         Mode: 
         <select id='mode' onchange='handleMode()'>
             <option value="Quantum_Theory">Quantum Theory</option>
-            <option value="Karma_Peny">Karma Peny</option>
-            <option value="Realistic" selected>Realistic</option>
+            <option value="Karma_Peny" selected>Karma Peny</option>
+            <option value="Realistic">Realistic</option>
             <option value="Perfect">Perfect</option>
             <option value="Real_Perfect">Real Perfect</option>
             <option value="Custom">Custom</option>
@@ -31,8 +31,8 @@ echo file_get_contents("code.js");
     <span class="space-left">Rate:</span>
     <select id='rate' onchange='setRate(this.value)'>
         <option value="15">Slow</option>
-        <option value="60" selected>Medium</option>
-        <option value="2400">Fast</option>
+        <option value="60">Medium</option>
+        <option value="2400" selected>Fast</option>
     </select>
     <input id="freezeChk" class="space-left" type="checkbox" onchange="freeze(this.checked)">Freeze</input>
     <input id="animateChk" class="space-left" type="checkbox" checked>Animate</input>
@@ -67,8 +67,8 @@ echo file_get_contents("code.js");
                         <select id='polarizeMode' disabled>
                           <option value="Quantum_Theory">Quantum Theory, cos²(polarizers Δ)</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, cos²(Δ)</option>
-                          <option value="Karma_Peny">Karma Peny, cos²(Δ) >= 0.5</option>
-                          <option value="Realistic" selected>Realistic, cos²(Δ) probability</option>
+                          <option value="Karma_Peny" selected>Karma Peny, cos²(Δ) >= 0.5</option>
+                          <option value="Realistic">Realistic, cos²(Δ) probability</option>
                           <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                           <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
                           <option value="Test">Test</option>
@@ -81,8 +81,8 @@ echo file_get_contents("code.js");
                         <select id='detectMode' disabled>
                           <option value="Quantum_Theory">Quantum Theory, 100%</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, 100%</option>
-                          <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
-                          <option value="Realistic" selected>Realistic, m+(n*cos²(2Δ)) probability</option>
+                          <option value="Karma_Peny" selected>Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
+                          <option value="Realistic">Realistic, m+(n*cos²(2Δ)) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
                           <option value="Test">Test</option>
@@ -96,6 +96,8 @@ echo file_get_contents("code.js");
             <td class='form-data'>
                 <button id='customEdit' onclick="handleCustomEdit()">Edit</button>
                 <button id='customRun' onclick="handleCustomRun()" disabled>Run</button><br>
+                <input id="lossDetailChk" type="checkbox">Loss Detail</input><br>
+                <input id="eberhardChk" type="checkbox">Eberhard J</input>
             </td>
         </tr>
         </table>

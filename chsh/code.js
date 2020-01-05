@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.12, 2020-01-03', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.15, 2020-01-04', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -273,10 +273,13 @@ class Experiment {
         this.distance=0;
         this.statText='';
         this.totals={
-            "Count":0, "Count1":0, "Count2":0, "Count3":0, "Count4":0, 
+            "Count":0, 
+            "C1":0, "C2":0, "C3":0, "C4":0, 
+            "Detected1":0, "Detected2":0, "Detected3":0, "Detected4":0,
             "E1":0, "E2":0, "E3":0, "E4":0, 
+            "J":0,
             "Lost":0, "Lost1":0, "Lost2":0, "Lost3":0, "Lost4":0,
-            "S":0
+            "S":0, "S1":0, "S2":0
         };
         this.debug={};
 
@@ -292,57 +295,57 @@ class Experiment {
         
         // report 1 (a, b)
         this.report1=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
-            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
-            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
-            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
-            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
-            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
+            {row:1, key:'++',a:"+",b:"+",count:0,total:0},
+            {row:2, key:'+-',a:"+",b:"-",count:0,total:0},
+            {row:3, key:'-+',a:"-",b:"+",count:0,total:0},
+            {row:4, key:'--',a:"-",b:"-",count:0,total:0},
+            {row:5, key:'+!',a:"+",b:"!",count:0,total:0},
+            {row:6, key:'-!',a:"-",b:"!",count:0,total:0},
+            {row:7, key:'!+',a:"!",b:"+",count:0,total:0},
+            {row:8, key:'!-',a:"!",b:"-",count:0,total:0},
+            {row:9, key:'!!',a:"!",b:"!",count:0,total:0}
         ];
         this.report1Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
         
         // report 2 (a, b′)
         this.report2=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
-            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
-            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
-            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
-            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
-            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
+            {row:1, key:'++',a:"+",b:"+",count:0,total:0},
+            {row:2, key:'+-',a:"+",b:"-",count:0,total:0},
+            {row:3, key:'-+',a:"-",b:"+",count:0,total:0},
+            {row:4, key:'--',a:"-",b:"-",count:0,total:0},
+            {row:5, key:'+!',a:"+",b:"!",count:0,total:0},
+            {row:6, key:'-!',a:"-",b:"!",count:0,total:0},
+            {row:7, key:'!+',a:"!",b:"+",count:0,total:0},
+            {row:8, key:'!-',a:"!",b:"-",count:0,total:0},
+            {row:9, key:'!!',a:"!",b:"!",count:0,total:0}
         ];
         this.report2Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
         
         // report 3 (a′, b)
         this.report3=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
-            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
-            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
-            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
-            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
-            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
+            {row:1, key:'++',a:"+",b:"+",count:0,total:0},
+            {row:2, key:'+-',a:"+",b:"-",count:0,total:0},
+            {row:3, key:'-+',a:"-",b:"+",count:0,total:0},
+            {row:4, key:'--',a:"-",b:"-",count:0,total:0},
+            {row:5, key:'+!',a:"+",b:"!",count:0,total:0},
+            {row:6, key:'-!',a:"-",b:"!",count:0,total:0},
+            {row:7, key:'!+',a:"!",b:"+",count:0,total:0},
+            {row:8, key:'!-',a:"!",b:"-",count:0,total:0},
+            {row:9, key:'!!',a:"!",b:"!",count:0,total:0}
         ];
         this.report3Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
         
         // report 4 (a′, b′)
         this.report4=[
-            {row:1, key:'++',a:"+",b:"+",tot:0,pct:0},
-            {row:2, key:'+-',a:"+",b:"-",tot:0,pct:0},
-            {row:3, key:'-+',a:"-",b:"+",tot:0,pct:0},
-            {row:4, key:'--',a:"-",b:"-",tot:0,pct:0},
-            {row:5, key:'+!',a:"+",b:"!",tot:0,pct:0},
-            {row:6, key:'-!',a:"-",b:"!",tot:0,pct:0},
-            {row:7, key:'!+',a:"!",b:"+",tot:0,pct:0},
-            {row:8, key:'!-',a:"!",b:"-",tot:0,pct:0},
-            {row:9, key:'!!',a:"!",b:"!",tot:0,pct:0}
+            {row:1, key:'++',a:"+",b:"+",count:0,total:0},
+            {row:2, key:'+-',a:"+",b:"-",count:0,total:0},
+            {row:3, key:'-+',a:"-",b:"+",count:0,total:0},
+            {row:4, key:'--',a:"-",b:"-",count:0,total:0},
+            {row:5, key:'+!',a:"+",b:"!",count:0,total:0},
+            {row:6, key:'-!',a:"-",b:"!",count:0,total:0},
+            {row:7, key:'!+',a:"!",b:"+",count:0,total:0},
+            {row:8, key:'!-',a:"!",b:"-",count:0,total:0},
+            {row:9, key:'!!',a:"!",b:"!",count:0,total:0}
         ];
         this.report4Indexes={'++':0,'+-':1,'-+':2,'--':3,'+!':4,'-!':5,'!+':6,'!-':7,'!!':8};
 
@@ -407,7 +410,7 @@ class Experiment {
         this.drawParticles();
 
         // report
-        this.updateReports({init:true});
+        this.updateReports({updateTotals:false});
         this.updateStatus();
     }
     drawEmitters () {
@@ -477,6 +480,16 @@ class Experiment {
         }
         function getQuantumTheoryDetected() {return true}
         
+        // Karma Peny Calculations
+        function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+            return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
+        }
+        function getKarmaPenyDetected(photon_degrees, polarizer_degrees, randomNumber) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+            return (randomNumber<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
+        }
+        
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
@@ -494,16 +507,6 @@ class Experiment {
         }
         function getPerfectDetected() {
             return true; // f(x)=1, 1=detected, 0=not detected
-        }
-        
-        // Karma Peny Calculations
-        function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
-            return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
-        }
-        function getKarmaPenyDetected(photon_degrees, polarizer_degrees, randomNumber) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (randomNumber<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
         }
 
         // Test Calculations
@@ -595,6 +598,10 @@ class Experiment {
                     photonA.polarized=getQuantumTheoryPolarized(photonA, photonB, polarizerA, polarizerB, 1, random.number());
                 }
             }
+            if (this.polarizeMode=='Karma_Peny') {
+                photonA.polarized=getKarmaPenyPolarized(photonA.axis, polarizerA.axis);
+                photonB.polarized=getKarmaPenyPolarized(photonB.axis, polarizerB.axis);
+            }
             if (this.polarizeMode=='Realistic' || this.polarizeMode=='Real_Perfect') {
                 photonA.polarized=getRealisticPolarized(photonA.axis, polarizerA.axis, random.number());
                 photonB.polarized=getRealisticPolarized(photonB.axis, polarizerB.axis, random.number());
@@ -602,10 +609,6 @@ class Experiment {
             if (this.polarizeMode=='Perfect') {
                 photonA.polarized=getPerfectPolarized(photonA.axis, polarizerA.axis);
                 photonB.polarized=getPerfectPolarized(photonB.axis, polarizerB.axis);
-            }
-            if (this.polarizeMode=='Karma_Peny') {
-                photonA.polarized=getKarmaPenyPolarized(photonA.axis, polarizerA.axis);
-                photonB.polarized=getKarmaPenyPolarized(photonB.axis, polarizerB.axis);
             }
             if (this.polarizeMode=='Test') {
                 photonA.polarized=getTestPolarized(photonA.axis, polarizerA.axis, random.number());
@@ -621,6 +624,10 @@ class Experiment {
                 photonA.lost=!getQuantumAntiDetected();
                 photonB.lost=!getQuantumAntiDetected();
             }
+            if (this.detectMode=='Karma_Peny') {
+                photonA.lost=!getKarmaPenyDetected(photonA.axis, polarizerA.axis ,random.number());
+                photonB.lost=!getKarmaPenyDetected(photonB.axis, polarizerB.axis, random.number());
+            }
             if (this.detectMode=='Realistic') {
                 photonA.lost=!getRealisticDetected(photonA.axis, polarizerA.axis, random.number());
                 photonB.lost=!getRealisticDetected(photonB.axis, polarizerB.axis, random.number());
@@ -628,10 +635,6 @@ class Experiment {
             if (this.detectMode=='Perfect' || this.detectMode=='Real_Perfect') {
                 photonA.lost=!getPerfectDetected(photonA.axis, polarizerA.axis);
                 photonB.lost=!getPerfectDetected(photonB.axis, polarizerB.axis);
-            }
-            if (this.detectMode=='Karma_Peny') {
-                photonA.lost=!getKarmaPenyDetected(photonA.axis, polarizerA.axis ,random.number());
-                photonB.lost=!getKarmaPenyDetected(photonB.axis, polarizerB.axis, random.number());
             }
             if (this.detectMode=='Test') {
                 photonA.lost=!getTestDetected(photonA.axis, polarizerA.axis, random.number());
@@ -652,9 +655,8 @@ class Experiment {
                 else {let moveAngle=polarizerB.zAxis+45; photonB.moveCos=Math.cos(moveAngle*(Math.PI/180)); photonB.moveSin=Math.sin(moveAngle*(Math.PI/180))}
             }
                 
-            // report
-            if (!photonA.lost && !photonB.lost) {this.updateReports({detected:true})} 
-            else {this.totals.Lost+=1; this.updateReports({detected:false})}
+            // Update report and status
+            this.updateReports({updateTotals:true});
             this.statText=`(${photonA.getStatus()},${photonB.getStatus()})`;
             this.updateStatus();
             this.phase=3;
@@ -729,9 +731,9 @@ class Experiment {
         <td>${a}</td><td>${b}</td><td>${tot}</td><td>${percent}</td>
         <td class='rpt-note'>${note}</td></tr>`;
     }
-    getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.tot}</b>`,`${row.pct>=0?row.pct+'%':''}`,row.note,cls)}
-    updateReports (params={init:false, detected:false}) {
-        function getIndex(photonA,photonB,reportIndexes) {
+    getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.count}</b>`,`${row.total>=0?row.total+'%':''}`,row.note,cls)}
+    updateReports (params={updateTotals:false}) {
+        function getRowIndex(photonA,photonB,reportIndexes) {
             const res1=photonA.lost?'!':photonA.polarized, res2=photonB.lost?'!':photonB.polarized;
             return reportIndexes[`${res1}${res2}`]}
         function getE(pp,pm,mp,mm) {
@@ -741,78 +743,103 @@ class Experiment {
         function seedStatus(seed) {
             var numSeeds = [seed].map(n => Number(n));
             if (numSeeds.indexOf(0) >= 0) {return "<span class='data-seed'>Non-repeatable seed</span>"}
-            // else if (numSeeds.length!==[...new Set(numSeeds)].length) {return "<span class='data-seed'>Warning duplicate seed</span>"}
             else {return `Seed: <span class='data-seed'>${numSeeds.join(', ')}</span>`}
         }
-        // initialize params
-        params.init = params.init?true:false;
-        params.detected = params.detected?true:false;
+
         // set constants and declare variables
-        const photonA=this.photonA, photonB=this.photonB, polarizerA=this.polarizerA, polarizerB=this.polarizerB, mode=this.mode.value, debug=this.debug, totals=this.totals;
-        let header, terminal, reportIndexes, report, countName, lostName, eName, aName, bName, aValue, bValue, reportRows='', summaryRows='', na="<i>n/a</i>", reportStatus='', reportIndex;
+        const photonA=this.photonA, photonB=this.photonB, polarizerA=this.polarizerA, polarizerB=this.polarizerB;
+        const mode=this.mode.value, debug=this.debug, totals=this.totals, eberhard=eid('eberhardChk').checked, lossDetail=eid('lossDetailChk').checked;
+        let header, terminal, report, reportIndex, reportIndexes, aValue, bValue;
+        let aName, bName, cName, detectedName, eName, lostName, reportRows='', summaryRows='', reportStatus='';
         if (!polarizerA.prime && !polarizerB.prime) {
-            header=this.header2; terminal=this.terminal2; report=this.report1; reportIndex=1; reportIndexes=this.report1Indexes;
-            countName='Count1'; lostName='Lost1'; eName='E1'; aName='a'; bName='b'; aValue=this.polarizeA1; bValue=this.polarizeB1;
+            header=this.header2; terminal=this.terminal2; report=this.report1; reportIndex=1;
+            reportIndexes=this.report1Indexes; aValue=this.polarizeA1; bValue=this.polarizeB1;
+            aName='a'; bName='b'; cName='C1'; detectedName='Detected1'; eName='E1'; lostName='Lost1';
         }
         if (!polarizerA.prime && polarizerB.prime) {
-            header=this.header3; terminal=this.terminal3; report=this.report2; reportIndex=2; reportIndexes=this.report2Indexes;
-            countName='Count2'; lostName='Lost2'; eName='E2'; aName='a'; bName='b′'; aValue=this.polarizeA1; bValue=this.polarizeB2;
+            header=this.header3; terminal=this.terminal3; report=this.report2; reportIndex=2;
+            reportIndexes=this.report2Indexes; aValue=this.polarizeA1; bValue=this.polarizeB2;
+            aName='a'; bName='b′'; cName='C2'; detectedName='Detected2'; eName='E2'; lostName='Lost2';
         }
         if (polarizerA.prime && !polarizerB.prime) {
-            header=this.header4; terminal=this.terminal4; report=this.report3; reportIndex=3; reportIndexes=this.report3Indexes;
-            countName='Count3'; lostName='Lost3'; eName='E3'; aName='a′'; bName='b'; aValue=this.polarizeA2; bValue=this.polarizeB1;
+            header=this.header4; terminal=this.terminal4; report=this.report3; reportIndex=3;
+            reportIndexes=this.report3Indexes; aValue=this.polarizeA2; bValue=this.polarizeB1;
+            aName='a′'; bName='b'; cName='C3'; detectedName='Detected3'; eName='E3'; lostName='Lost3';
         }
         if (polarizerA.prime && polarizerB.prime) {
-            header=this.header5; terminal=this.terminal5; report=this.report4; reportIndex=4; reportIndexes=this.report4Indexes;
-            countName='Count4'; lostName='Lost4'; eName='E4'; aName='a′'; bName='b′'; aValue=this.polarizeA2; bValue=this.polarizeB2;
+            header=this.header5; terminal=this.terminal5; report=this.report4; reportIndex=4; 
+            reportIndexes=this.report4Indexes; aValue=this.polarizeA2; bValue=this.polarizeB2;
+            aName='a′'; bName='b′'; cName='C4'; detectedName='Detected4'; eName='E4';  lostName='Lost4';
         }
-        
-        // detected totals
-        if (!params.init) {
-            const index=getIndex(photonA, photonB, reportIndexes);
-            report[index].tot+=1;
-            if (params.detected) {
-                totals[countName]+=1;
-                totals.Count+=1;
+        const na="<i>n/a</i>", rowIndex=getRowIndex(photonA, photonB, reportIndexes);
+
+        // Update Totals
+        if (params.updateTotals===true) {
+            report[rowIndex].count+=1;
+            if (!photonA.lost && !polarizerA.prime) {
+                if (photonB.lost) {totals.S1+=1}
             }
-            totals[lostName]+=1;
+            if (!photonB.lost && !polarizerB.prime) {
+                if (photonA.lost) {totals.S2+=1}
+            }
+            if (!photonA.lost && !photonB.lost) {
+                totals[detectedName]+=1;
+                totals.Count+=1;
+                totals[cName]+=1;  // if (photonA.polarized===photonB.polarized) {totals[cName]+=1}
+            } else {
+                totals[lostName]+=1;
+                totals.Lost+=1; 
+            }
+            totals[eName]=getE(report[0].total, report[1].total, report[2].total, report[3].total);
+            totals.S = totals.E1 - totals.E2 + totals.E3 + totals.E4;
+            totals.J = totals.C1 + totals.C2 + totals.C3 - totals.C4 - totals.S1 - totals.S2;
         }
+
         // Build Sub-Report 1,2,3 or 4 (display in terminal 2,3,4 or 5)
         for (let r=1; r<=4; r++) {
-            report[r-1].pct=roundTo((report[r-1].tot/totals[countName])*100,1);
-            // report[r-1].note=reportExpected[`${reportIndex}`][r-1];
+            report[r-1].total=roundTo((report[r-1].count/totals[detectedName])*100,1);
             report[r-1].note=reportExpected[`${reportIndex}`][r];
             reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-detail');
         }
-        totals[eName]=getE(report[0].pct, report[1].pct, report[2].pct, report[3].pct);
-        // reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[countName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][4],'rpt-subtotal');
-        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[countName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][5],'rpt-subtotal');
+        reportRows+=this.getRowHtml(`<b>${eName}</b>`,na,na,roundTo(totals[detectedName],4),`<b>${roundTo(totals[eName],4)}</b>`,reportExpected[`${reportIndex}`][5],'rpt-subtotal');
+        
         // undetected rows 5-9
-        for (let r=5; r<=9; r++) { 
-            report[r-1].pct=roundTo((report[r-1].tot/totals[lostName])*100,1);
-            // report[r-1].note=reportExpected[`${reportIndex}`][r];
-            report[r-1].note=reportExpected[`${reportIndex}`][r+1];
-            reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-undetected');
+        if (lossDetail) {
+            for (let r=5; r<=9; r++) { 
+                report[r-1].total=roundTo((report[r-1].count/(totals[detectedName] + totals[lostName]))*100,1);
+                report[r-1].note=reportExpected[`${reportIndex}`][r+1];
+                reportRows+=this.getRowHtmlFromRow(`[${r}]`, report[r-1],'rpt-undetected');
+            }
         }
-        let lostTotal = (report[4].tot + report[5].tot + report[6].tot + report[7].tot + report[8].tot) / totals[lostName] * 100;
-        // reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][10],'rpt-detect');
-        reportRows+=this.getRowHtml(`<b>${lostName}</b>`,na,na,roundTo(totals[lostName],4),`<b>${roundTo(lostTotal,1)}%</b>`,reportExpected[`${reportIndex}`][11],'rpt-detect');
+        let lostTotal = (report[4].count + report[5].count + report[6].count + report[7].count + report[8].count) / (totals[detectedName] + totals[lostName]) * 100;
+        reportRows+=this.getRowHtml(`${lostName}`,na,na,roundTo(totals[lostName],4),`${roundTo(lostTotal,1)}%`,reportExpected[`${reportIndex}`][11],'rpt-detect');
+        
         // status
         if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {reportStatus=`(${photonA.getStatus()},${photonB.getStatus()})`}
         else {reportStatus=`A=${roundTo(photonA.origAxis,1)}°, B=${roundTo(photonB.origAxis,1)}° (${photonA.getStatus()},${photonB.getStatus()})`}
-        header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°)</i><b>:</b></b><br>`;
+        const eberhardStatus = (eberhard) ? `, <span class='rpt-subtotal'>C${reportIndex}=${totals[cName]}</span>` : "";
+        header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°${eberhardStatus})</i><b>:</b></b><br>`;
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, "Total", reportExpected[`${reportIndex}`][0], reportStatus);
 
         // Build Total Report 5 (display in terminal 1)
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
         this.footer1.innerHTML=`<small><i>Random=${random.mode}, Seed=${random.seed}, Index=${random.index}, State=${random.state()}</i></small><br><br>`;
-        totals.S=totals.E1-totals.E2+totals.E3+totals.E4;
-        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.Count1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][1],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.Count2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][2],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.Count3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][3],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Count4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.detect1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][1],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.detect2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][2],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.detect3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][3],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.detect4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
         summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][5],'rpt-total');
-        summaryRows+=this.getRowHtml(`<b>Lost</b>`,na,na,totals.Lost,`<i><b>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</b></i>`,`<i>${reportExpected['5'][6]}</i>`,'rpt-detect');
+        summaryRows+=this.getRowHtml(`Lost`,na,na,totals.Lost,`<i>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</i>`,`<i>${reportExpected['5'][6]}</i>`,'rpt-detect');
+        if (eberhard) {
+            summaryRows+=this.getRowHtml(`C1`,na,na,totals.C1,na,`<i>${reportExpected['5'][7]}</i>`,'rpt-detail');
+            summaryRows+=this.getRowHtml(`C2`,na,na,totals.C2,na,`<i>${reportExpected['5'][8]}</i>`,'rpt-detail');
+            summaryRows+=this.getRowHtml(`C3`,na,na,totals.C3,na,`<i>${reportExpected['5'][9]}</i>`,'rpt-detail');
+            summaryRows+=this.getRowHtml(`C4`,na,na,totals.C4,na,`<i>${reportExpected['5'][10]}</i>`,'rpt-detail');
+            
+            summaryRows+=this.getRowHtml(`S1`,na,na,totals.S1,na,`<i>${reportExpected['5'][11]}</i>`,'rpt-detail');
+            summaryRows+=this.getRowHtml(`S2`,na,na,totals.S2,na,`<i>${reportExpected['5'][12]}</i>`,'rpt-detail');
+            summaryRows+=this.getRowHtml(`<b>J</b>`,na,na,na,`<i><b>${roundTo(totals.J,1)}</b></i>`,`<i>${reportExpected['5'][13]}</i>`,'rpt-total');
+        }
         this.terminal1.innerHTML=this.getHeaderHtml(summaryRows, 'a or a′', 'b or b′', "Total", reportExpected['5'][0], '');
         // setIdHtml('debug', `debug=${JSON.stringify(debug)}`);
     }
