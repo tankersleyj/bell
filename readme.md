@@ -2,9 +2,9 @@
 
 This computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.
 
-For information on the computer experiment, see [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper).
+For information on the computer experiment in related [paper](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper).
 
-Code is compatible with modern browsers, generating up to 2,400 particle pairs per minute, and results are repeatable using random seeds.
+Code is compatible with modern browsers, generating 2,400 particle pairs per minute, and results are repeatable using random seeds.
 
 A choice of 3 PRNGs (_Pseudo Random Number Generators_) are provided, see **Set Random Seeds** below.
 
@@ -16,8 +16,8 @@ Run code on any device (_phone, tablet, netbook, laptop or desktop_) with a mode
 
 **Select Mode**
 * `Quanum Theory`
-* `Karma Peny`
-* `Realistic` (_default setting_)
+* `Karma Peny` (_default, passes CHSH & Eberhart tests_)
+* `Realistic`
 * `Perfect`
 * `Real Perfect`
 * `Custom`: user defined settings
@@ -37,9 +37,9 @@ _Source, Polarizer A, Polarizer B_
 * `medium`: 60 photon pairs per minute
 * `fast`: 2400 photon pairs per minute **_recommended_**
 
-Allow the experiment to run for at least **a few minutes** at **fast** speed.
+Allow the experiment to run for at least **a few minutes** at **fast** rate.
 
-An explanation of experiment theory, setup and expected results may be found [here](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
+An explanation of experiment theory, setup and expected results may be found in related [paper](https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper)
 
 ### `Project Status`
 
@@ -51,7 +51,7 @@ Development Priorities.
     + `Customize`: Select Calculation mix and Polarizer Angles
     
 - `Wanted Features:`
-    + `Validation`: Eberhard photon loss calculations
+    + `Validation`: Validate Eberhard photon loss calculations
     + `Quality`: Violation with photon loss below 20%
     
 - `Possible Enhancements`

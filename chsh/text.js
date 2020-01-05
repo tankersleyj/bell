@@ -150,5 +150,5 @@ const reportExpected = {
     "2": ["QM Expected (<i>a-b′=67.5</i>)", "cos²(a-b′)/2 = 7%",  "(1-cos²(a-b′))/2 = 43%", "(1-cos²(a-b′))/2 = 43%", "cos²(a-b′)/2 = 7%",  "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=-0.71", "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
     "3": ["QM Expected (<i>a′-b=22.5</i>)", "cos²(a′-b)/2 = 43%", "(1-cos²(a′-b))/2 = 7%",  "(1-cos²(a′-b))/2 = 7%",  "cos²(a′-b)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
     "4": ["QM Expected (<i>a′-b′=22.5</i>)", "cos²(a′-b′)/2 = 3%", "(1-cos²(a′-b′))/2 = 7%",  "(1-cos²(a′-b′))/2 = 7%",  "cos²(a′-b′)/2 = 43%", "([1]-[2]-[3]+[4]) / ([1]+[2]+[3]+[4])=0.71",  "+,lost", "-,lost", "lost,+", "lost,-", "lost,lost", "Lost a or b"],
-    "5": ["QM Expected", "0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4>=2, ideal 2.83", "Lost a or b", "Coincidence(a,b)", "Coincidence(a,b′)", "Coincidence(a′,b)", "Coincidence(a′,b′)", "Singe(a)", "Single(b)", "C1+C2+C3-C4-S1-S2 > 0"]
+    "5": ["QM Expected", "0.707", "-0.707", "0.707", "0.707", "E1-E2+E3+E4>=2, ideal=2.83", "Lost a or b", "Coincidence(a,b)", "Coincidence(a,b′)", "Coincidence(a′,b)", "Coincidence(a′,b′)", "Single(a)", "Single(b)", "C1+C2+C3-C4-S1-S2 > 0"]
 }
