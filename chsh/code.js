@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.15, 2020-01-04', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.7.16, 2020-01-04', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -515,7 +515,7 @@ class Experiment {
             return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
         }
         function getTestDetected(photon_degrees, polarizer_degrees, randomNumber) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta; // probability=0+(1*cos2Delta);
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=0.2+(0.8*cos2Delta)  // cos2Delta*cos2Delta; // probability=0+(1*cos2Delta);
             return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
         }
 
@@ -726,12 +726,12 @@ class Experiment {
     </tr>${reportRows}
 </table><div><i><small>${footNote}</small></i></div>`;
     }
-    getRowHtml (num,a,b,tot,percent,note,cls) {
+    getRowHtml (num,a,b,count,total,note,cls) {
         return `<tr class='rpt-row ${cls}'><td class='rpt-title'>${num}</td>
-        <td>${a}</td><td>${b}</td><td>${tot}</td><td>${percent}</td>
+        <td>${a}</td><td>${b}</td><td>${count}</td><td>${total}</td>
         <td class='rpt-note'>${note}</td></tr>`;
     }
-    getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,`<b>${row.count}</b>`,`${row.total>=0?row.total+'%':''}`,row.note,cls)}
+    getRowHtmlFromRow (r, row, cls) {return this.getRowHtml(r,row.a,row.b,row.count,`${row.total>=0?row.total+'%':''}`,row.note,cls)}
     updateReports (params={updateTotals:false}) {
         function getRowIndex(photonA,photonB,reportIndexes) {
             const res1=photonA.lost?'!':photonA.polarized, res2=photonB.lost?'!':photonB.polarized;
@@ -777,15 +777,18 @@ class Experiment {
         if (params.updateTotals===true) {
             report[rowIndex].count+=1;
             if (!photonA.lost && !polarizerA.prime) {
-                if (photonB.lost) {totals.S1+=1}
+                // if (photonB.lost && photonA.polarized=="+") {totals.S1+=1}
+                if (photonB.lost) {totals.S1+=1} 
             }
             if (!photonB.lost && !polarizerB.prime) {
-                if (photonA.lost) {totals.S2+=1}
+                // if (photonA.lost && photonB.polarized=="+") {totals.S2+=1} 
+                if (photonA.lost) {totals.S2+=1} 
             }
             if (!photonA.lost && !photonB.lost) {
                 totals[detectedName]+=1;
                 totals.Count+=1;
-                totals[cName]+=1;  // if (photonA.polarized===photonB.polarized) {totals[cName]+=1}
+                // if (photonA.polarized=="+" && photonB.polarized=="+") {totals[cName]+=1}  
+                totals[cName]+=1;
             } else {
                 totals[lostName]+=1;
                 totals.Lost+=1; 
@@ -824,11 +827,11 @@ class Experiment {
         // Build Total Report 5 (display in terminal 1)
         this.header1.innerHTML=`<b>Totals</b> <i>(${mode}, ${seedStatus(random.seed)})</i><b>:</b><br>`;
         this.footer1.innerHTML=`<small><i>Random=${random.mode}, Seed=${random.seed}, Index=${random.index}, State=${random.state()}</i></small><br><br>`;
-        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.detect1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][1],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.detect2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][2],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.detect3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][3],'rpt-detail');
-        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.detect4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
-        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na,  roundTo(totals.Count,4), `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][5],'rpt-total');
+        summaryRows+=this.getRowHtml(`E1`,`${this.polarizeA1}°`,`${this.polarizeB1}°`, roundTo(totals.Detected1,4),`${roundTo(totals.E1,4)}`,reportExpected['5'][1],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E2`,`${this.polarizeA1}°`,`${this.polarizeB2}°`, roundTo(totals.Detected2,4),`${roundTo(totals.E2,4)}`,reportExpected['5'][2],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E3`,`${this.polarizeA2}°`,`${this.polarizeB1}°`,roundTo(totals.Detected3,4),`${roundTo(totals.E3,4)}`,reportExpected['5'][3],'rpt-detail');
+        summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Detected4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
+        summaryRows+=this.getRowHtml(`<b>S</b>`,na,na, totals.Count, `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][5],'rpt-total');
         summaryRows+=this.getRowHtml(`Lost`,na,na,totals.Lost,`<i>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</i>`,`<i>${reportExpected['5'][6]}</i>`,'rpt-detect');
         if (eberhard) {
             summaryRows+=this.getRowHtml(`C1`,na,na,totals.C1,na,`<i>${reportExpected['5'][7]}</i>`,'rpt-detail');
