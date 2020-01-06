@@ -38,7 +38,7 @@ echo file_get_contents("code.js");
     <input id="animateChk" class="space-left" type="checkbox" checked>Animate</input>
     <span class="space-left" id="statusBar"></span>
     </div>
-    <div id="custom" class="form-div" style="display:none">  <!-- style="display:none" -->
+    <div id="custom" class="form-div" style="display:none">
         <table>
         <tr>
             <td class='form-tab'></td>
@@ -71,25 +71,43 @@ echo file_get_contents("code.js");
                           <option value="Realistic">Realistic, cos²(Δ) probability</option>
                           <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                           <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
-                          <option value="Test">Test</option>
+                          <!--<option value="Test">Test</option>-->
                         </select>                   
                     </td>
                 </tr>
                 <tr>
                     <td class='form-name'>Detect Rate:</td> 
                     <td class='form-data'>
-                        <select id='detectMode' disabled>
+                        <select id='detectMode' onchange='handleDetect(this.value)' disabled>
                           <option value="Quantum_Theory">Quantum Theory, 100%</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, 100%</option>
                           <option value="Karma_Peny" selected>Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
-                          <option value="Realistic">Realistic, m+(n*cos²(2Δ)) probability</option>
+                          <option value="Realistic">Realistic, cos²(2Δ) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
-                          <option value="Test">Test</option>
+                          <option value="Custom_Cos">Custom Cos, X+(Y*cos^Z(2Δ)) probability</option>
+                          <option value="Custom_Sin">Custom Sin, X+(1-(Y*sin^Z(2Δ)) probability</option>
+                          <!--<option value="Test">Test</option>-->
                         </select>                   
                     </td>
                 </tr>
                 </table>
+                <div id="customDetect" class="form-div" style="display:none">
+                    <table>
+                    <tr>
+                        <td class='form-name'>Detect Values:</td>
+                        <td class='form-tab'></td>
+                        <td class='form-name'>X:</td> 
+                        <td class='form-data'><input type="text" id="DetectX" size="4" value="0" disabled></td>
+                        <td class='form-tab'></td>
+                        <td class='form-name'>Y:</td> 
+                        <td class='form-data'><input type="text" id="DetectY" size="4" value="1" disabled></td>
+                        <td class='form-tab'></td>
+                        <td class='form-name'>Z:</td> 
+                        <td class='form-data'><input type="text" id="DetectZ" size="4" value="2" disabled></td>
+                    </tr>
+                    </table>
+                </div>
             </td>
             <td class='form-tab'></td>
             <td class='form-tab'></td>
@@ -101,6 +119,7 @@ echo file_get_contents("code.js");
             </td>
         </tr>
         </table>
+        <div id="debug" style="display:none"></div>
     </div>
     <div id="canFoot"></div>
     <div id="header1"></div><div id="terminal1"></div><div id="footer1"></div>
@@ -108,7 +127,6 @@ echo file_get_contents("code.js");
     <div id="header3"></div><div id="terminal3"></div><div id="footer3"></div>
     <div id="header4"></div><div id="terminal4"></div><div id="footer4"></div>
     <div id="header5"></div><div id="terminal5"></div><div id="footer5"></div>
-    <div id="debug"></div>
   </div>
 </body>
 </html>
