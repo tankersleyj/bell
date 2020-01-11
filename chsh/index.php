@@ -25,6 +25,7 @@ echo file_get_contents("code.js");
             <option value="Realistic">Realistic</option>
             <option value="Perfect">Perfect</option>
             <option value="Real_Perfect">Real Perfect</option>
+            <option value="Min_Loss">Minimum Loss</option>
             <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Seed</button>
@@ -36,6 +37,8 @@ echo file_get_contents("code.js");
     </select>
     <input id="freezeChk" class="space-left" type="checkbox" onchange="freeze(this.checked)">Freeze</input>
     <input id="animateChk" class="space-left" type="checkbox" checked>Animate</input>
+    <input id="lossDetailChk" type="checkbox">Loss</input>
+    <input id="eberhardChk" type="checkbox" checked>Eberhard</input>
     <span class="space-left" id="statusBar"></span>
     </div>
     <div id="custom" class="form-div" style="display:none">
@@ -48,16 +51,16 @@ echo file_get_contents("code.js");
                     <td class='form-name'>Polarizer Angles:</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>a:</td> 
-                    <td class='form-data'><input type="text" id="polarizeA1" size="4" value="0" disabled>°</td>
+                    <td class='form-data'><input type="text" id="polarizeA1" size="5" value="0" disabled>°</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>a':</td> 
-                    <td class='form-data'><input type="text" id="polarizeA2" size="4" value="45" disabled>°</td>
+                    <td class='form-data'><input type="text" id="polarizeA2" size="5" value="45" disabled>°</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>b:</td> 
-                    <td class='form-data'><input type="text" id="polarizeB1" size="4" value="22.5" disabled>°</td>
+                    <td class='form-data'><input type="text" id="polarizeB1" size="5" value="22.5" disabled>°</td>
                     <td class='form-tab'></td>
                     <td class='form-name'>b':</td> 
-                    <td class='form-data'><input type="text" id="polarizeB2" size="4" value="67.5" disabled>°</td>
+                    <td class='form-data'><input type="text" id="polarizeB2" size="5" value="67.5" disabled>°</td>
                 </tr>
                 </table>
                 <table>
@@ -67,11 +70,11 @@ echo file_get_contents("code.js");
                         <select id='polarizeMode' disabled>
                           <option value="Quantum_Theory">Quantum Theory, cos²(polarizers Δ)</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, cos²(Δ)</option>
-                          <option value="Karma_Peny" selected>Karma Peny, cos²(Δ) >= 0.5</option>
+                          <option value="Karma_Peny">Karma Peny, cos²(Δ) >= 0.5</option>
                           <option value="Realistic">Realistic, cos²(Δ) probability</option>
                           <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                           <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
-                          <!--<option value="Test">Test</option>-->
+                          <option value="Min_Loss" selected>Minimum Loss, cos²(Δ) >= 0.5</option>
                         </select>                   
                     </td>
                 </tr>
@@ -81,13 +84,14 @@ echo file_get_contents("code.js");
                         <select id='detectMode' onchange='handleDetect(this.value)' disabled>
                           <option value="Quantum_Theory">Quantum Theory, 100%</option>
                           <option value="Quantum_Anti">Quantum Anti-correlated, 100%</option>
-                          <option value="Karma_Peny" selected>Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
+                          <option value="Karma_Peny">Karma Peny, 0.37+(0.63*|cos(2Δ)|) probability</option>
                           <option value="Realistic">Realistic, cos²(2Δ) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
-                          <option value="Custom_Cos">Custom Cos, X+(Y*cos^Z(2Δ)) probability</option>
-                          <option value="Custom_Sin">Custom Sin, X+(1-(Y*sin^Z(2Δ)) probability</option>
-                          <!--<option value="Test">Test</option>-->
+                          <option value="Min_Loss" selected>Minimum Loss, 1-(0.1*sin^32(2Δ)) probability</option>
+                          <option value="Custom_Per">Custom Per, cos²(2Δ) not between X and Y</option>
+                          <option value="Custom_Cos">Custom Cos, X+(Y*cos^Z(2Δ))) probability</option>
+                          <option value="Custom_Sin">Custom Sin, X+(1-(Y*sin^Z(2Δ))) probability</option>
                         </select>                   
                     </td>
                 </tr>
@@ -98,13 +102,13 @@ echo file_get_contents("code.js");
                         <td class='form-name'>Detect Values:</td>
                         <td class='form-tab'></td>
                         <td class='form-name'>X:</td> 
-                        <td class='form-data'><input type="text" id="DetectX" size="4" value="0" disabled></td>
+                        <td class='form-data'><input type="text" id="DetectX" size="8" value="0" disabled></td>
                         <td class='form-tab'></td>
                         <td class='form-name'>Y:</td> 
-                        <td class='form-data'><input type="text" id="DetectY" size="4" value="1" disabled></td>
+                        <td class='form-data'><input type="text" id="DetectY" size="8" value="1" disabled></td>
                         <td class='form-tab'></td>
                         <td class='form-name'>Z:</td> 
-                        <td class='form-data'><input type="text" id="DetectZ" size="4" value="2" disabled></td>
+                        <td class='form-data'><input type="text" id="DetectZ" size="8" value="2" disabled></td>
                     </tr>
                     </table>
                 </div>
@@ -113,16 +117,15 @@ echo file_get_contents("code.js");
             <td class='form-tab'></td>
             <td class='form-data'>
                 <button id='customEdit' onclick="handleCustomEdit()">Edit</button>
-                <button id='customRun' onclick="handleCustomRun()" disabled>Run</button><br>
-                <input id="lossDetailChk" type="checkbox">Loss Detail</input><br>
-                <input id="eberhardChk" type="checkbox">Eberhard J</input>
+                <button id='customRun' onclick="handleCustomRun()" disabled>Run</button>
             </td>
         </tr>
         </table>
         <div id="debug" style="display:none"></div>
     </div>
     <div id="canFoot"></div>
-    <div id="header1"></div><div id="terminal1"></div><div id="footer1"></div>
+    <table><tr><td><div id="header1"></td><td><button id='customRun' onclick="handleExport()" disabled>Export</button></td></tr></table></div>
+    <div id="terminal1"></div><div id="footer1"></div>
     <div id="header2"></div><div id="terminal2"></div><div id="footer2"></div>
     <div id="header3"></div><div id="terminal3"></div><div id="footer3"></div>
     <div id="header4"></div><div id="terminal4"></div><div id="footer4"></div>

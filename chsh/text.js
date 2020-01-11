@@ -41,7 +41,12 @@ const textJson = {
                 <u>polarize +</u> = cos²(Δ) correlated ,
                 <u>detect rate</u> = 100%
             </td></tr>
-            <tr><td class='mode-head'>Real</td><td class='mode-note'>
+            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>
+                local,
+                <u>polarize +</u> = cos²(Δ) >= 0.5,
+                <u>detect rate</u> = 0.37+(0.63*|cos(2Δ)|) probability
+            </td></tr>
+            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>
                 local,
                 <u>polarize +</u> = cos²(Δ) probability,
                 <u>detect rate</u> = cos²(2Δ) probability
@@ -56,15 +61,10 @@ const textJson = {
                 <u>polarize +</u> = cos²(Δ) probability,
                 <u>detect rate</u> = 100%
             </td></tr>
-            <tr><td class='mode-head'>Realistic</td><td class='mode-note'>
-                local,
-                <u>polarize +</u> = cos²(Δ) probability,
-                <u>detect rate</u> = cos²(2Δ) probability
-            </td></tr>
-            <tr><td class='mode-head'>Karma Peny</td><td class='mode-note'>
+            <tr><td class='mode-head'>Minimum Loss</td><td class='mode-note'>
                 local,
                 <u>polarize +</u> = cos²(Δ) >= 0.5,
-                <u>detect rate</u> = 0.37+(0.63*|cos(2Δ)|) probability
+                <u>detect rate</u> = 1-(0.1*sin^32(2Δ)) probability
             </td></tr>
             <tr><td class='mode-head'>Custom</td><td class='mode-note'>
                 Customize polarizer angles and polarization and detection formulas
