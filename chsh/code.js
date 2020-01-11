@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.0, 2020-01-05', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.4, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -82,8 +82,25 @@ function handleCustomRun() {
     animationStart();
 }
 function handleDetect(value) {
-    const isCustomDetect = value=='Custom_Cos' || value=='Custom_Sin' || value=='Test';
-    setVis(eid("customDetect"), isCustomDetect)
+    const isCustomDetect = value=='Custom_Per' || value=='Custom_Cos' || value=='Custom_Sin';
+    setVis(eid("customDetect"), isCustomDetect);
+    // Custom Defaults
+    if (value=='Custom_Per') {
+        eid('DetectX').value = "0.49";
+        eid('DetectY').value = '0.51';
+        eid('DetectZ').value = '';
+    } else if (value=='Custom_Cos') {
+        eid('DetectX').value = "0";
+        eid('DetectY').value = '1';
+        eid('DetectZ').value = '2';
+    } else {
+        eid('DetectX').value = "0";
+        eid('DetectY').value = '0.1';
+        eid('DetectZ').value = '32';
+    }
+}
+function handleExport() {
+    alert('export');
 }
 function handleMode() {
     random.setSeed(randomSeed());
@@ -297,11 +314,11 @@ class Experiment {
         this.polarizeB2 = (isCustom) ? Number(eid('polarizeB2').value) : 67.5;
         this.polarizeMode = (isCustom) ? eid('polarizeMode').value : this.mode.value;
         this.detectMode = (isCustom) ? eid('detectMode').value : this.mode.value;
-        if (this.detectMode == 'Custom_Cos' || this.detectMode == 'Custom_Sin' || this.detectMode == 'Test') {
+        if (this.detectMode == 'Custom_Per' || this.detectMode == 'Custom_Cos' || this.detectMode == 'Custom_Sin') {
             this.detectX = Number(eid("DetectX").value);
             this.detectY = Number(eid("DetectY").value);
             this.detectZ = Number(eid("DetectZ").value);
-            setVis(eid('debug'),true);
+            setVis(eid('debug'),false);
         } else {setVis(eid('debug'),false)}
         
         // report 1 (a, b)
@@ -494,39 +511,46 @@ class Experiment {
         // Karma Peny Calculations
         function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
-            return (cosSqrDelta>=0.5)?"+":"-";  // +=passthrough, -=reflect
+            return (cosSqrDelta>=0.5) ? "+" : "-";  // +=passthrough, -=reflect
         }
         function getKarmaPenyDetected(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
-            return (randomNumber<=0.37+(0.63*probability))?true:false;
+            return (randomNumber<=0.37+(0.63*probability)) ? true : false;
         }
         
         // Realistic Calculations
         function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (randomNumber<=probability)?"+":"-";  // +=passthrough, -=reflect
+            return (randomNumber<=probability) ? "+" : "-";  // +=passthrough, -=reflect
         }
         function getRealisticDetected(photon_degrees, polarizer_degrees, randomNumber) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
-            return (randomNumber<=probability)?true:false;
+            return (randomNumber<=probability) ? true : false;
         }
         
         // Perfect Calculations
         function getPerfectPolarized(photon_degrees, polarizer_degrees) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
-            return (cosSqrDelta>=0.5)?"+":"-";  // +=passthrough, -=reflect
+            return (cosSqrDelta>=0.5) ? "+" : "-";  // +=passthrough, -=reflect
         }
         function getPerfectDetected() {
             return true;
         }
 
+        // Custom Per Calculations
+        function getCustomPerDetected(photon_degrees, polarizer_degrees, X, Y, debug) {
+            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), cosSqr2Delta=cos2Delta*cos2Delta;
+            debug.delta=roundTo(delta,3); debug.cosSqr2Delta=roundTo(cosSqr2Delta,3); debug.detect=(cosSqr2Delta<X || cosSqr2Delta>Y) ? true : false;
+            return (cosSqr2Delta<X || cosSqr2Delta>Y) ? true : false;
+        }
+        
         // Custom Cos Calculations
         function getCustomCosDetected(photon_degrees, polarizer_degrees, randomNumber, X, Y, Z, debug) {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180);
             var probability=1; for (var i = 0; i < Z; i++) {probability*=cos2Delta}; probability=X+(Y*probability);
             debug.delta=roundTo(delta,3); debug.random=roundTo(randomNumber,3); debug.probability=roundTo(probability,3); 
-            debug.detect=(randomNumber<=probability)?true:false;
-            return (randomNumber<=probability)?true:false;
+            debug.detect=(randomNumber<=probability) ? true : false;
+            return (randomNumber<=probability) ? true : false;
         }
 
         // Custom Sin Calculations
@@ -534,21 +558,8 @@ class Experiment {
             const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), sin2Delta=Math.sin((delta+delta)*Math.PI/180);
             var probability=1; for (var i = 0; i < Z; i++) {probability*=sin2Delta}; probability=X+(1-(Y*probability));
             debug.delta=roundTo(delta,3); debug.random=roundTo(randomNumber,3); debug.probability=roundTo(probability,3); 
-            debug.detect=(randomNumber<=probability)?true:false;
-            return (randomNumber<=probability)?true:false;
-        }
-
-        // Test Calculations
-        function getTestPolarized(photon_degrees, polarizer_degrees, randomNumber) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
-            return (randomNumber<=probability)?"+":"-";  // +=passthrough, -=reflect
-        }
-        function getTestDetected(photon_degrees, polarizer_degrees, randomNumber, X, Y, Z, debug) {
-            const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180);
-            var probability=1; for (var i = 0; i < Z; i++) {probability*=cos2Delta}; probability=X+(Y*probability);
-            debug.delta=roundTo(delta,3); debug.random=roundTo(randomNumber,3); debug.probability=roundTo(probability,3);
-            debug.detect=(randomNumber<=probability)?true:false;
-            return (randomNumber<=probability)?true:false;
+            debug.detect=(randomNumber<=probability) ? true : false;
+            return (randomNumber<=probability) ? true : false;
         }
 
         // Polarize photon as vertical or horizontal
@@ -638,13 +649,9 @@ class Experiment {
                 photonA.polarized=getRealisticPolarized(photonA.axis, polarizerA.axis, random.number());
                 photonB.polarized=getRealisticPolarized(photonB.axis, polarizerB.axis, random.number());
             }
-            if (this.polarizeMode=='Perfect') {
+            if (this.polarizeMode=='Perfect' || this.polarizeMode=='Min_Loss') {
                 photonA.polarized=getPerfectPolarized(photonA.axis, polarizerA.axis);
                 photonB.polarized=getPerfectPolarized(photonB.axis, polarizerB.axis);
-            }
-            if (this.polarizeMode=='Test') {
-                photonA.polarized=getTestPolarized(photonA.axis, polarizerA.axis, random.number(), debug);
-                photonB.polarized=getTestPolarized(photonB.axis, polarizerB.axis, random.number(), debug);
             }
             
             // Calculate Detected at all (lost or not)
@@ -668,6 +675,16 @@ class Experiment {
                 photonA.lost=!getPerfectDetected(photonA.axis, polarizerA.axis);
                 photonB.lost=!getPerfectDetected(photonB.axis, polarizerB.axis);
             }
+            if (this.detectMode=='Min_Loss') {
+                debug.photonA={}; debug.photonB={};
+                photonA.lost=!getCustomSinDetected(photonA.axis, polarizerA.axis, random.number(), 0, 0.1, 32, debug.photonA);
+                photonB.lost=!getCustomSinDetected(photonB.axis, polarizerB.axis, random.number(), 0, 0.1, 32, debug.photonB);
+            }
+            if (this.detectMode=='Custom_Per') {
+                debug.photonA={}; debug.photonB={};
+                photonA.lost=!getCustomPerDetected(photonA.axis, polarizerA.axis, this.detectX, this.detectY, debug);
+                photonB.lost=!getCustomPerDetected(photonB.axis, polarizerB.axis, this.detectX, this.detectY, debug);
+            }
             if (this.detectMode=='Custom_Cos') {
                 debug.photonA={}; debug.photonB={};
                 photonA.lost=!getCustomCosDetected(photonA.axis, polarizerA.axis, random.number(), this.detectX, this.detectY, this.detectZ, debug.photonA);
@@ -677,11 +694,6 @@ class Experiment {
                 debug.photonA={}; debug.photonB={};
                 photonA.lost=!getCustomSinDetected(photonA.axis, polarizerA.axis, random.number(), this.detectX, this.detectY, this.detectZ, debug.photonA);
                 photonB.lost=!getCustomSinDetected(photonB.axis, polarizerB.axis, random.number(), this.detectX, this.detectY, this.detectZ, debug.photonB);
-            }
-            if (this.detectMode=='Test') {
-                debug.photonA={}; debug.photonB={};
-                photonA.lost=!getTestDetected(photonA.axis, polarizerA.axis, random.number(), this.detectX, this.detectY, this.detectZ, debug.photonA);
-                photonB.lost=!getTestDetected(photonB.axis, polarizerB.axis, random.number(), this.detectX, this.detectY, this.detectZ, debug.photonB);
             }
 
             // Calculate Axis
@@ -760,7 +772,7 @@ class Experiment {
     }
     start () {this.timeLast=window.performance.now()}
     stop () {}
-    updateStatus () {this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`;}
+    updateStatus () {}  // this.statusBar.innerHTML=`<span'>${this.rate}/min ${this.statText}</span>`}
     getHeaderHtml(reportRows,aName,bName,totalHead,expectHead,footNote) {
         return `
 <table class='rpt-table'>
