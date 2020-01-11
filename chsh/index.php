@@ -21,11 +21,12 @@ echo file_get_contents("code.js");
         Mode: 
         <select id='mode' onchange='handleMode()'>
             <option value="Quantum_Theory">Quantum Theory</option>
-            <option value="Karma_Peny" selected>Karma Peny</option>
+            <option value="Karma_Peny">Karma Peny</option>
             <option value="Realistic">Realistic</option>
             <option value="Perfect">Perfect</option>
             <option value="Real_Perfect">Real Perfect</option>
-            <option value="Min_Loss">Minimum Loss</option>
+            <option value="Low_Loss" selected>Low Loss</option>
+            <!--<option value="Min_Loss">Minimum Loss</option>-->
             <option value="Custom">Custom</option>
         </select>
     <button class="space-left" onclick="handleReset()">Seed</button>
@@ -74,7 +75,7 @@ echo file_get_contents("code.js");
                           <option value="Realistic">Realistic, cos²(Δ) probability</option>
                           <option value="Perfect">Perfect, cos²(Δ) >= 0.5</option>
                           <option value="Real_Perfect">Real Perfect, cos²(Δ) probability</option>
-                          <option value="Min_Loss" selected>Minimum Loss, cos²(Δ) >= 0.5</option>
+                          <option value="Low_Loss" selected>Low Loss, cos²(Δ) >= 0.5</option>
                         </select>                   
                     </td>
                 </tr>
@@ -88,7 +89,7 @@ echo file_get_contents("code.js");
                           <option value="Realistic">Realistic, cos²(2Δ) probability</option>
                           <option value="Perfect">Perfect, 100%</option>
                           <option value="Real_Perfect">Real Perfect, 100%</option>
-                          <option value="Min_Loss" selected>Minimum Loss, 1-(0.1*sin^32(2Δ)) probability</option>
+                          <option value="Low_Loss" selected>Low Loss, 1-(0.333*sin^32(2Δ)) probability</option>
                           <option value="Custom_Per">Custom Per, cos²(2Δ) not between X and Y</option>
                           <option value="Custom_Cos">Custom Cos, X+(Y*cos^Z(2Δ))) probability</option>
                           <option value="Custom_Sin">Custom Sin, X+(1-(Y*sin^Z(2Δ))) probability</option>

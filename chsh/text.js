@@ -61,10 +61,10 @@ const textJson = {
                 <u>polarize +</u> = cos²(Δ) probability,
                 <u>detect rate</u> = 100%
             </td></tr>
-            <tr><td class='mode-head'>Minimum Loss</td><td class='mode-note'>
+            <tr><td class='mode-head'>Low Loss</td><td class='mode-note'>
                 local,
                 <u>polarize +</u> = cos²(Δ) >= 0.5,
-                <u>detect rate</u> = 1-(0.1*sin^32(2Δ)) probability
+                <u>detect rate</u> = 1-(0.333*sin^32(2Δ)) probability
             </td></tr>
             <tr><td class='mode-head'>Custom</td><td class='mode-note'>
                 Customize polarizer angles and polarization and detection formulas
