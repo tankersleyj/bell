@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.4, 2020-01-11', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.5, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -86,8 +86,8 @@ function handleDetect(value) {
     setVis(eid("customDetect"), isCustomDetect);
     // Custom Defaults
     if (value=='Custom_Per') {
-        eid('DetectX').value = "0.49";
-        eid('DetectY').value = '0.51';
+        eid('DetectX').value = "0.45";
+        eid('DetectY').value = '0.55';
         eid('DetectZ').value = '';
     } else if (value=='Custom_Cos') {
         eid('DetectX').value = "0";
@@ -95,7 +95,7 @@ function handleDetect(value) {
         eid('DetectZ').value = '2';
     } else {
         eid('DetectX').value = "0";
-        eid('DetectY').value = '0.1';
+        eid('DetectY').value = '0.333';
         eid('DetectZ').value = '32';
     }
 }
@@ -649,7 +649,7 @@ class Experiment {
                 photonA.polarized=getRealisticPolarized(photonA.axis, polarizerA.axis, random.number());
                 photonB.polarized=getRealisticPolarized(photonB.axis, polarizerB.axis, random.number());
             }
-            if (this.polarizeMode=='Perfect' || this.polarizeMode=='Min_Loss') {
+            if (this.polarizeMode=='Perfect' || this.polarizeMode=='Low_Loss') {
                 photonA.polarized=getPerfectPolarized(photonA.axis, polarizerA.axis);
                 photonB.polarized=getPerfectPolarized(photonB.axis, polarizerB.axis);
             }
@@ -675,10 +675,10 @@ class Experiment {
                 photonA.lost=!getPerfectDetected(photonA.axis, polarizerA.axis);
                 photonB.lost=!getPerfectDetected(photonB.axis, polarizerB.axis);
             }
-            if (this.detectMode=='Min_Loss') {
+            if (this.detectMode=='Low_Loss') {
                 debug.photonA={}; debug.photonB={};
-                photonA.lost=!getCustomSinDetected(photonA.axis, polarizerA.axis, random.number(), 0, 0.1, 32, debug.photonA);
-                photonB.lost=!getCustomSinDetected(photonB.axis, polarizerB.axis, random.number(), 0, 0.1, 32, debug.photonB);
+                photonA.lost=!getCustomSinDetected(photonA.axis, polarizerA.axis, random.number(), 0, 0.333, 32, debug.photonA);
+                photonB.lost=!getCustomSinDetected(photonB.axis, polarizerB.axis, random.number(), 0, 0.333, 32, debug.photonB);
             }
             if (this.detectMode=='Custom_Per') {
                 debug.photonA={}; debug.photonB={};
