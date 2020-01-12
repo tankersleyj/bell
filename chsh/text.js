@@ -5,7 +5,7 @@ const textJson = {
 \u2022 integer = 31 bit Lehmer LCG
 \u2022 decimal = 53 bit PCG (recommended)`,
     "canHead": `<br>
-        Bell CHSH computer experiment violates Bell's Inequalities with Realistic and Karma Peny math.<br>
+        CHSH Bell Inequalities simulation with QT (<i>Quantum Theory</i>) and LHV (<i>Local Hidden Variable</i>) models.<br>
         Scroll down for <b>Run Instructions</b>.
         <small>See <a target='tab' href='https://sites.google.com/site/physicschecker/unsettled-physics/testing-bells-theorem-paper'>Testing Bell's Theorem</a> [I]
         & <a target='tab' href='https://www.youtube.com/watch?v=yOtsEgbg1-s'>Explained & Debunked</a> [II] for theoretical background.</small>`,
@@ -22,9 +22,10 @@ const textJson = {
     "footer5": `<br>
         <b>Purpose</b><br>
         <div class='tab-left paragraph'>
-            Physical Bell experiments attempt to prove that quantum systems are non-deterministic.<br>
-            This computer experiment attempts to prove that quantum systems may instead be deterministic,<br>
-            by generating similar results as physical experiments while using local hidden variable models.
+            Physical Bell experiments attempt to prove that quantum systems are non-deterministic<br>
+            (<i>and involve some form of mysterious instantaneous communication between particles</i>).<br>
+            Simulations attempt to prove that quantum systems could be deterministic<br>
+            (<i>no "spooky actions at a distance"</i>) as Prof. Einstein argued in his 1935 EPR paper.
         </div><br>
         <b>Instructions</b><br>
         <div class='tab-left paragraph'>
@@ -81,8 +82,8 @@ const textJson = {
             Quantum Theory expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
             Eberhard <b>J>0</b> where J = Coincidence(a,b) + Coincidence(a,b′) + Coincidence(a′,b) - Coincidence(a′,b′) - Single(a) - Single(b)</b><br>
             <br>
-            Quantum mode violates Bell's inequalities (<i>S>2, ~=2.83</i>) by simulating '<i>spooky action at a distance</i>'.<br>
-            Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2, ~=2.83</i>) using only local hidden variables.<br>
+            Quantum Theory mode violates Bell's inequalities (<i>S>2, ~=2.83</i>) by simulating '<i>spooky action at a distance</i>'.<br>
+            All other modes also violate Bell's inequalities using local hidden variable (<i>non-communicating</i>) models.<br>
             <br>
             These experiments demonstrate the 'detection loophole', (<i>photon loss when a photon's polarization<br>
             angle is approximately half way between it's Polarizer's pass-through and reflection angles</i>),<br>
