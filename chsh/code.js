@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.10, 2020-01-11', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.11, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -81,10 +81,10 @@ function getExportRows(reportIndex) {
     function addRow(row) {rows.push([`Part${reportIndex}.${row.row}`, row.a, row.b, row.count, row.total, ""])}
     function cellValue(value) {return value.toString().replace(",",";")}
     let rows=[], report, totals=experiment.totals;
-    if (reportIndex==1) {report=experiment.report1; rows.push(["E1",experiment.polarizeA1,experiment.polarizeB1,totals.C1,roundTo(totals.E1,3),""])}
-    else if (reportIndex==2) {report=experiment.report2; rows.push(["E2",experiment.polarizeA1,experiment.polarizeB2,totals.C2,roundTo(totals.E2,3),""])}
-    else if (reportIndex==3) {report=experiment.report3; rows.push(["E3",experiment.polarizeA2,experiment.polarizeB1,totals.C3,roundTo(totals.E3,3),""])}
-    else if (reportIndex==4) {report=experiment.report4; rows.push(["E4",experiment.polarizeA2,experiment.polarizeB2,totals.C4,roundTo(totals.E4,3),""])}
+    if (reportIndex==1) {report=experiment.report1; rows.push(["E1", experiment.polarizeA1, experiment.polarizeB1, totals.C1, roundTo(totals.E1,3), cellValue(reportExpected['1'][5])])}
+    else if (reportIndex==2) {report=experiment.report2; rows.push(["E2", experiment.polarizeA1, experiment.polarizeB2, totals.C2, roundTo(totals.E2,3), cellValue(reportExpected['2'][5])])}
+    else if (reportIndex==3) {report=experiment.report3; rows.push(["E3", experiment.polarizeA2, experiment.polarizeB1, totals.C3, roundTo(totals.E3,3), cellValue(reportExpected['3'][5])])}
+    else if (reportIndex==4) {report=experiment.report4; rows.push(["E4", experiment.polarizeA2, experiment.polarizeB2, totals.C4, roundTo(totals.E4,3), cellValue(reportExpected['4'][5])])}
     if (report) {report.forEach(addRow)} // Report
     else { // Totals
         rows.push(["App","","","","","codeserver.net/bell/chsh"]);
@@ -104,15 +104,15 @@ function getExportRows(reportIndex) {
         rows.push(["DetectY","","","","",cellValue(experiment.detectY)]);
         rows.push(["DetectZ","","","","",cellValue(experiment.detectZ)]);
         rows.push(["EberhardMode","","","","",cellValue(totals.EberhardMode)]);
-        rows.push(["S","","",totals.Count,roundTo(totals.S,3),""]);
+        rows.push(["S","","",totals.Count,roundTo(totals.S,3),cellValue(reportExpected['5'][5])]);
         rows.push(["LostCount","","",totals.Lost,"",""]);
-        rows.push(["EberhardC1","","",totals.C1,"",""]);
-        rows.push(["EberhardC2","","",totals.C2,"",""]);
-        rows.push(["EberhardC3","","",totals.C3,"",""]);
-        rows.push(["EberhardC4","","",totals.C4,"",""]);
-        rows.push(["EberhardS1","","",totals.S1,"",""]);
-        rows.push(["EberhardS2","","",totals.S2,"",""]);
-        rows.push(["EberhardJ","","","",totals.J,""]);
+        rows.push(["EberhardC1","","",totals.C1,"",cellValue(reportExpected['5'][7])]);
+        rows.push(["EberhardC2","","",totals.C2,"",cellValue(reportExpected['5'][8])]);
+        rows.push(["EberhardC3","","",totals.C3,"",cellValue(reportExpected['5'][9])]);
+        rows.push(["EberhardC4","","",totals.C4,"",cellValue(reportExpected['5'][10])]);
+        rows.push(["EberhardS1","","",totals.S1,"",cellValue(reportExpected['5'][11])]);
+        rows.push(["EberhardS2","","",totals.S2,"",cellValue(reportExpected['5'][12])]);
+        rows.push(["EberhardJ","","","",totals.J,cellValue(reportExpected['5'][13])]);
     }
     return rows;
 }
