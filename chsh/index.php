@@ -39,7 +39,7 @@ echo file_get_contents("code.js");
     <input id="freezeChk" class="space-left" type="checkbox" onchange="freeze(this.checked)">Freeze</input>
     <input id="animateChk" class="space-left" type="checkbox" checked>Animate</input>
     <input id="lossDetailChk" type="checkbox">Loss</input>
-    <input id="eberhardChk" type="checkbox" checked>Eberhard</input>
+    <input id="eberhardChk" type="checkbox">Eberhard</input>
     <span class="space-left" id="statusBar"></span>
     </div>
     <div id="custom" class="form-div" style="display:none">

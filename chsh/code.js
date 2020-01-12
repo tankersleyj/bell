@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.6, 2020-01-11', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.7, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -103,6 +103,7 @@ function getExportRows(reportIndex) {
         rows.push(["X","","","","",cellValue(experiment.detectX)]);
         rows.push(["Y","","","","",cellValue(experiment.detectY)]);
         rows.push(["Z","","","","",cellValue(experiment.detectZ)]);
+        rows.push(["JMode","","","","",cellValue(totals.JMode)]);
         rows.push(["S","","",totals.Count,roundTo(totals.S,3),""]);
         rows.push(["Lost","","",totals.Lost,"",""]);
         rows.push(["C1","","",totals.C1,"",""]);
@@ -350,7 +351,7 @@ class Experiment {
             "C1":0, "C2":0, "C3":0, "C4":0, 
             "Detected1":0, "Detected2":0, "Detected3":0, "Detected4":0,
             "E1":0, "E2":0, "E3":0, "E4":0, 
-            "J":0,
+            "J":0, "JMode":2,
             "Lost":0, "Lost1":0, "Lost2":0, "Lost3":0, "Lost4":0,
             "S":0, "S1":0, "S2":0
         };
@@ -886,23 +887,24 @@ class Experiment {
 
         // Update Totals
         if (params.updateTotals===true) {
+            // Detection Counts
             report[rowIndex].count+=1;
-            if (!photonA.lost && !polarizerA.prime) {
-                // if (photonB.lost && photonA.polarized=="+") {totals.S1+=1}
-                if (photonB.lost) {totals.S1+=1} 
-            }
-            if (!photonB.lost && !polarizerB.prime) {
-                // if (photonA.lost && photonB.polarized=="+") {totals.S2+=1} 
-                if (photonA.lost) {totals.S2+=1} 
-            }
             if (!photonA.lost && !photonB.lost) {
                 totals[detectedName]+=1;
                 totals.Count+=1;
-                // if (photonA.polarized=="+" && photonB.polarized=="+") {totals[cName]+=1}  
-                totals[cName]+=1;
             } else {
                 totals[lostName]+=1;
                 totals.Lost+=1; 
+            }
+            // J Mode
+            if (totals.JMode==1) {
+                if (!photonA.lost && !polarizerA.prime && photonB.lost) {totals.S1+=1} 
+                if (!photonB.lost && !polarizerB.prime && photonA.lost) {totals.S2+=1} 
+                if (!photonA.lost && !photonB.lost) {totals[cName]+=1}
+            } else {
+                if (!polarizerA.prime && photonA.polarized=="+" && photonB.polarized!="+") {totals.S1+=1}
+                if (!polarizerB.prime && photonB.polarized=="+" && photonA.polarized!="+") {totals.S2+=1}
+                if (photonA.polarized=="+" && photonB.polarized=="+") {totals[cName]+=1} 
             }
             totals[eName]=getE(report[0].total, report[1].total, report[2].total, report[3].total);
             totals.S = totals.E1 - totals.E2 + totals.E3 + totals.E4;
