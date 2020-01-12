@@ -39,7 +39,7 @@ echo file_get_contents("code.js");
     <input id="freezeChk" class="space-left" type="checkbox" onchange="freeze(this.checked)">Freeze</input>
     <input id="animateChk" class="space-left" type="checkbox" checked>Animate</input>
     <input id="lossDetailChk" type="checkbox">Loss</input>
-    <input id="eberhardChk" type="checkbox" checked>Eberhard</input>
+    <input id="eberhardChk" type="checkbox">Eberhard</input>
     <span class="space-left" id="statusBar"></span>
     </div>
     <div id="custom" class="form-div" style="display:none">
@@ -65,6 +65,15 @@ echo file_get_contents("code.js");
                 </tr>
                 </table>
                 <table>
+                <tr>
+                    <td class='form-name'>Eberhard Mode:</td> 
+                    <td class='form-data'>
+                        <select id='eberhardMode' disabled>
+                          <option value="1" Selected>1. Detect Any</option>
+                          <option value="2">2. Detect +</option>
+                        </select>                   
+                    </td>
+                </tr>
                 <tr>
                     <td class='form-name'>Polarize +:</td> 
                     <td class='form-data'>

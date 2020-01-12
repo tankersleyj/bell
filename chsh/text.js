@@ -79,7 +79,7 @@ const textJson = {
             Results are recorded as <b>N++</b>, <b>N+-</b>, <b>N-+</b> and <b>N--</b><br>
             Detail tests calculated as E = (<b>N++</b> - <b>N+-</b> - <b>N-+</b> + <b>N--</b>) / (<b>N++</b> + <b>N+-</b> + <b>N-+</b> + <b>N--</b>).<br>
             Quantum Theory expects <b>S>=2, approaching 2.83</b> where <b>S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)</b><br>
-            Eberhard <b>J>0<b> where J = Coincidence(a,b) + Coincidence(a,b′) + Coincidence(a′,b) - Coincidence(a′,b′) - Single(a) - Single(b)</b><br>
+            Eberhard <b>J>0</b> where J = Coincidence(a,b) + Coincidence(a,b′) + Coincidence(a′,b) - Coincidence(a′,b′) - Single(a) - Single(b)</b><br>
             <br>
             Quantum mode violates Bell's inequalities (<i>S>2, ~=2.83</i>) by simulating '<i>spooky action at a distance</i>'.<br>
             Realistic and Karma Peny modes also violate Bell's inequalities (<i>S>2, ~=2.83</i>) using only local hidden variables.<br>
