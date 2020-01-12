@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.8, 2020-01-11', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.10, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
