@@ -66,6 +66,15 @@ echo file_get_contents("code.js");
                 </table>
                 <table>
                 <tr>
+                    <td class='form-name'>Eberhard Mode:</td> 
+                    <td class='form-data'>
+                        <select id='eberhardMode' disabled>
+                          <option value="1" Selected>1. Detect Any</option>
+                          <option value="2">2. Detect +</option>
+                        </select>                   
+                    </td>
+                </tr>
+                <tr>
                     <td class='form-name'>Polarize +:</td> 
                     <td class='form-data'>
                         <select id='polarizeMode' disabled>

@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.7, 2020-01-11', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.8, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -69,7 +69,7 @@ function enableCustom(enable) {
     eid_enable('customEdit',!enable); eid_enable('customRun',enable);
     eid_enable('polarizeA1',enable); eid_enable('polarizeA2',enable);
     eid_enable('polarizeB1',enable); eid_enable('polarizeB2',enable);
-    eid_enable('polarizeMode',enable); eid_enable('detectMode',enable);
+    eid_enable('eberhardMode',enable); eid_enable('polarizeMode',enable); eid_enable('detectMode',enable);
     eid_enable('DetectX',enable); eid_enable('DetectY',enable); eid_enable('DetectZ',enable);
 }
 function exportRowsToCsv(rows) {
@@ -78,7 +78,7 @@ function exportRowsToCsv(rows) {
     window.open(encodedUri);
 }
 function getExportRows(reportIndex) {
-    function addRow(row) {rows.push([row.key, row.a, row.b, row.count, row.total, ""])}
+    function addRow(row) {rows.push([`Part${reportIndex}.${row.row}`, row.a, row.b, row.count, row.total, ""])}
     function cellValue(value) {return value.toString().replace(",",";")}
     let rows=[], report, totals=experiment.totals;
     if (reportIndex==1) {report=experiment.report1; rows.push(["E1",experiment.polarizeA1,experiment.polarizeB1,totals.C1,roundTo(totals.E1,3),""])}
@@ -90,29 +90,29 @@ function getExportRows(reportIndex) {
         rows.push(["App","","","","","codeserver.net/bell/chsh"]);
         rows.push(["Version","","","","",cellValue(version)]);
         rows.push(["Mode","","","","",cellValue(experiment.mode.value)]);
-        rows.push(["Random","","","","",cellValue(random.mode)]);
-        rows.push(["Seed","","","","",cellValue(random.seed)]);
-        rows.push(["Index","","","","",cellValue(random.index)]);
-        rows.push(["State","","","","",cellValue(random.state())]);
-        rows.push(["A1","","","","",cellValue(experiment.polarizeA1)]);
-        rows.push(["A2","","","","",cellValue(experiment.polarizeA2)]);
-        rows.push(["B1","","","","",cellValue(experiment.polarizeB1)]);
-        rows.push(["B2","","","","",cellValue(experiment.polarizeB2)]);
-        rows.push(["Polarize","","","","",cellValue(experiment.polarizeMode)]);
-        rows.push(["Detect","","","","",cellValue(experiment.detectMode)]);
-        rows.push(["X","","","","",cellValue(experiment.detectX)]);
-        rows.push(["Y","","","","",cellValue(experiment.detectY)]);
-        rows.push(["Z","","","","",cellValue(experiment.detectZ)]);
-        rows.push(["JMode","","","","",cellValue(totals.JMode)]);
+        rows.push(["RandomMode","","","","",cellValue(random.mode)]);
+        rows.push(["RandomSeed","","","","",cellValue(random.seed)]);
+        rows.push(["RandomIndex","","","","",cellValue(random.index)]);
+        rows.push(["RandomState","","","","",cellValue(random.state())]);
+        rows.push(["DetectorA1","","","","",cellValue(experiment.polarizeA1)]);
+        rows.push(["DetectorA2","","","","",cellValue(experiment.polarizeA2)]);
+        rows.push(["DetectorB1","","","","",cellValue(experiment.polarizeB1)]);
+        rows.push(["DetectorB2","","","","",cellValue(experiment.polarizeB2)]);
+        rows.push(["PolarizeMode","","","","",cellValue(experiment.polarizeMode)]);
+        rows.push(["DetectMode","","","","",cellValue(experiment.detectMode)]);
+        rows.push(["DetectX","","","","",cellValue(experiment.detectX)]);
+        rows.push(["DetectY","","","","",cellValue(experiment.detectY)]);
+        rows.push(["DetectZ","","","","",cellValue(experiment.detectZ)]);
+        rows.push(["EberhardMode","","","","",cellValue(totals.EberhardMode)]);
         rows.push(["S","","",totals.Count,roundTo(totals.S,3),""]);
-        rows.push(["Lost","","",totals.Lost,"",""]);
-        rows.push(["C1","","",totals.C1,"",""]);
-        rows.push(["C2","","",totals.C2,"",""]);
-        rows.push(["C3","","",totals.C3,"",""]);
-        rows.push(["C4","","",totals.C4,"",""]);
-        rows.push(["S1","","",totals.S1,"",""]);
-        rows.push(["S2","","",totals.S2,"",""]);
-        rows.push(["J","","","",totals.J,""]);
+        rows.push(["LostCount","","",totals.Lost,"",""]);
+        rows.push(["EberhardC1","","",totals.C1,"",""]);
+        rows.push(["EberhardC2","","",totals.C2,"",""]);
+        rows.push(["EberhardC3","","",totals.C3,"",""]);
+        rows.push(["EberhardC4","","",totals.C4,"",""]);
+        rows.push(["EberhardS1","","",totals.S1,"",""]);
+        rows.push(["EberhardS2","","",totals.S2,"",""]);
+        rows.push(["EberhardJ","","","",totals.J,""]);
     }
     return rows;
 }
@@ -351,7 +351,7 @@ class Experiment {
             "C1":0, "C2":0, "C3":0, "C4":0, 
             "Detected1":0, "Detected2":0, "Detected3":0, "Detected4":0,
             "E1":0, "E2":0, "E3":0, "E4":0, 
-            "J":0, "JMode":2,
+            "J":0, "EberhardMode":Number(eid('eberhardMode').value),
             "Lost":0, "Lost1":0, "Lost2":0, "Lost3":0, "Lost4":0,
             "S":0, "S1":0, "S2":0
         };
@@ -860,7 +860,7 @@ class Experiment {
 
         // set constants and declare variables
         const photonA=this.photonA, photonB=this.photonB, polarizerA=this.polarizerA, polarizerB=this.polarizerB;
-        const mode=this.mode.value, debug=this.debug, totals=this.totals, eberhard=eid('eberhardChk').checked, lossDetail=eid('lossDetailChk').checked;
+        const mode=this.mode.value, debug=this.debug, totals=this.totals, eberhardEnabled=eid('eberhardChk').checked, lossDetail=eid('lossDetailChk').checked;
         let header, terminal, report, reportIndex, reportIndexes, aValue, bValue;
         let aName, bName, cName, detectedName, eName, lostName, reportRows='', summaryRows='', reportStatus='';
         if (!polarizerA.prime && !polarizerB.prime) {
@@ -897,7 +897,7 @@ class Experiment {
                 totals.Lost+=1; 
             }
             // J Mode
-            if (totals.JMode==1) {
+            if (totals.EberhardMode==1) {
                 if (!photonA.lost && !polarizerA.prime && photonB.lost) {totals.S1+=1} 
                 if (!photonB.lost && !polarizerB.prime && photonA.lost) {totals.S2+=1} 
                 if (!photonA.lost && !photonB.lost) {totals[cName]+=1}
@@ -933,7 +933,7 @@ class Experiment {
         // status
         if (mode=='Quantum_Theory' || mode=='Quantum_Anti') {reportStatus=`(${photonA.getStatus()},${photonB.getStatus()})`}
         else {reportStatus=`A=${roundTo(photonA.origAxis,1)}°, B=${roundTo(photonB.origAxis,1)}° (${photonA.getStatus()},${photonB.getStatus()})`}
-        const eberhardStatus = (eberhard) ? `, <span class='rpt-subtotal'>C${reportIndex}=${totals[cName]}</span>` : "";
+        const eberhardStatus = (eberhardEnabled) ? `, <span class='rpt-subtotal'>C${reportIndex}=${totals[cName]}</span>` : "";
         header.innerHTML=`<b>Test Part ${reportIndex}</b> <i>(${aName}=${aValue}°, ${bName}=${bValue}°${eberhardStatus})</i><b>:</b></b><br>`;
         terminal.innerHTML=this.getHeaderHtml(reportRows, aName, bName, "Total", reportExpected[`${reportIndex}`][0], reportStatus);
 
@@ -946,7 +946,7 @@ class Experiment {
         summaryRows+=this.getRowHtml(`E4`,`${this.polarizeA2}°`,`${this.polarizeB2}°`,roundTo(totals.Detected4,4),`${roundTo(totals.E4,4)}`,reportExpected['5'][4],'rpt-detail');
         summaryRows+=this.getRowHtml(`<b>S</b>`,na,na, totals.Count, `<b><big>${roundTo(totals.S,4)}</big></b>`, reportExpected['5'][5],'rpt-total');
         summaryRows+=this.getRowHtml(`Lost`,na,na,totals.Lost,`<i>${roundTo((totals.Lost/(totals.Count+totals.Lost))*100,1)}%</i>`,`<i>${reportExpected['5'][6]}</i>`,'rpt-detect');
-        if (eberhard) {
+        if (eberhardEnabled) {
             summaryRows+=this.getRowHtml(`C1`,na,na,totals.C1,na,`<i>${reportExpected['5'][7]}</i>`,'rpt-detail');
             summaryRows+=this.getRowHtml(`C2`,na,na,totals.C2,na,`<i>${reportExpected['5'][8]}</i>`,'rpt-detail');
             summaryRows+=this.getRowHtml(`C3`,na,na,totals.C3,na,`<i>${reportExpected['5'][9]}</i>`,'rpt-detail');
