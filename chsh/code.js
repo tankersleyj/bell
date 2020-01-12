@@ -2,7 +2,7 @@
 // Copyright 2019 JTankersley, released under the MIT license.
 
 // global variables
-var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.5, 2020-01-11', imageTitle='Bell CHSH';
+var degChr=String.fromCharCode(176), primeChr=String.fromCharCode(180), animationId=0, author='J.Tankersley', version='1.8.6, 2020-01-11', imageTitle='Bell CHSH';
 var experiment, canvas, context, mode, canHead, canFoot, statusBar, terminal1, terminal2, terminal3, terminal4, terminal5;
 var header1, header2, header3, header4, header5, footer1, footer2, footer3, footer4, footer5;
 
@@ -72,6 +72,49 @@ function enableCustom(enable) {
     eid_enable('polarizeMode',enable); eid_enable('detectMode',enable);
     eid_enable('DetectX',enable); eid_enable('DetectY',enable); eid_enable('DetectZ',enable);
 }
+function exportRowsToCsv(rows) {
+    let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+    var encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
+}
+function getExportRows(reportIndex) {
+    function addRow(row) {rows.push([row.key, row.a, row.b, row.count, row.total, ""])}
+    function cellValue(value) {return value.toString().replace(",",";")}
+    let rows=[], report, totals=experiment.totals;
+    if (reportIndex==1) {report=experiment.report1; rows.push(["E1",experiment.polarizeA1,experiment.polarizeB1,totals.C1,roundTo(totals.E1,3),""])}
+    else if (reportIndex==2) {report=experiment.report2; rows.push(["E2",experiment.polarizeA1,experiment.polarizeB2,totals.C2,roundTo(totals.E2,3),""])}
+    else if (reportIndex==3) {report=experiment.report3; rows.push(["E3",experiment.polarizeA2,experiment.polarizeB1,totals.C3,roundTo(totals.E3,3),""])}
+    else if (reportIndex==4) {report=experiment.report4; rows.push(["E4",experiment.polarizeA2,experiment.polarizeB2,totals.C4,roundTo(totals.E4,3),""])}
+    if (report) {report.forEach(addRow)} // Report
+    else { // Totals
+        rows.push(["App","","","","","codeserver.net/bell/chsh"]);
+        rows.push(["Version","","","","",cellValue(version)]);
+        rows.push(["Mode","","","","",cellValue(experiment.mode.value)]);
+        rows.push(["Random","","","","",cellValue(random.mode)]);
+        rows.push(["Seed","","","","",cellValue(random.seed)]);
+        rows.push(["Index","","","","",cellValue(random.index)]);
+        rows.push(["State","","","","",cellValue(random.state())]);
+        rows.push(["A1","","","","",cellValue(experiment.polarizeA1)]);
+        rows.push(["A2","","","","",cellValue(experiment.polarizeA2)]);
+        rows.push(["B1","","","","",cellValue(experiment.polarizeB1)]);
+        rows.push(["B2","","","","",cellValue(experiment.polarizeB2)]);
+        rows.push(["Polarize","","","","",cellValue(experiment.polarizeMode)]);
+        rows.push(["Detect","","","","",cellValue(experiment.detectMode)]);
+        rows.push(["X","","","","",cellValue(experiment.detectX)]);
+        rows.push(["Y","","","","",cellValue(experiment.detectY)]);
+        rows.push(["Z","","","","",cellValue(experiment.detectZ)]);
+        rows.push(["S","","",totals.Count,roundTo(totals.S,3),""]);
+        rows.push(["Lost","","",totals.Lost,"",""]);
+        rows.push(["C1","","",totals.C1,"",""]);
+        rows.push(["C2","","",totals.C2,"",""]);
+        rows.push(["C3","","",totals.C3,"",""]);
+        rows.push(["C4","","",totals.C4,"",""]);
+        rows.push(["S1","","",totals.S1,"",""]);
+        rows.push(["S2","","",totals.S2,"",""]);
+        rows.push(["J","","","",totals.J,""]);
+    }
+    return rows;
+}
 function handleCustomEdit() {
     enableCustom(true);
     animationStop();
@@ -100,7 +143,15 @@ function handleDetect(value) {
     }
 }
 function handleExport() {
-    alert('export');
+    function addRow(row) {rows.push(row)} 
+    const rowNames=["key","a","b","count","total","note"];
+    let rows=[rowNames], reportRows=[];
+    getExportRows(5).forEach(addRow);
+    getExportRows(1).forEach(addRow);
+    getExportRows(2).forEach(addRow);
+    getExportRows(3).forEach(addRow);
+    getExportRows(4).forEach(addRow);
+    exportRowsToCsv(rows);
 }
 function handleMode() {
     random.setSeed(randomSeed());
@@ -319,7 +370,12 @@ class Experiment {
             this.detectY = Number(eid("DetectY").value);
             this.detectZ = Number(eid("DetectZ").value);
             setVis(eid('debug'),false);
-        } else {setVis(eid('debug'),false)}
+        } else {
+            this.detectX = "";
+            this.detectY = "";
+            this.detectZ = "";
+            setVis(eid('debug'),false);
+        }
         
         // report 1 (a, b)
         this.report1=[
