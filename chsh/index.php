@@ -125,8 +125,7 @@ echo file_get_contents("code.js");
         <div id="debug" style="display:none"></div>
     </div>
     <div id="canFoot"></div>
-    <table><tr><td><div id="header1"></td><td><button id='customRun' onclick="handleExport()" disabled>Export</button></td></tr></table></div>
-    <div id="terminal1"></div><div id="footer1"></div>
+    <table><tr><td><div id="header1"></div></td><td><button onclick="handleExport()">Export</button></td></tr></table><div id="terminal1"></div><div id="footer1"></div>
     <div id="header2"></div><div id="terminal2"></div><div id="footer2"></div>
     <div id="header3"></div><div id="terminal3"></div><div id="footer3"></div>
     <div id="header4"></div><div id="terminal4"></div><div id="footer4"></div>
