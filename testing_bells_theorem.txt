@@ -1,0 +1,249 @@
+Testing Bells Theorem
+(with Realistic & Karma Peny math)
+By James Tankersley Jr, 2020-01-11, 23:30 CST
+
+"If you can not explain it to your grandmother, then you may not understand it yourself"
+Attributions:
+
+Contributors and/or guidance from Karma Peny, Chantal Roth and Richard Gill.
+Summary
+Quantum Mechanics is a mathematical model that allows scientists and engineers to model quantum systems with extreme accuracy. But the actual physical model (nature's physical mechanisms) of quantum systems is unknown. Are quantum systems purely random (non-deterministic) as Quantum Theory states, or do quantum systems have real properties before measurement (deterministic) as Einstein's EPR paper states? Bell's Theorem was created to decide which was correct, Quantum Theory or Einstein's EPR.
+
+Bell experiments claim to settle the issue (in Quantum Theory's favor), but some computer experiments and physical models [20] appear to mimic Quantum Theory results with LHV (Local Hidden Variable) models, and may show that Bell CHSH experiments may not settle the issue.
+
+This experiment models low detection rates at Δ (delta) angles (difference in angle between photon polarization angle and polarizer angle) near 45 degrees (in-between horizontal and vertical), causing a false appearance of strong correlations between non-communicating particles.
+
+This is referred to as the "detection loophole", and this computer program, which can be run in any modern browser (reference [13] [14] or enclosure 4), appears to provide reasonable experimental proof of an alternate explanation for results of most Bell CHSH experiments (proving those experiments do not refute Einsteins EPR paper, and do not prove that Quantum Mechanics is spooky as Quantum Theory predicts, in ways Einstein did not approve of).
+
+Some more recent experiments claim to be "loophole free" [15], but based on half a century history of claims of proof followed by discovery of loopholes or experimental problems, as Karma Peny believes he has also discovered with the most recent experiments [3], we may be justified in considering this issue as still unsettled physics.
+
+Experiment (goto link to run in any modern browser): https://codeserver.net/bell/chsh
+Code (github, MIT license): https://github.com/tankersleyj/bell
+Theoretical Background
+General Relativity Theory (Albert Einstein, 1915) is extremely successful at predicting the behavior of the macroscopic world (large objects and waves), using deterministic calculations (based on actual properties or "variables").
+
+Quantum Mechanics (Niels Bohr and Werner Heisenberg, 1927) is extremely successful at predicting the behavior of the microscopic world (very tiny particles and waves), using "probability" based calculations ("expected average behaviors").
+
+Albert Einstein believed that if properties (such as spin, mass, position, or velocity) of microscopic (tiny) particles and waves could be measured without disturbing or changing them, then their expected behaviors could be calculated (what would the tiny particles and waves do next), similar to macroscopic (large) objects and waves.
+
+However, Niels Bohr believed that microscopic particles and waves don't actually have properties (such as spin, mass, position, or velocity) until they are measured. Before they are measured, they just have a random probability of possible properties (or they have all possible properties at the same time), until they are actually measured, only then do they adopt "real" properties by random chance.
+
+Albert Einstein then argued in his 1935 EPR paper [1] that particles and waves must always have "real" properties, including before they are measured, other wise the microscopic world would have to be really weird and paradoxical (not make logical sense).
+
+Einstein famously said "God does not play dice with the universe" and Bohr responded "Don't tell God what to do" [9]. Common sense appears to argue that Einstein must be correct, otherwise we must believe in apparently impossible things like instant communication between correlated or "entangled" particles that are separated by very large distances [8].
+
+For example, First, two particles properties are first correlated, also called "entangled". This can be done when a particle decays into 2 particles, or a photon travels through a crystal splitting it into two photons, or multiple photons are exposed to the same laser.
+
+Next, if the two particles are then moved very far apart from each other, and finally measured, the particles will show precisely related (correlated) properties, either identical, exactly opposite or "orthogonal" (rotated 90 degrees), depending on what method was used to initially correlated or "entangle" the particles.
+
+If Einstein was correct, then the two particles gained "real" properties (such as spin, mass, position or velocity) when the particles were initially correlated or "entangled".
+
+If Bohr was correct, then the two particles only had "fuzzy" properties (probabilities of possible property values) until the moment one them was actually measured, and then the measured particle randomly adopted its "real" properties and instantly tells the other particle to have the the same, opposite or "orthogonal" (rotated 90 degrees) properties.
+
+In 1964, physicist John S. Bell released his paper On the Einstein Podolsky Rosen Paradox [2][11] that claimed that it was experimentally possible to disprove Einstein's EPR proof [1] and prove that Niels Bohr's random interpretation of Quantum Mechanics was correct. Starting 1972, a large number of increasingly precise experiments agreed with Bell's argument, and showed that if John Bell's math was correct [3], then Niels Bohr was the winner, and tiny particles and waves really do just behave randomly, not have "real" properties until they are actually measured, and the world of the very tiny really is very weird and paradoxical (not logically sensible) [1].
+
+However some theoretical and experimental evidence still appears to support Einstein's EPR proof and/or refute Bell proof. Oxford's Joy Christian argues that John Bell may have got the math wrong[4][5], and MIT's John Bush has replicated quantum effects with Hydrodynamic quantum analogs [18].
+
+Computer Scientist Karma Peny argues that violations of Bell's Inequalities can be easily explained as products of experimental efficiencies [3] and computer Simulations using his math easily violate Bell's In-equalities with local hidden variable models [6][13][14].
+
+Computer Experiment
+A basic CHSH experiment is setup with repeated creation of 2 entangled photons. In Quantum Theory mode, particles are created with no polarization until measured. In Non-Quantum Theory modes, particles are created with opposite polarization angles, randomly set between 0 and 360 degrees. Particles are then polarized, detected and "S" values are calculated. S values become statistically significant after thousands of particle pairs have been measured.
+
+Bell's theorem expects ideal "S" values near 2.83 if particles instantly communicate and correlate polarization angles when particles are measured (Quantum Theory model), and and "S" values below 2.0 if particles do not communicate with each other (Einstein's EPR local hidden variables model).
+
+This computer experiment [13][14] demonstrates Non-Quantum Theory (local hidden variable) models violating Bell's Inequalities (generate S values > 2.0, and even perfect 2.83), contradicting Bell's Theorem.
+
+Bell's inequalities are violated by modeling low detection rates when delta (Δ, the difference in angle between photon polarization and polarizer angle) is near 45° (in-between being polarized pass-through + or reflected -). This is known as the "detection loophole" in Bell CHSH experiments, as explained by Karma Peny's video, Explained & Debunked: Quantum Entanglement & Bell Test Experiments [3].
+
+Symbols used:
+
+Pa or Pb = Photon with hidden polarization angle λ (lambda)
+a or b = Polarizer with pre-set polarization angle φ (phi)
+Δ (delta) = Difference in polarization angles between a photon (Pa or Pb) λ and it's polarizer (a or b) φ
+θ (theta) = Difference in polarization angles between polarizers (a or b) φ
+D+ or D- = Detector pass-through (+, polarized 0°) or reflected (-, polarized 90°)
+Modes and Calculated values:
+
+Quantum Theory:
+
+non-local communication
+polarize = anti-correlated cos²(Δ) probability
+detection rate = 50% probability
+At 8k detections, S=2.8 and non-detection=75%
+Karma Peny:
+
+local hidden variables
+polarize + = cos²(Δ) >= 0.5
+detection rate = 0.37+(0.63*|cos(2Δ)|) probability [3]
+At 10k detections, S=2.8 (2.83+/- 0.03) and non-detection=41%
+Realistic:
+
+local hidden variables
+polarize + = cos²(Δ) probability
+detection rate = cos²(2Δ) probability
+At 8k detections, S=2.8 (2.83+/- 0.03) and non-detection=75%
+Probability detected + = cos²(Δ) * cos²(2Δ)
+Probability detected - = (1- cos²(Δ)) * cos²(2Δ)
+Perfect:
+
+local hidden variables
+polarize + = cos²(Δ) >= 0.5
+detection rate = 100%
+At 35k detections, S=2.0 and non-detection=0%
+Real Perfect:
+
+local hidden variables
+polarize + = cos²(Δ) probability
+detection rate = 100%
+At 35k detections, S=1.4 and non-detection=0%
+Probability detected + = cos²(Δ)
+Probability detected - = (1- cos²(Δ))
+
+In Quantum Theory mode, particles communicate with each other and correlate their polarization results, generating near ideal expected CHSH S values near 2.83.
+
+All other modes are Non-Quantum Theory, particles do not communicate and do not correlate their polarization results. Each measurement knows nothing of the other side (Side A, knows only of particle A and polarizer A. Side B, knows only of particle B and polarizer B).
+
+Realistic and Karma Peny modes also generate CHSH S values near 2.83 (which should not be possible for non-communicating hidden variable models, according to Bell's Theorem).
+
+In the experiment, particles are repeatedly created with random opposite polarizations of 0° to 360°. Polarizers are repeatedly randomly set on side A as 0° or 45° (a and a′), and on side B as 22.5° or 67.5° (b and b′). Custom mode allows other polarizer values.
+
+Realistic (enclosure 1) and Karma Peny (enclosure 2) modes calculates as:
+
+Side A
+Δ = |(|Polarizer 1 angle| - |Particle 1 angle|)|
+Side B
+Δ = |(|Polarizer 2 angle| - |Particle 2 angle|)|
+Karma Peny
+polarizer passthrough (+) , else reflected (-): cos²(Δ) >= 0.5
+detection probability: 0.37 + (0.63 * |cos(2Δ)|)
+Realistic
+polarizer passthrough (+) , else reflected (-): cos²(Δ) probability
+detection probability: cos²(2Δ)
+Symbols:
+
++ or - = passthrough or reflected
+a or a′ = detector A set at angle a or a′
+b or b′ = detector B set at angle b or b′
+CHSH math [19]:
+
+E(x,y) = (N++ - N+- - N-+ + N--) / (N++ + N+- + N-+ + N--)
+S = E(a,b) - E(a,b′) + E(a′,b) + E(a′,b′)
+S > 0 violates Bell's Theorem, S=2.83 expected for ideal Quantum Correlation
+Eberhard math (in development) [21]:
+
+C(x,y) = coincidence detection count, with detector A set at angle x and detector B set at angle y
+S(a) or S(b) = single detection count with detector A set at angle a or detector B set at angle b
+J = C(a,b)+C(a,b′)+(a′,b)-C(a′,b′)-S(a)-S(b)
+J > 0 violates Bell's Theorem
+Tests with Non-Quantum Theory models show that similar real-world Bell's CHSH test results (including "loophole free" tests after 2015) may be the result of polarizer and detector efficiencies, and do not disprove EPR (local hidden variable) models of local determinism.
+
+
+Net Probabilitys Graph (detection probability * Malus Law)
+
+
+X Axis Δ (delta) = difference in polarization angles between a photon and a BPS (Beam Splitting Polarizer)
+Blue Probability of photon passing through a BPS, cos²(Δ) * cos²(2Δ)
+Black Probability of a photon being reflected by a PBS, (1 - cos²(Δ)) * cos²(2Δ)
+Physical Explanations for Calculations
+The simplest "local hidden variable" calculations that violate Bell's inequalities are graphed above and achieve an S value near 2.8, after thousands of measurements, with various detection rates. Random numbers used for testing were generated by JavaScript random() function, as implemented by Chrome browser Version 78.0.3904.108 (Official Build), Lehmer 31 bit LCG and 53 bit PCG seeded random number generators.
+
+X Axis: Δ (delta) = difference in polarization angles between a photon (Pa or Pb) and it's polarizer (a or b).
+
+Radians: 0=0°, π/4=±45°, π/2=±90°, 3π/4=±45°, π=±0°
+
+Green: Polarization Probability = cos²(Δ)
+
+The probability of passing through the polarizer (+) is cos²(Δ). The probability of being reflected by the polarizer (-) is 1-cos²(Δ).
+
+This polarization calculation follows Malus law (http://www.physicshandbook.com/laws/maluslaw.htm) and reduces S values by approximately 0.6 compared with non-probabilistic polarization calculations (pass-through when cos²(Δ) >= 0.5 else reflected), as shown by comparing tests Perfect and Real Perfect.
+
+As delta (Δ) approaches 0° or 90°, the probability of being polarized as pass-through (+) or reflected (-) respectively approaches 100%. As delta (Δ) approaches 45°, the probability of being polarized as either pass-through or reflected approaches 50%.
+
+Red: Detection Probability = cos²(2Δ)
+
+The probability of photon being detected is cos²(2Δ), using Malus law at half frequency. The closer that Δ (difference between photon and polarizer polarization angle) is to either pass-through angle (0°) or reflection angle (90°), the higher the probability of detection. (Probability of detection + or - approaches 100% when delta (Δ) approaches 0° or 90°, and loss or non-detection approaches 100% as delta (Δ) approaches 45°).
+
+This detection calculation increases S values by approximately 1.4 compared with 100% detection, as shown by comparing tests Realistic with Perfect.
+
+When a photon passes through a polarizer, the photon's polarization is changed to be the same as the polarizer (or changed to be orthogonal for reflected photons). The more a photon's polarization needs to be changed to either pass through or be reflected, the higher the probability of non-detection, possibly due to photon energy conversion, absorption or divergent reflection.
+
+Licenses:
+
+Copyright (c) 2019-2020 James Tankersley Jr, under MIT Licence
+53-bit PCG PRNG (https://github.com/thomcc/pcg-random), Copyright 2014 Thom Chiovoloni, under MIT license
+References:
+
+[1] Einstein–Podolsky–Rosen paradox (EPR paradox), Wikipedia https://en.wikipedia.org/wiki/EPR_paradox
+[2] Bell's Theorem, Wikipedia https://en.wikipedia.org/wiki/Bell%27s_theorem
+[3] Karma Peny, Explained & Debunked: Quantum Entanglement & Bell Test Experiments, https://www.youtube.com/watch?v=yOtsEgbg1-s
+[4] Disproof of Bell's theorem: illuminating the illusion of entanglement, Joy Christian, University of Oxford, 2014 https://www.researchgate.net/publication/303939609
+[5] On a Surprising Oversight by John S. Bell in the Proof of his Famous Theorem, Joy Christian, Einstein Centre for Local-Realistic Physics, 2019 https://arxiv.org/pdf/1704.02876.pdf
+[6] Forum, Karma Peny Simulation Appears to Violate Bell, SciPhysicsForums.com, 2019, http://www.sciphysicsforums.com/spfbb1/viewtopic.php?f=6&t=417
+[7] Bell’s Theorem, Stanford Encyclopedia of Philosophy, https://plato.stanford.edu/entries/bell-theorem/
+[8] NewScientist Magazine (Mark Buchanan), 3/22/2008, Quantum randomness may not be random, NewScientist Magazine, 3/22/2008 issue 2648, http://www.newscientist.com/article/mg19726485.700-quantum-randomness-may-not-be-random.html
+[9] The new quantum reality, Wired Magazine, 2014-06 https://www.wired.com/2014/06/the-new-quantum-reality/
+[10] Bell's Theorem and Negative Probabilities, David R. Schneider, http://drchinese.com/David/Bell_Theorem_Negative_Probabilities.htm
+[11] On the Einstein Podolsky Rosen Paradox, John S. Bell, Physics 1964 http://www.drchinese.com/David/Bell_Compact.pdf
+[12] Bell's Theorem: An Overview with Lotsa Links, David R. Schneider, https://www.drchinese.com/Bells_Theorem.htm
+[13] Testing Bell's Theorem - CHSH Experiment, James Tankersley, 2020-01-01 https://codeserver.net/bell/chsh, or 2019-11-24 https://sites.google.com/site/physicschecker/references/testing-bell-simulation
+[14] Code on GitHub https://github.com/tankersleyj/bell
+[15] Loopholes in Bell test experiments, Wikipedia https://en.wikipedia.org/wiki/Loopholes_in_Bell_test_experiments
+[16] Significant-Loophole-Free Test of Bell’s Theorem with Entangled Photons https://physics.aps.org/featured-article-pdf/10.1103/PhysRevLett.115.250401
+[17] Supplemental Material: Significant-Loophole-Free Test of Bell’s Theorem with Entangled Photons, 2015 https://journals.aps.org/prl/supplemental/10.1103/PhysRevLett.115.250401/Supplemental_material_final.pdf
+[18] Hydrodynamic Quantum Analogs (John Bush, Applied Mathematics, MIT) https://en.wikipedia.org/wiki/Hydrodynamic_quantum_analogs
+[19] Finite statistics loophole in CH, Eberhard, CHSH inequalities, Justin C. H. Lee, 2018 , https://pdfs.semanticscholar.org/1d21/1b01d053e3564b551a7a0a83a305047274bd.pdf
+[20] Bell tests with optimal local hidden variable models, Fuming Wang Department of Physics, 2015+ https://arxiv.org/pdf/1411.6053.pdf
+[21] Stanford Encyclopedia of Philosophy, Bells Theorem https://plato.stanford.edu/entries/bell-theorem/
+[22] Entanglement and Quantum Nonlocality Demystified. Marian Kupczynskim https://arxiv.org/ftp/arxiv/papers/1205/1205.4636.pdf
+[23] Alexey Nikulov, Russian Academy of Sciences, https://www.researchgate.net/publication/331584709_Logical_proof_of_the_absurdity_of_the_EPR_correlation
+Enclosure 1 (Hidden Variable Calculation Code, JavaScript)
+
+// Karma Peny Calculations
+function getKarmaPenyPolarized(photon_degrees, polarizer_degrees) {
+    const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+    return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
+}
+function getKarmaPenyDetected(photon_degrees, polarizer_degrees, randomNumber) {
+    const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), probability=Math.abs(Math.cos((delta+delta)*Math.PI/180));
+    return (randomNumber<=0.37+(0.63*probability))?true:false;  // f(x) probability, 1=detected, 0=not detected
+}
+
+// Realistic Calculations
+function getRealisticPolarized(photon_degrees, polarizer_degrees, randomNumber) {
+    const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), probability=cosDelta*cosDelta;
+    return (randomNumber<=probability)?"+":"-";  // cos^2(x) probability, 1=passthrough(+), 0=reflect(-)
+}
+function getRealisticDetected(photon_degrees, polarizer_degrees, randomNumber) {
+    const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cos2Delta=Math.cos((delta+delta)*Math.PI/180), probability=cos2Delta*cos2Delta;
+    return (randomNumber<=probability)?true:false; // cos^2(2x) probability, 1=detected, 0=not detected
+}
+
+// Perfect Calculations
+function getPerfectPolarized(photon_degrees, polarizer_degrees) {
+    const delta=Math.abs(Math.abs(polarizer_degrees)-Math.abs(photon_degrees)), cosDelta=Math.cos(delta*Math.PI/180), cosSqrDelta=cosDelta*cosDelta;
+    return (cosSqrDelta>=0.5)?"+":"-";  // f(x)=non-probabilistic, 1=passthrough(+), 0=reflect(-)
+}
+function getPerfectDetected() {
+    return true; // f(x)=1, 1=detected, 0=not detected
+}
+
+
+
+
+Enclosure 3, Polarizers following Malus law appear to cause false positive bell violations
+
+(4.1) https://en.wikipedia.org/wiki/Polarizer
+
+A polarizer at 0 degrees lined up with a polarizer at 90 degree lets no light through, following Malus law.
+
+But when you add a 3rd polarizer at 45 degrees, in between the other two, light again appears.
+
+Polarizers are shown to bend some of the light from 0 degrees, to 45 degrees then to 90 degrees, allowing a significant percentage of light polarized at 0 degrees to emerge at 90 degrees (following Malus law at each polarization step).
+
+Malus Law, intensity of light passing through a polarizer = cos²(Δ), where Δ represents the difference in polarization angle between photon and polarizer. For example, 50% of randomly polarized light will pass through the polarizer and adopt the new polarization angle (when difference in polarization Δ is less than 90 degrees).
+
+(3.2) Diagram showing classical correlations between photon spin states and QM predicted correlations between particles
+
+https://medium.com/starts-with-a-bang/quantum-physics-is-fine-human-bias-about-reality-is-the-real-problem-9885de42e179
+
+When polarized light passes through an ideal polarizer, its polarization becomes correlated with the polarizer as a trigonometric curve based on Malus Law cos²(Δ). However, Malus Law alone is not enough to generate the QM predicted correlation unless stronger correlation is induced, such as high photon loss when the difference in polarization between photon and polarizer is high.
